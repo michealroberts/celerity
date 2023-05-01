@@ -59,3 +59,24 @@ def get_greenwhich_sidereal_time(date: datetime) -> float:
     GST = T_0 % 24
 
     return GST + 24 if GST < 0 else GST
+
+
+def get_local_sidereal_time(date: datetime, longitude: float) -> float:
+    """
+    The Local Sidereal Time (LST) is the hour angle of the vernal
+    equinox, the ascending node of the ecliptic on the celestial equator.
+
+    :param date: The datetime object to convert.
+    :param longitude: The longitude of the observer.
+    :return: The Local Sidereal Time (LST) of the given date normalised to UTC.
+    """
+    GST = get_greenwhich_sidereal_time(date)
+
+    d = (GST + longitude / 15.0) / 24.0
+
+    d = d - math.floor(d)
+
+    if d < 0:
+        d += 1
+
+    return 24.0 * d
