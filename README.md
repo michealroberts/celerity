@@ -4,6 +4,8 @@ Celerity is a lightweight, research-grade, zero-dependency type-safe Python libr
 
 It has been designed to be independent of any other popular astronomical libraries, with a focus on providing a simple and intuitive API for performing common astronomical calculations.
 
+**N.B.** _This project is currently in the early stages of development and is not yet ready for production use._
+
 ---
 
 ## Usage
