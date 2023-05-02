@@ -1,7 +1,7 @@
 import math
 from datetime import datetime, timezone
 
-from .constants import J2000
+from .constants import J1900, J2000
 
 
 def get_julian_date(date: datetime) -> float:
@@ -70,7 +70,7 @@ def get_local_sidereal_time(date: datetime, longitude: float) -> float:
     :param longitude: The longitude of the observer.
     :return: The Local Sidereal Time (LST) of the given date normalised to UTC.
     """
-    GST = get_greenwhich_sidereal_time(date)
+    GST = get_greenwhich_sidereal_time(date.astimezone(tz=timezone.utc))
 
     d = (GST + longitude / 15.0) / 24.0
 
@@ -80,3 +80,60 @@ def get_local_sidereal_time(date: datetime, longitude: float) -> float:
         d += 1
 
     return 24.0 * d
+
+
+def get_universal_time(date: datetime) -> float:
+    """
+    Universal Time (UT or UT1) is a time standard based on Earth's
+    rotation. While originally it was mean solar time at 0° longitude,
+    precise measurements of the Sun are difficult. Therefore, UT1 is
+    computed from a measure of the Earth's angle with respect to the
+    International Celestial Reference Frame (ICRF), called the Earth
+    Rotation Angle (ERA, which serves as a modern replacement for
+    Greenwich Mean Sidereal Time).
+
+    UT1 is the same everywhere on Earth.
+
+    :param date: The datetime object to convert.
+    :return The Universal Time (UT) of the given date normalised to UTC.
+    """
+
+    year = date.astimezone(tz=timezone.utc).year
+
+    GST = get_greenwhich_sidereal_time(date.astimezone(tz=timezone.utc))
+
+    # Get the Julian Date at 0h:
+    JD = get_julian_date(
+        datetime(year, date.month, date.day, 0, 0, 0, 0).astimezone(tz=timezone.utc)
+    )
+
+    # Get the Julian Date at 0h on 1st January for the current year:
+    JD_0 = (
+        get_julian_date(datetime(year, 1, 1, 0, 0, 0, 0).astimezone(tz=timezone.utc))
+        + 30
+    )
+
+    # Get the number of days since 1st January for the current year:
+    days = JD - JD_0
+
+    # Get the number of Julian Centuries since 1900:
+    T = (JD_0 - J1900) / 36525
+
+    R = 6.6460656 + 2400.051262 * T + 0.00002581 * math.pow(T, 2)
+
+    B = 24 - R + 24 * (year - 1900)
+
+    T_0 = 0.0657098 * days - B
+
+    if T_0 < 0:
+        T_0 += 24
+
+    if T_0 > 24:
+        T_0 -= 24
+
+    A = GST - T_0
+
+    if A < 0:
+        A += 24
+
+    return 0.99727 * A
