@@ -4,6 +4,7 @@ from src.celerity.temporal import (
     get_greenwhich_sidereal_time,
     get_julian_date,
     get_local_sidereal_time,
+    get_universal_time,
 )
 
 # For testing we need to specify a date because most calculations are
@@ -33,3 +34,7 @@ def test_get_local_sidereal_time():
         )
         == 5.099450799019053
     )
+
+
+def test_universal_time():
+    assert get_universal_time(date) == 0.000028334646537240785
