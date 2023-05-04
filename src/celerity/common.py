@@ -9,3 +9,8 @@ class EquatorialCoordinate(TypedDict):
 class GeographicCoordinate(TypedDict):
     lat: float
     lon: float
+
+
+class HorizontalCoordinate(TypedDict):
+    alt: float
+    az: float
