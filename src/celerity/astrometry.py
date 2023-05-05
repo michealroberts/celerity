@@ -2,7 +2,7 @@ import math
 from datetime import datetime
 
 from .common import EquatorialCoordinate, GeographicCoordinate
-from .temporal import get_local_sidereal_time
+from .temporal import get_julian_date, get_local_sidereal_time
 
 
 def get_hour_angle(date: datetime, ra: float, longitude: float) -> float:
@@ -23,6 +23,29 @@ def get_hour_angle(date: datetime, ra: float, longitude: float) -> float:
         ha += 360
 
     return ha
+
+
+def get_obliquity_of_the_ecliptic(date: datetime) -> float:
+    """
+    Gets the obliquity of the ecliptic for a particular datetime
+
+    The obliquity of the ecliptic is the angle between the ecliptic and the celestial equator, and is used to
+    convert between ecliptic and equatorial coordinates.
+
+    :param date: The datetime object to convert.
+    :return The obliquity of the ecliptic in degrees.
+    """
+    # Get the Julian date:
+    JD = get_julian_date(date)
+
+    # Calculate the number of centuries since J2000.0:
+    T = (JD - 2451545.0) / 36525
+
+    # Calculate the obliquity of the ecliptic:
+    return (
+        23.439292
+        - (46.845 * T + 0.00059 * math.pow(T, 2) + 0.001813 * math.pow(T, 3)) / 3600
+    )
 
 
 def get_parallactic_angle(

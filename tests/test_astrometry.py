@@ -1,7 +1,11 @@
 from datetime import datetime
 from typing import TypedDict
 
-from src.celerity.astrometry import get_hour_angle, get_parallactic_angle
+from src.celerity.astrometry import (
+    get_hour_angle,
+    get_obliquity_of_the_ecliptic,
+    get_parallactic_angle,
+)
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 
 # For testing we need to specify a date because most calculations are
@@ -22,6 +26,11 @@ observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
 def test_get_hour_angle():
     ha = get_hour_angle(date, betelgeuse["ra"], longitude)
     assert ha == 347.6988036852858
+
+
+def test_get_obliquity_of_the_ecliptic():
+    ε = get_obliquity_of_the_ecliptic(date)
+    assert ε == 23.436511890585354
 
 
 def test_get_parallactic_angle():
