@@ -4,6 +4,7 @@ from src.celerity.temporal import (
     get_greenwhich_sidereal_time,
     get_julian_date,
     get_local_sidereal_time,
+    get_modified_julian_date,
     get_universal_time,
 )
 
@@ -20,6 +21,10 @@ longitude: float = -155.468094
 
 def test_get_julian_date():
     assert get_julian_date(date) == 2459348.5
+
+
+def test_get_modified_julian_date():
+    assert get_modified_julian_date(date) == 59348.0
 
 
 def test_get_greenwhich_sidereal_time():

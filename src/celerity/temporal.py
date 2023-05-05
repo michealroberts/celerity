@@ -25,6 +25,17 @@ def get_julian_date(date: datetime) -> float:
     ) + 2440587.5
 
 
+def get_modified_julian_date(date: datetime) -> float:
+    """
+    The Modified Julian Date (MJD) is the number of fractional days since midnight
+    on November 17, 1858.
+
+    :param date: The datetime object to convert.
+    :return: The Modified Julian Date (MJD) of the given date normalised to UTC.
+    """
+    return get_julian_date(date) - 2400000.5
+
+
 def get_greenwhich_sidereal_time(date: datetime) -> float:
     """
     The Greenwich Sidereal Time (GST) is the hour angle of the vernal
