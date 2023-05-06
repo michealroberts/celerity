@@ -1,5 +1,5 @@
-import math
 from datetime import datetime
+from math import radians, sin
 
 from .epoch import get_number_of_fractional_days_since_j2000
 from .sun import get_mean_anomaly
@@ -26,4 +26,4 @@ def get_mean_ecliptic_longitude_of_the_ascending_node(date: datetime) -> float:
     # Correct for the Sun's mean anomaly:
     M = get_mean_anomaly(date)
 
-    return Ω - 0.16 * math.sin(math.radians(M))
+    return Ω - 0.16 * sin(radians(M))

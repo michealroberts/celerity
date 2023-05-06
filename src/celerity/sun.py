@@ -1,7 +1,6 @@
-import math
 from datetime import datetime
+from math import pow, radians, sin
 
-from .epoch import get_number_of_fractional_days_since_j2000
 from .temporal import get_julian_date
 
 
@@ -24,10 +23,9 @@ def get_equation_of_center(date) -> float:
 
     # Calculate the equation of center:
     C = (
-        (1.914602 - 0.004817 * math.pow(T, 2) - 0.000014 * math.pow(T, 3))
-        * math.sin(math.radians(M))
-        + (0.019993 - 0.000101 * math.pow(T, 2)) * math.sin(math.radians(2 * M))
-        + 0.000289 * math.sin(math.radians(3 * M))
+        (1.914602 - 0.004817 * pow(T, 2) - 0.000014 * pow(T, 3)) * sin(radians(M))
+        + (0.019993 - 0.000101 * pow(T, 2)) * sin(radians(2 * M))
+        + 0.000289 * sin(radians(3 * M))
     )
 
     return C
@@ -48,7 +46,7 @@ def get_mean_anomaly(date: datetime) -> float:
     T = (JD - 2451545.0) / 36525
 
     # Get the Sun's mean anomaly at the current epoch relative to J2000:
-    M = (357.52911 + 35999.05029 * T - 0.0001537 * math.pow(T, 2)) % 360
+    M = (357.52911 + 35999.05029 * T - 0.0001537 * pow(T, 2)) % 360
 
     # Correct for negative angles
     if M < 0:
@@ -72,7 +70,7 @@ def get_mean_geometric_longitude(date: datetime) -> float:
     T = (JD - 2451545.0) / 36525
 
     # Calculate the mean geometric longitude:
-    L = (280.46646 + 36000.76983 * T + 0.0003032 * math.pow(T, 2)) % 360
+    L = (280.46646 + 36000.76983 * T + 0.0003032 * pow(T, 2)) % 360
 
     # Correct for negative angles
     if L < 0:
