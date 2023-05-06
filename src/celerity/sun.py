@@ -5,7 +5,7 @@ from .epoch import get_number_of_fractional_days_since_j2000
 from .temporal import get_julian_date
 
 
-def get_mean_anomaly(date: datetime, longitude: float) -> float:
+def get_mean_anomaly(date: datetime) -> float:
     """
     The mean anomaly is the angle between the perihelion and the current position
     of the planet, as seen from the Sun.
@@ -13,11 +13,14 @@ def get_mean_anomaly(date: datetime, longitude: float) -> float:
     :param date: The datetime object to convert.
     :return: The mean anomaly in degrees.
     """
-    # Get the number of days since the standard epoch J2000:
-    d = get_number_of_fractional_days_since_j2000(date) - longitude / 360
+    # Get the Julian date:
+    JD = get_julian_date(date)
+
+    # Calculate the number of centuries since J2000.0:
+    T = (JD - 2451545.0) / 36525
 
     # Get the Sun's mean anomaly at the current epoch relative to J2000:
-    M = (357.5291092 + (0.98560028 * d)) % 360
+    M = (357.52911 + 35999.05029 * T - 0.0001537 * math.pow(T, 2)) % 360
 
     # Correct for negative angles
     if M < 0:

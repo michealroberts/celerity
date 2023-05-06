@@ -19,8 +19,8 @@ observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
 
 
 def test_get_mean_anomaly():
-    M = get_mean_anomaly(date, longitude)
-    assert M == 129.0865313938266
+    M = get_mean_anomaly(date)
+    assert M == 128.66090142411576
 
 
 def test_get_mean_geometric_longitude():
