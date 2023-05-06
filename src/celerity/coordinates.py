@@ -18,30 +18,24 @@ def convert_equatorial_to_horizontal(
     :param target: The equatorial coordinate of the observed object.
     :return The horizontal coordinate of the observed object.
     """
-    lat, lon = observer["lat"], observer["lon"]
+    lat, lon = radians(observer["lat"]), observer["lon"]
 
-    ra, dec = target["ra"], target["dec"]
+    dec = radians(target["dec"])
 
     # Divide-by-zero errors can occur when we have cos(90), and sin(0)/sin(180) etc
     # cosine: multiples of π/2
     # sine: 0, and multiples of π.
-    if cos(radians(lat)) == 0:
+    if cos(lat) == 0:
         return {az: -1, alt: -1}
 
     # Get the hour angle for the target:
-    ha = get_hour_angle(date, ra, lon)
+    ha = radians(get_hour_angle(date, target["ra"], lon))
 
-    alt = asin(
-        sin(radians(dec)) * sin(radians(lat))
-        + cos(radians(dec)) * cos(radians(lat)) * cos(radians(ha))
-    )
+    alt = asin(sin(dec) * sin(lat) + cos(dec) * cos(lat) * cos(ha))
 
-    az = acos(
-        (sin(radians(dec)) - sin(radians(alt)) * sin(radians(lat)))
-        / (cos(radians(alt)) * cos(radians(lat)))
-    )
+    az = acos((sin(dec) - sin(alt) * sin(lat)) / (cos(alt) * cos(lat)))
 
     return {
-        "az": 360 - degrees(az) if sin(radians(ha)) > 0 else degrees(az),
+        "az": 360 - degrees(az) if sin(ha) > 0 else degrees(az),
         "alt": degrees(alt),
     }
