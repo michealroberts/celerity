@@ -1,5 +1,5 @@
-import math
 from datetime import datetime
+from math import atan2, cos, degrees, pow, radians, sin, tan
 
 from .common import EquatorialCoordinate, GeographicCoordinate
 from .temporal import get_julian_date, get_local_sidereal_time
@@ -42,10 +42,7 @@ def get_obliquity_of_the_ecliptic(date: datetime) -> float:
     T = (JD - 2451545.0) / 36525
 
     # Calculate the obliquity of the ecliptic:
-    return (
-        23.439292
-        - (46.845 * T + 0.00059 * math.pow(T, 2) + 0.001813 * math.pow(T, 3)) / 3600
-    )
+    return 23.439292 - (46.845 * T + 0.00059 * pow(T, 2) + 0.001813 * pow(T, 3)) / 3600
 
 
 def get_parallactic_angle(
@@ -69,10 +66,10 @@ def get_parallactic_angle(
     ha = get_hour_angle(date, ra, lon)
 
     # Calculate the parallactic angle and return in degrees:
-    return math.degrees(
-        math.atan2(
-            math.sin(math.radians(ha)),
-            math.tan(math.radians(lat)) * math.cos(math.radians(dec))
-            - math.sin(math.radians(dec)) * math.cos(math.radians(ha)),
+    return degrees(
+        atan2(
+            sin(radians(ha)),
+            tan(radians(lat)) * cos(radians(dec))
+            - sin(radians(dec)) * cos(radians(ha)),
         )
     )

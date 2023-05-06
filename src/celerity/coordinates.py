@@ -1,5 +1,5 @@
-import math
 from datetime import datetime
+from math import acos, asin, cos, degrees, radians, sin
 
 from .astrometry import get_hour_angle
 from .common import EquatorialCoordinate, GeographicCoordinate, HorizontalCoordinate
@@ -25,30 +25,23 @@ def convert_equatorial_to_horizontal(
     # Divide-by-zero errors can occur when we have cos(90), and sin(0)/sin(180) etc
     # cosine: multiples of π/2
     # sine: 0, and multiples of π.
-    if math.cos(math.radians(lat)) == 0:
+    if cos(radians(lat)) == 0:
         return {az: -1, alt: -1}
 
     # Get the hour angle for the target:
     ha = get_hour_angle(date, ra, lon)
 
-    alt = math.asin(
-        math.sin(math.radians(dec)) * math.sin(math.radians(lat))
-        + math.cos(math.radians(dec))
-        * math.cos(math.radians(lat))
-        * math.cos(math.radians(ha))
+    alt = asin(
+        sin(radians(dec)) * sin(radians(lat))
+        + cos(radians(dec)) * cos(radians(lat)) * cos(radians(ha))
     )
 
-    az = math.acos(
-        (
-            math.sin(math.radians(dec))
-            - math.sin(math.radians(alt)) * math.sin(math.radians(lat))
-        )
-        / (math.cos(math.radians(alt)) * math.cos(math.radians(lat)))
+    az = acos(
+        (sin(radians(dec)) - sin(radians(alt)) * sin(radians(lat)))
+        / (cos(radians(alt)) * cos(radians(lat)))
     )
 
     return {
-        "az": 360 - math.degrees(az)
-        if math.sin(math.radians(ha)) > 0
-        else math.degrees(az),
-        "alt": math.degrees(alt),
+        "az": 360 - degrees(az) if sin(radians(ha)) > 0 else degrees(az),
+        "alt": degrees(alt),
     }

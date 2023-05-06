@@ -1,4 +1,4 @@
-import math
+from math import pow, radians, sin
 
 
 def get_airmass(altitude: float) -> float:
@@ -28,9 +28,7 @@ def get_airmass_pickering(altitude: float) -> float:
     :param: altitude: The altitude of the object in degrees.
     :return: The airmass of the object.
     """
-    return 1 / math.sin(
-        math.radians(altitude + 244 / (165 + (47 * math.pow(altitude, 1.1))))
-    )
+    return 1 / sin(radians(altitude + 244 / (165 + (47 * pow(altitude, 1.1)))))
 
 
 def get_airmass_karstenyoung(altitude: float) -> float:
@@ -45,7 +43,4 @@ def get_airmass_karstenyoung(altitude: float) -> float:
     :param: altitude: The altitude of the object in degrees.
     :return: The airmass of the object.
     """
-    return 1 / (
-        math.sin(math.radians(altitude))
-        + 0.50572 * math.pow(altitude + 6.07995, -1.6364)
-    )
+    return 1 / (sin(radians(altitude)) + 0.50572 * pow(altitude + 6.07995, -1.6364))

@@ -1,5 +1,5 @@
-import math
 from datetime import datetime, timezone
+from math import floor, pow
 
 from .constants import J1900, J2000
 
@@ -46,13 +46,13 @@ def get_greenwhich_sidereal_time(date: datetime) -> float:
     """
     JD = get_julian_date(date)
 
-    JD_0 = math.floor(JD - 0.5) + 0.5
+    JD_0 = floor(JD - 0.5) + 0.5
 
     S = JD_0 - J2000
 
     T = S / 36525.0
 
-    T_0 = (6.697374558 + 2400.051336 * T + 0.000025862 * math.pow(T, 2)) % 24
+    T_0 = (6.697374558 + 2400.051336 * T + 0.000025862 * pow(T, 2)) % 24
 
     if T_0 < 0:
         T_0 += 24
@@ -85,7 +85,7 @@ def get_local_sidereal_time(date: datetime, longitude: float) -> float:
 
     d = (GST + longitude / 15.0) / 24.0
 
-    d = d - math.floor(d)
+    d = d - floor(d)
 
     if d < 0:
         d += 1
@@ -130,7 +130,7 @@ def get_universal_time(date: datetime) -> float:
     # Get the number of Julian Centuries since 1900:
     T = (JD_0 - J1900) / 36525
 
-    R = 6.6460656 + 2400.051262 * T + 0.00002581 * math.pow(T, 2)
+    R = 6.6460656 + 2400.051262 * T + 0.00002581 * pow(T, 2)
 
     B = 24 - R + 24 * (year - 1900)
 
