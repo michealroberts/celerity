@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
-from src.celerity.sun import get_mean_anomaly
+from src.celerity.sun import get_mean_anomaly, get_mean_geometric_longitude
 
 # For testing we need to specify a date because most calculations are
 # differential w.r.t a time component. We set it to the author's birthday:
@@ -21,3 +21,8 @@ observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
 def test_get_mean_anomaly():
     M = get_mean_anomaly(date, longitude)
     assert M == 129.0865313938266
+
+
+def test_get_mean_geometric_longitude():
+    L = get_mean_geometric_longitude(date)
+    assert L == 51.96564888161811
