@@ -24,6 +24,6 @@ def get_mean_ecliptic_longitude_of_the_ascending_node(date: datetime) -> float:
         Ω += 360
 
     # Correct for the Sun's mean anomaly:
-    M = get_mean_anomaly(date)
+    M = radians(get_mean_anomaly(date))
 
-    return Ω - 0.16 * sin(radians(M))
+    return Ω - 0.16 * sin(M)
