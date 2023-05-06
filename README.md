@@ -51,7 +51,7 @@ time = Time(
     when=datetime(2021, 5, 14, 12, 0, 0, tzinfo=timezone.utc)
 )
 
-# Provide a Sky target in equatorial coordinates at epoch J2000:
+# Provide an equatorial target in equatorial coordinates at epoch J2000 in units of degrees:
 betelgeuse = { ra: 88.792938, dec: 7.407064 }
 
 # Observe the target:
@@ -66,6 +66,16 @@ lst = observer.at(time).LST()
 # What is the Julian Date at the time of observation?
 jd = observer.at(time).JD()
 ```
+
+### Notes & Caveats
+
+Celerity is designed such that fundamental SI units of measurement are used, e.g., degrees, metres, seconds, etc. This is to ensure that the API is as accurate as possible, and that the user is aware of the units being used at all times.
+
+The `Observer` class requires the user to provide the latitude and longitude in degrees, and the elevation in metres. Latitude is positive for the northern hemisphere, and negative for the southern hemisphere between -90° at the southern pole and +90° at the northern pole. Longitude is always positive for the eastern hemisphere (east of the Prime Meridian), and negative for the western hemisphere (west of the Prime Meridian) representing a longitude between -180° and +180°.
+
+The `Time` class requires the user to provide the time in UTC, and not in any other timezone. The user can, once the `Time` object has been created, convert the time to any other timezone using the provided class methods.
+
+The `Target` class requires the user to provide the right ascension and declination in degrees (and not in hours and degrees).
 
 ---
 
