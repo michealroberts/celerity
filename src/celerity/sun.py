@@ -5,7 +5,7 @@ from .epoch import get_number_of_fractional_days_since_j2000
 from .temporal import get_julian_date
 
 
-def get_equation_of_center(date):
+def get_equation_of_center(date) -> float:
     """
     The equation of center is the difference between the mean geometric longitude
     and the mean anomaly.
@@ -57,7 +57,7 @@ def get_mean_anomaly(date: datetime) -> float:
     return M
 
 
-def get_mean_geometric_longitude(date: datetime):
+def get_mean_geometric_longitude(date: datetime) -> float:
     """
     The mean geometric longitude for the Sun is the angle between the perihelion
     and the current position of the Sun, as seen from the centre of the Earth.
@@ -81,7 +81,7 @@ def get_mean_geometric_longitude(date: datetime):
     return L
 
 
-def get_true_geometric_longitude(date: datetime):
+def get_true_geometric_longitude(date: datetime) -> float:
     """
     The true geometric longitude for the Sun is the angle between the perihelion
     and the current position of the Sun, as seen from the centre of the Earth,
