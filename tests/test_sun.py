@@ -1,7 +1,11 @@
 from datetime import datetime, timezone
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
-from src.celerity.sun import get_mean_anomaly, get_mean_geometric_longitude
+from src.celerity.sun import (
+    get_equation_of_center,
+    get_mean_anomaly,
+    get_mean_geometric_longitude,
+)
 
 # For testing we need to specify a date because most calculations are
 # differential w.r.t a time component. We set it to the author's birthday:
@@ -26,3 +30,8 @@ def test_get_mean_anomaly():
 def test_get_mean_geometric_longitude():
     L = get_mean_geometric_longitude(date)
     assert L == 51.96564888161811
+
+
+def test_get_equation_of_center():
+    C = get_equation_of_center(date)
+    assert C == 1.4754839423594455

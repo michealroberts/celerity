@@ -5,6 +5,34 @@ from .epoch import get_number_of_fractional_days_since_j2000
 from .temporal import get_julian_date
 
 
+def get_equation_of_center(date):
+    """
+    The equation of center is the difference between the mean geometric longitude
+    and the mean anomaly.
+
+    :param date: The datetime object to convert.
+    :return: The equation of center in degrees.
+    """
+    # Get the Julian date:
+    JD = get_julian_date(date)
+
+    # Calculate the number of centuries since J2000.0:
+    T = (JD - 2451545.0) / 36525
+
+    # Get the mean anomaly:
+    M = get_mean_anomaly(date)
+
+    # Calculate the equation of center:
+    C = (
+        (1.914602 - 0.004817 * math.pow(T, 2) - 0.000014 * math.pow(T, 3))
+        * math.sin(math.radians(M))
+        + (0.019993 - 0.000101 * math.pow(T, 2)) * math.sin(math.radians(2 * M))
+        + 0.000289 * math.sin(math.radians(3 * M))
+    )
+
+    return C
+
+
 def get_mean_anomaly(date: datetime) -> float:
     """
     The mean anomaly is the angle between the perihelion and the current position
