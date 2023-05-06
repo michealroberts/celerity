@@ -5,9 +5,7 @@ from .epoch import get_number_of_fractional_days_since_j2000
 from .sun import get_mean_anomaly
 
 
-def get_mean_ecliptic_longitude_of_the_ascending_node(
-    date: datetime, longitude: float
-) -> float:
+def get_mean_ecliptic_longitude_of_the_ascending_node(date: datetime) -> float:
     """
     The mean lunar ecliptic longitude of the ascending node is the angle where
     the Moon's orbit crosses the ecliptic
@@ -26,6 +24,6 @@ def get_mean_ecliptic_longitude_of_the_ascending_node(
         Ω += 360
 
     # Correct for the Sun's mean anomaly:
-    M = get_mean_anomaly(date, longitude)
+    M = get_mean_anomaly(date)
 
     return Ω - 0.16 * math.sin(math.radians(M))

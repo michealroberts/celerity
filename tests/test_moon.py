@@ -19,5 +19,5 @@ observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
 
 
 def test_get_mean_ecliptic_longitude_of_the_ascending_node():
-    Ω = get_mean_ecliptic_longitude_of_the_ascending_node(date, longitude)
-    assert Ω == 71.69457220767262
+    Ω = get_mean_ecliptic_longitude_of_the_ascending_node(date)
+    assert Ω == 71.6938262475226
