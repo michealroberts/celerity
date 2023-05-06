@@ -79,3 +79,20 @@ def get_mean_geometric_longitude(date: datetime):
         L += 360
 
     return L
+
+
+def get_true_geometric_longitude(date: datetime):
+    """
+    The true geometric longitude for the Sun is the angle between the perihelion
+    and the current position of the Sun, as seen from the centre of the Earth,
+    corrected for the equation of center.
+
+    :param date: The datetime object to convert.
+    :return: The true geometric longitude in degrees.
+    """
+    # Get the Julian date:
+    L = get_mean_geometric_longitude(date)
+
+    C = get_equation_of_center(date)
+
+    return (L + C) % 360
