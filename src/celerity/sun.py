@@ -1,6 +1,8 @@
+import math
 from datetime import datetime
 
 from .epoch import get_number_of_fractional_days_since_j2000
+from .temporal import get_julian_date
 
 
 def get_mean_anomaly(date: datetime, longitude: float) -> float:
@@ -9,7 +11,7 @@ def get_mean_anomaly(date: datetime, longitude: float) -> float:
     of the planet, as seen from the Sun.
 
     :param date: The datetime object to convert.
-    :return: The mean anomaly in degrees
+    :return: The mean anomaly in degrees.
     """
     # Get the number of days since the standard epoch J2000:
     d = get_number_of_fractional_days_since_j2000(date) - longitude / 360
@@ -22,3 +24,27 @@ def get_mean_anomaly(date: datetime, longitude: float) -> float:
         M += 360
 
     return M
+
+
+def get_mean_geometric_longitude(date: datetime):
+    """
+    The mean geometric longitude for the Sun is the angle between the perihelion
+    and the current position of the Sun, as seen from the centre of the Earth.
+
+    :param date: The datetime object to convert.
+    :return: The mean geometric longitude in degrees.
+    """
+    # Get the Julian date:
+    JD = get_julian_date(date)
+
+    # Calculate the number of centuries since J2000.0:
+    T = (JD - 2451545.0) / 36525
+
+    # Calculate the mean geometric longitude:
+    L = (280.46646 + 36000.76983 * T + 0.0003032 * math.pow(T, 2)) % 360
+
+    # Correct for negative angles
+    if L < 0:
+        L += 360
+
+    return L
