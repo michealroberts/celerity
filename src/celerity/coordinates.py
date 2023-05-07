@@ -26,7 +26,7 @@ def convert_equatorial_to_horizontal(
     # cosine: multiples of π/2
     # sine: 0, and multiples of π.
     if cos(lat) == 0:
-        return {az: -1, alt: -1}
+        return {"az": -1, "alt": -1}
 
     # Get the hour angle for the target:
     ha = radians(get_hour_angle(date, target["ra"], lon))
