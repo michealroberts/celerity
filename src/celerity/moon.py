@@ -1,8 +1,38 @@
 from datetime import datetime
-from math import radians, sin
+from math import pow, radians, sin
 
 from .epoch import get_number_of_fractional_days_since_j2000
 from .sun import get_mean_anomaly
+from .temporal import get_julian_date
+
+
+def get_mean_geometric_longitude(date: datetime) -> float:
+    """
+    The mean lunar geometric longitude is the ecliptic longitude of the
+    Moon if the Moon's orbit where free of perturbations
+
+    :param date: The datetime object to convert.
+    :return: The mean lunar geometric longitude in degrees
+    """
+    # Get the Julian date:
+    JD = get_julian_date(date)
+
+    # Calculate the number of centuries since J2000.0:
+    T = (JD - 2451545.0) / 36525
+
+    l = (
+        218.3164477
+        + 481267.88123421 * T
+        - 0.0015786 * pow(T, 2)
+        + pow(T, 3) / 538841
+        - pow(T, 4) / 65194000
+    ) % 360
+
+    # Correct for negative angles
+    if l < 0:
+        l += 360
+
+    return l
 
 
 def get_mean_ecliptic_longitude_of_the_ascending_node(date: datetime) -> float:
