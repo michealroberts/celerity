@@ -2,8 +2,38 @@ from datetime import datetime
 from math import pow, radians, sin
 
 from .epoch import get_number_of_fractional_days_since_j2000
-from .sun import get_mean_anomaly
+from .sun import get_mean_anomaly as get_solar_mean_anomaly
 from .temporal import get_julian_date
+
+
+def get_mean_anomaly(date: datetime) -> float:
+    """
+    The mean anomaly is the angle between the perihelion and the current position
+    of the planet, as seen from the Moon.
+
+    :param date: The datetime object to convert.
+    :return: The mean anomaly in degrees.
+    """
+    # Get the Julian date:
+    JD = get_julian_date(date)
+
+    # Calculate the number of centuries since J2000.0:
+    T = (JD - 2451545.0) / 36525
+
+    # Get the Moon's mean anomaly at the current epoch relative to J2000:
+    M = (
+        134.9634114
+        + 477198.8676313 * T
+        + 0.008997 * pow(T, 2)
+        + pow(T, 3) / 69699
+        - pow(T, 4) / 14712000
+    ) % 360
+
+    # Correct for negative angles
+    if M < 0:
+        M += 360
+
+    return M
 
 
 def get_mean_geometric_longitude(date: datetime) -> float:
@@ -54,6 +84,6 @@ def get_mean_ecliptic_longitude_of_the_ascending_node(date: datetime) -> float:
         Ω += 360
 
     # Correct for the Sun's mean anomaly:
-    M = radians(get_mean_anomaly(date))
+    M = radians(get_solar_mean_anomaly(date))
 
     return Ω - 0.16 * sin(M)
