@@ -3,6 +3,7 @@ from math import pow, radians, sin
 
 from .epoch import get_number_of_fractional_days_since_j2000
 from .sun import get_ecliptic_longitude as get_mean_solar_ecliptic_longitude
+from .sun import get_ecliptic_longitude as get_solar_ecliptic_longitude
 from .sun import get_mean_anomaly as get_solar_mean_anomaly
 from .temporal import get_julian_date
 
@@ -175,3 +176,45 @@ def get_true_anomaly(date: datetime) -> float:
         ν += 360
 
     return ν
+
+
+def get_true_ecliptic_longitude(date: datetime) -> float:
+    """
+    The corrected lunar ecliptic longitude is the ecliptic longitude of the Moon
+    if the Moon's orbit where free of perturbations
+
+    :param date: The datetime object to convert.
+    :return: The corrected lunar ecliptic longitude in degrees
+    """
+    # Get the mean ecliptic longitude:
+    λ = get_mean_ecliptic_longitude(date)
+
+    # Get the
+    Ae = get_annual_equation_correction(date)
+
+    # Get the evection correction:
+    Ev = get_evection_correction(date)
+
+    # Get the true anomaly:
+    ν = get_true_anomaly(date)
+
+    # Get the corrected ecliptic longitude:
+    λ = (λ + Ev + ν - Ae) % 360
+
+    # Correct for negative angles
+    if λ < 0:
+        λ += 360
+
+    # Get the solar ecliptic longitude:
+    L = get_solar_ecliptic_longitude(date)
+
+    # Get the correction of variation:
+    V = 0.6583 * sin(2 * radians(λ - L))
+
+    λt = (λ + V) % 360
+
+    # Correct for negative angles
+    if λt < 0:
+        λt += 360
+
+    return λt
