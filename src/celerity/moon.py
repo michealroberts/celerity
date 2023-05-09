@@ -154,3 +154,24 @@ def get_mean_ecliptic_longitude(date: datetime) -> float:
         λ += 360
 
     return λ
+
+
+def get_true_anomaly(date: datetime) -> float:
+    """
+    The true anomaly of the Moon is the angle between the perihelion and the
+    current position of the Moon, as seen from the Earth.
+
+    :param date: The datetime object to convert.
+    :return: The true anomaly in degrees.
+    """
+    # Get the mean anomaly correction:
+    Ca = get_mean_anomaly_correction(date)
+
+    # Get the true anomaly:
+    ν = 6.2886 * sin(radians(Ca)) + 0.214 * sin(radians(2 * Ca))
+
+    # Correct for negative angles
+    if ν < 0:
+        ν += 360
+
+    return ν
