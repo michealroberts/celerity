@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.moon import (
     get_annual_equation_correction,
+    get_avection_correction,
     get_mean_anomaly,
     get_mean_ecliptic_longitude,
     get_mean_ecliptic_longitude_of_the_ascending_node,
@@ -27,6 +28,11 @@ observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
 def test_get_annual_equation_correction():
     Ae = get_annual_equation_correction(date)
     assert Ae == 0.1450832102519408
+
+
+def test_get_avection_correction():
+    Ev = get_avection_correction(date)
+    assert Ev == -0.5580522629166632
 
 
 def test_get_mean_anomaly():
