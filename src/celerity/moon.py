@@ -95,3 +95,24 @@ def get_mean_ecliptic_longitude_of_the_ascending_node(date: datetime) -> float:
     M = radians(get_solar_mean_anomaly(date))
 
     return Ω - 0.16 * sin(M)
+
+
+def get_mean_ecliptic_longitude(date: datetime) -> float:
+    """
+    The mean lunar ecliptic longitude is the ecliptic longitude of the Moon
+    if the Moon's orbit where free of perturbations
+
+    :param date: The datetime object to convert.
+    :return: The mean lunar ecliptic longitude in degrees
+    """
+    # Get the number of days since the standard epoch J2000:
+    De = get_number_of_fractional_days_since_j2000(date)
+
+    # Get the uncorrected mean eclptic longitude:
+    λ = (13.176339686 * De + 218.31643388) % 360
+
+    # Correct for negative angles
+    if λ < 0:
+        λ += 360
+
+    return λ
