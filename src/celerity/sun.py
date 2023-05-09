@@ -79,6 +79,25 @@ def get_mean_geometric_longitude(date: datetime) -> float:
     return L
 
 
+def get_true_anomaly(date: datetime) -> float:
+    """
+    The true anomaly for the Sun is the angle between the perihelion and the
+    current position of the Sun, as seen from the centre of the Earth, corrected
+    for the equation of center.
+
+    :param date: The datetime object to convert.
+    :return: The true anomaly in degrees.
+    """
+    # Get the mean anomaly:
+    M = get_mean_anomaly(date)
+
+    # Get the equation of center:
+    C = get_equation_of_center(date)
+
+    # Correct the mean anomaly for the equation of center:
+    return (M + C) % 360
+
+
 def get_true_geometric_longitude(date: datetime) -> float:
     """
     The true geometric longitude for the Sun is the angle between the perihelion
@@ -88,9 +107,11 @@ def get_true_geometric_longitude(date: datetime) -> float:
     :param date: The datetime object to convert.
     :return: The true geometric longitude in degrees.
     """
-    # Get the Julian date:
+    # Get the mean geometric longitude:
     L = get_mean_geometric_longitude(date)
 
+    # Get the equation of center:
     C = get_equation_of_center(date)
 
+    # Correct the mean geometric longitude for the equation of center:
     return (L + C) % 360
