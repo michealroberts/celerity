@@ -6,6 +6,14 @@ from .sun import get_mean_anomaly as get_solar_mean_anomaly
 from .temporal import get_julian_date
 
 
+def get_annual_equation_correction(date: datetime) -> float:
+    # Correct for the Sun's mean anomaly:
+    M = radians(get_solar_mean_anomaly(date))
+
+    # Get the annual equation correction:
+    return 0.1858 * sin(M)
+
+
 def get_mean_anomaly(date: datetime) -> float:
     """
     The mean anomaly is the angle between the perihelion and the current position
