@@ -5,6 +5,7 @@ from src.celerity.sun import (
     get_equation_of_center,
     get_mean_anomaly,
     get_mean_geometric_longitude,
+    get_true_anomaly,
     get_true_geometric_longitude,
 )
 
@@ -38,6 +39,11 @@ def test_get_equation_of_center():
     assert C == 1.4754839423594455
 
 
-def test_get_mean_geometric_longitude():
+def test_get_true_anomaly():
+    ν = get_true_anomaly(date)
+    assert ν == 130.1363853664752
+
+
+def test_get_true_geometric_longitude():
     L = get_true_geometric_longitude(date)
     assert L == 53.441132823977554
