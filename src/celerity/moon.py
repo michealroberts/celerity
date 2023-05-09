@@ -2,6 +2,7 @@ from datetime import datetime
 from math import pow, radians, sin
 
 from .epoch import get_number_of_fractional_days_since_j2000
+from .sun import get_ecliptic_longitude as get_mean_solar_ecliptic_longitude
 from .sun import get_mean_anomaly as get_solar_mean_anomaly
 from .temporal import get_julian_date
 
@@ -12,6 +13,20 @@ def get_annual_equation_correction(date: datetime) -> float:
 
     # Get the annual equation correction:
     return 0.1858 * sin(M)
+
+
+def get_avection_correction(date: datetime) -> float:
+    # Get the Moon's mean anomaly at the current epoch relative to J2000:
+    M = radians(get_mean_anomaly(date))
+
+    # Get the Moon's mean ecliptic longitude:
+    λ = radians(get_mean_ecliptic_longitude(date))
+
+    # Get the Sun's mean ecliptic longitude:
+    l = radians(get_mean_solar_ecliptic_longitude(date))
+
+    # Get the avection correction:
+    return 1.2739 * sin(2 * (λ - l) - M)
 
 
 def get_mean_anomaly(date: datetime) -> float:
