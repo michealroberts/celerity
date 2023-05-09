@@ -9,6 +9,7 @@ from src.celerity.moon import (
     get_mean_ecliptic_longitude,
     get_mean_ecliptic_longitude_of_the_ascending_node,
     get_mean_geometric_longitude,
+    get_true_anomaly,
 )
 
 # For testing we need to specify a date because most calculations are
@@ -59,3 +60,8 @@ def test_get_mean_ecliptic_longitude_of_the_ascending_node():
 def test_get_mean_ecliptic_longitude():
     λ = get_mean_ecliptic_longitude(date)
     assert λ == 79.88317358099448
+
+
+def test_get_true_anomaly():
+    ν = get_true_anomaly(date)
+    assert ν == 357.3514315617634
