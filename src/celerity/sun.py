@@ -115,3 +115,27 @@ def get_true_geometric_longitude(date: datetime) -> float:
 
     # Correct the mean geometric longitude for the equation of center:
     return (L + C) % 360
+
+
+def get_ecliptic_longitude(date: datetime) -> float:
+    """
+    The ecliptic longitude for the Sun is the angle between the perihelion and
+    the current position of the Sun, as seen from the centre of the Earth,
+    corrected for the equation of center and the Sun's ecliptic longitude at
+    perigee at the epoch.
+
+    :param date: The datetime object to convert.
+    :return: The ecliptic longitude in degrees.
+    """
+    # Get the true anomaly:
+    ν = get_true_anomaly(date)
+
+    # Correct the true anomaly with the Sun's ecliptic longitude
+    # at perigee at the epoch:
+    λ = ν + 282.938346 % 360
+
+    # Correct for negative angles
+    if λ < 0:
+        λ += 360
+
+    return λ
