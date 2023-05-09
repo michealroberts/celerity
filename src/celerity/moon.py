@@ -15,7 +15,7 @@ def get_annual_equation_correction(date: datetime) -> float:
     return 0.1858 * sin(M)
 
 
-def get_avection_correction(date: datetime) -> float:
+def get_evection_correction(date: datetime) -> float:
     # Get the Moon's mean anomaly at the current epoch relative to J2000:
     M = radians(get_mean_anomaly(date))
 
@@ -57,6 +57,29 @@ def get_mean_anomaly(date: datetime) -> float:
         M += 360
 
     return M
+
+
+def get_mean_anomaly_correction(date: datetime) -> float:
+    # Get the annual equation correction:
+    Ae = get_annual_equation_correction(date)
+
+    # Get the evection correction:
+    Ev = get_evection_correction(date)
+
+    # Get the mean anomaly for the Moon:
+    M = get_mean_anomaly(date)
+
+    # Correct for the Sun's mean anomaly:
+    S = radians(get_solar_mean_anomaly(date))
+
+    # Get the mean anomaly correction:
+    Ca = (M + Ev - Ae - 0.37 * sin(S)) % 360
+
+    # Correct for negative angles
+    if Ca < 0:
+        Ca += 360
+
+    return Ca
 
 
 def get_mean_geometric_longitude(date: datetime) -> float:
