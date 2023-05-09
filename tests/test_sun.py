@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.sun import (
+    get_ecliptic_longitude,
     get_equation_of_center,
     get_mean_anomaly,
     get_mean_geometric_longitude,
@@ -47,3 +48,9 @@ def test_get_true_anomaly():
 def test_get_true_geometric_longitude():
     L = get_true_geometric_longitude(date)
     assert L == 53.441132823977554
+
+
+def test_get_ecliptic_longitude():
+    date = datetime(2015, 2, 5, 12, 0, 0, 0, tzinfo=timezone.utc)
+    λ = get_ecliptic_longitude(date)
+    assert λ == 316.10388080739784
