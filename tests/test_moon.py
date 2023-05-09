@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.moon import (
+    get_annual_equation_correction,
     get_mean_anomaly,
     get_mean_ecliptic_longitude_of_the_ascending_node,
     get_mean_geometric_longitude,
@@ -20,6 +21,11 @@ longitude: float = -155.468094
 betelgeuse: EquatorialCoordinate = {"ra": 88.7929583, "dec": 7.4070639}
 
 observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
+
+
+def test_get_annual_equation_correction():
+    Ae = get_annual_equation_correction(date)
+    assert Ae == 0.1450832102519408
 
 
 def test_get_mean_anomaly():
