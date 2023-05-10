@@ -1,7 +1,17 @@
+# *****************************************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2023 observerly
+
+# *****************************************************************************************************************
+
 from datetime import datetime, timezone
 from math import floor, pow
 
 from .constants import J1900, J2000
+
+# *****************************************************************************************************************
 
 
 def get_julian_date(date: datetime) -> float:
@@ -25,6 +35,9 @@ def get_julian_date(date: datetime) -> float:
     ) + 2440587.5
 
 
+# *****************************************************************************************************************
+
+
 def get_modified_julian_date(date: datetime) -> float:
     """
     The Modified Julian Date (MJD) is the number of fractional days since midnight
@@ -34,6 +47,9 @@ def get_modified_julian_date(date: datetime) -> float:
     :return: The Modified Julian Date (MJD) of the given date normalised to UTC.
     """
     return get_julian_date(date) - 2400000.5
+
+
+# *****************************************************************************************************************
 
 
 def get_greenwhich_sidereal_time(date: datetime) -> float:
@@ -72,6 +88,9 @@ def get_greenwhich_sidereal_time(date: datetime) -> float:
     return GST + 24 if GST < 0 else GST
 
 
+# *****************************************************************************************************************
+
+
 def get_local_sidereal_time(date: datetime, longitude: float) -> float:
     """
     The Local Sidereal Time (LST) is the hour angle of the vernal
@@ -91,6 +110,9 @@ def get_local_sidereal_time(date: datetime, longitude: float) -> float:
         d += 1
 
     return 24.0 * d
+
+
+# *****************************************************************************************************************
 
 
 def get_universal_time(date: datetime) -> float:
@@ -148,3 +170,6 @@ def get_universal_time(date: datetime) -> float:
         A += 24
 
     return 0.99727 * A
+
+
+# *****************************************************************************************************************

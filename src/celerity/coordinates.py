@@ -1,8 +1,18 @@
+# *****************************************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2023 observerly
+
+# *****************************************************************************************************************
+
 from datetime import datetime
 from math import acos, asin, cos, degrees, radians, sin
 
 from .astrometry import get_hour_angle
 from .common import EquatorialCoordinate, GeographicCoordinate, HorizontalCoordinate
+
+# *****************************************************************************************************************
 
 
 def convert_equatorial_to_horizontal(
@@ -39,3 +49,6 @@ def convert_equatorial_to_horizontal(
         "az": 360 - degrees(az) if sin(ha) > 0 else degrees(az),
         "alt": degrees(alt),
     }
+
+
+# *****************************************************************************************************************

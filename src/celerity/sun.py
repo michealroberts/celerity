@@ -1,9 +1,19 @@
+# *****************************************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2023 observerly
+
+# *****************************************************************************************************************
+
 from datetime import datetime
 from math import asin, atan2, cos, degrees, pow, radians, sin
 
 from .astrometry import get_obliquity_of_the_ecliptic
 from .common import EquatorialCoordinate
 from .temporal import get_julian_date
+
+# *****************************************************************************************************************
 
 
 def get_equation_of_center(date) -> float:
@@ -33,6 +43,9 @@ def get_equation_of_center(date) -> float:
     return C
 
 
+# *****************************************************************************************************************
+
+
 def get_mean_anomaly(date: datetime) -> float:
     """
     The mean anomaly is the angle between the perihelion and the current position
@@ -55,6 +68,9 @@ def get_mean_anomaly(date: datetime) -> float:
         M += 360
 
     return M
+
+
+# *****************************************************************************************************************
 
 
 def get_mean_geometric_longitude(date: datetime) -> float:
@@ -81,6 +97,9 @@ def get_mean_geometric_longitude(date: datetime) -> float:
     return L
 
 
+# *****************************************************************************************************************
+
+
 def get_true_anomaly(date: datetime) -> float:
     """
     The true anomaly for the Sun is the angle between the perihelion and the
@@ -100,6 +119,9 @@ def get_true_anomaly(date: datetime) -> float:
     return (M + C) % 360
 
 
+# *****************************************************************************************************************
+
+
 def get_true_geometric_longitude(date: datetime) -> float:
     """
     The true geometric longitude for the Sun is the angle between the perihelion
@@ -117,6 +139,9 @@ def get_true_geometric_longitude(date: datetime) -> float:
 
     # Correct the mean geometric longitude for the equation of center:
     return (L + C) % 360
+
+
+# *****************************************************************************************************************
 
 
 def get_ecliptic_longitude(date: datetime) -> float:
@@ -141,6 +166,9 @@ def get_ecliptic_longitude(date: datetime) -> float:
         λ += 360
 
     return λ
+
+
+# *****************************************************************************************************************
 
 
 def get_equatorial_coordinate(date: datetime) -> EquatorialCoordinate:
@@ -174,3 +202,6 @@ def get_equatorial_coordinate(date: datetime) -> EquatorialCoordinate:
     dec = degrees(asin(sin(ε) * sin(λ)))
 
     return {"ra": ra, "dec": dec}
+
+
+# *****************************************************************************************************************

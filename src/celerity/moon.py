@@ -1,3 +1,11 @@
+# *****************************************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2023 observerly
+
+# *****************************************************************************************************************
+
 from datetime import datetime
 from math import pow, radians, sin
 
@@ -7,6 +15,8 @@ from .sun import get_ecliptic_longitude as get_solar_ecliptic_longitude
 from .sun import get_mean_anomaly as get_solar_mean_anomaly
 from .temporal import get_julian_date
 
+# *****************************************************************************************************************
+
 
 def get_annual_equation_correction(date: datetime) -> float:
     # Correct for the Sun's mean anomaly:
@@ -14,6 +24,9 @@ def get_annual_equation_correction(date: datetime) -> float:
 
     # Get the annual equation correction:
     return 0.1858 * sin(M)
+
+
+# *****************************************************************************************************************
 
 
 def get_evection_correction(date: datetime) -> float:
@@ -28,6 +41,9 @@ def get_evection_correction(date: datetime) -> float:
 
     # Get the avection correction:
     return 1.2739 * sin(2 * (λ - l) - M)
+
+
+# *****************************************************************************************************************
 
 
 def get_mean_anomaly(date: datetime) -> float:
@@ -60,6 +76,9 @@ def get_mean_anomaly(date: datetime) -> float:
     return M
 
 
+# *****************************************************************************************************************
+
+
 def get_mean_anomaly_correction(date: datetime) -> float:
     # Get the annual equation correction:
     Ae = get_annual_equation_correction(date)
@@ -81,6 +100,9 @@ def get_mean_anomaly_correction(date: datetime) -> float:
         Ca += 360
 
     return Ca
+
+
+# *****************************************************************************************************************
 
 
 def get_mean_geometric_longitude(date: datetime) -> float:
@@ -112,6 +134,9 @@ def get_mean_geometric_longitude(date: datetime) -> float:
     return l
 
 
+# *****************************************************************************************************************
+
+
 def get_mean_ecliptic_longitude_of_the_ascending_node(date: datetime) -> float:
     """
     The mean lunar ecliptic longitude of the ascending node is the angle where
@@ -136,6 +161,9 @@ def get_mean_ecliptic_longitude_of_the_ascending_node(date: datetime) -> float:
     return Ω - 0.16 * sin(M)
 
 
+# *****************************************************************************************************************
+
+
 def get_mean_ecliptic_longitude(date: datetime) -> float:
     """
     The mean lunar ecliptic longitude is the ecliptic longitude of the Moon
@@ -157,6 +185,9 @@ def get_mean_ecliptic_longitude(date: datetime) -> float:
     return λ
 
 
+# *****************************************************************************************************************
+
+
 def get_true_anomaly(date: datetime) -> float:
     """
     The true anomaly of the Moon is the angle between the perihelion and the
@@ -176,6 +207,9 @@ def get_true_anomaly(date: datetime) -> float:
         ν += 360
 
     return ν
+
+
+# *****************************************************************************************************************
 
 
 def get_true_ecliptic_longitude(date: datetime) -> float:
@@ -218,3 +252,6 @@ def get_true_ecliptic_longitude(date: datetime) -> float:
         λt += 360
 
     return λt
+
+
+# *****************************************************************************************************************

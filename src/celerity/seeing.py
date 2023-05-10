@@ -1,4 +1,14 @@
+# *****************************************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2023 observerly
+
+# *****************************************************************************************************************
+
 from math import pow, radians, sin
+
+# *****************************************************************************************************************
 
 
 def get_airmass(altitude: float) -> float:
@@ -16,6 +26,9 @@ def get_airmass(altitude: float) -> float:
     return get_airmass_pickering(altitude)
 
 
+# *****************************************************************************************************************
+
+
 def get_airmass_pickering(altitude: float) -> float:
     """
     Gets the airmass of an object at a given altitude using Pickering's formula.
@@ -31,6 +44,9 @@ def get_airmass_pickering(altitude: float) -> float:
     return 1 / sin(radians(altitude + 244 / (165 + (47 * pow(altitude, 1.1)))))
 
 
+# *****************************************************************************************************************
+
+
 def get_airmass_karstenyoung(altitude: float) -> float:
     """
     Gets the airmass of an object at a given altitude using Karsten & Young's formula.
@@ -44,3 +60,6 @@ def get_airmass_karstenyoung(altitude: float) -> float:
     :return: The airmass of the object.
     """
     return 1 / (sin(radians(altitude)) + 0.50572 * pow(altitude + 6.07995, -1.6364))
+
+
+# *****************************************************************************************************************

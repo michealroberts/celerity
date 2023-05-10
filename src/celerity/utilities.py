@@ -1,3 +1,12 @@
+# *****************************************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2023 observerly
+
+# *****************************************************************************************************************
+
+
 def get_normalised_azimuthal_degree(degree: float) -> float:
     """
     Applies a correction to a degree value greater than 360°
@@ -13,6 +22,9 @@ def get_normalised_azimuthal_degree(degree: float) -> float:
         d += 360
 
     return d
+
+
+# *****************************************************************************************************************
 
 
 def get_normalised_inclination_degree(degree: float) -> float:
@@ -39,3 +51,6 @@ def get_normalised_inclination_degree(degree: float) -> float:
         d % 90
 
     return d
+
+
+# *****************************************************************************************************************

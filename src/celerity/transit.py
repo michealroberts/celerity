@@ -1,12 +1,25 @@
+# *****************************************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2023 observerly
+
+# *****************************************************************************************************************
+
 from math import cos, radians, sin, tan
 from typing import Literal, TypedDict, Union
 
 from .common import EquatorialCoordinate, GeographicCoordinate
 
+# *****************************************************************************************************************
+
 
 class TransitParameters(TypedDict):
     Ar: float
     H1: float
+
+
+# *****************************************************************************************************************
 
 
 def get_does_object_rise_or_set(
@@ -37,3 +50,6 @@ def get_does_object_rise_or_set(
         return False
 
     return {"Ar": Ar, "H1": H1}
+
+
+# *****************************************************************************************************************

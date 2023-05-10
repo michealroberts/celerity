@@ -1,8 +1,18 @@
+# *****************************************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2023 observerly
+
+# *****************************************************************************************************************
+
 from datetime import datetime
 from math import atan2, cos, degrees, pow, radians, sin, tan
 
 from .common import EquatorialCoordinate, GeographicCoordinate
 from .temporal import get_julian_date, get_local_sidereal_time
+
+# *****************************************************************************************************************
 
 
 def get_hour_angle(date: datetime, ra: float, longitude: float) -> float:
@@ -25,6 +35,9 @@ def get_hour_angle(date: datetime, ra: float, longitude: float) -> float:
     return ha
 
 
+# *****************************************************************************************************************
+
+
 def get_obliquity_of_the_ecliptic(date: datetime) -> float:
     """
     Gets the obliquity of the ecliptic for a particular datetime
@@ -43,6 +56,9 @@ def get_obliquity_of_the_ecliptic(date: datetime) -> float:
 
     # Calculate the obliquity of the ecliptic:
     return 23.439292 - (46.845 * T + 0.00059 * pow(T, 2) + 0.001813 * pow(T, 3)) / 3600
+
+
+# *****************************************************************************************************************
 
 
 def get_parallactic_angle(
@@ -72,3 +88,6 @@ def get_parallactic_angle(
             tan(lat) * cos(dec) - sin(dec) * cos(ha),
         )
     )
+
+
+# *****************************************************************************************************************
