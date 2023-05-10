@@ -4,6 +4,7 @@ from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.sun import (
     get_ecliptic_longitude,
     get_equation_of_center,
+    get_equatorial_coordinate,
     get_mean_anomaly,
     get_mean_geometric_longitude,
     get_true_anomaly,
@@ -54,3 +55,10 @@ def test_get_ecliptic_longitude():
     date = datetime(2015, 2, 5, 12, 0, 0, 0, tzinfo=timezone.utc)
     λ = get_ecliptic_longitude(date)
     assert λ == 316.10388080739784
+
+
+def test_get_equatorial_coordinate():
+    date = datetime(2015, 2, 5, 12, 0, 0, 0, tzinfo=timezone.utc)
+    eq = get_equatorial_coordinate(date)
+    assert eq["ra"] == 318.5617376411268
+    assert eq["dec"] == -16.008394691469505

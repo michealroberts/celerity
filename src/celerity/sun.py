@@ -1,6 +1,8 @@
 from datetime import datetime
-from math import pow, radians, sin
+from math import asin, atan2, cos, degrees, pow, radians, sin
 
+from .astrometry import get_obliquity_of_the_ecliptic
+from .common import EquatorialCoordinate
 from .temporal import get_julian_date
 
 
@@ -139,3 +141,36 @@ def get_ecliptic_longitude(date: datetime) -> float:
         λ += 360
 
     return λ
+
+
+def get_equatorial_coordinate(date: datetime) -> EquatorialCoordinate:
+    """
+    The equatorial coordinate of the Sun is the standard equatorial coordinate
+    of the Sun, as seen from the centre of the Earth, corrected for the equation
+    of center and the Sun's ecliptic longitude at perigee at the epoch.
+
+    :param date: The datetime object to convert.
+    :return: The equatorial coordinate in degrees.
+    """
+    # Get the ecliptic longitude:
+    λ = radians(get_ecliptic_longitude(date))
+
+    # Get the ecliptic latitude:
+    # This term is zero for the Sun, so we can largely ignore it by refactoring
+    # the standard equations for the conversion between ecliptic and equatorial
+    # coordinates.
+    # β = 0
+
+    # Get the obliquity of the ecliptic:
+    ε = radians(get_obliquity_of_the_ecliptic(date))
+
+    # Get the corresponding Right Ascension, α:
+    ra = degrees(atan2(sin(λ) * cos(ε), cos(λ))) % 360
+
+    # Correct ra for negative angles
+    if ra < 0:
+        ra += 360
+
+    dec = degrees(asin(sin(ε) * sin(λ)))
+
+    return {"ra": ra, "dec": dec}
