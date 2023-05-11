@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from src.celerity.common import GeographicCoordinate
 from src.celerity.temporal import (
+    convert_local_sidereal_time_to_greenwhich_sidereal_time,
     get_greenwhich_sidereal_time,
     get_julian_date,
     get_local_sidereal_time,
@@ -17,6 +19,8 @@ latitude: float = 19.820611
 
 # For testing, we will fix the longitude to be Manua Kea, Hawaii, US
 longitude: float = -155.468094
+
+observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
 
 
 def test_get_julian_date():
@@ -43,3 +47,9 @@ def test_get_local_sidereal_time():
 
 def test_universal_time():
     assert get_universal_time(date) == 0.000028334646537240785
+
+
+def test_convert_local_sidereal_time_to_greenwhich_sidereal_time():
+    LST = get_local_sidereal_time(date, longitude)
+    GST = convert_local_sidereal_time_to_greenwhich_sidereal_time(LST, observer)
+    assert GST == 15.463990399019053
