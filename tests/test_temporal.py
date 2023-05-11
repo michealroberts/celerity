@@ -2,6 +2,7 @@ from datetime import datetime
 
 from src.celerity.common import GeographicCoordinate
 from src.celerity.temporal import (
+    convert_greenwhich_sidereal_time_to_universal_coordinate_time,
     convert_local_sidereal_time_to_greenwhich_sidereal_time,
     get_greenwhich_sidereal_time,
     get_julian_date,
@@ -53,3 +54,15 @@ def test_convert_local_sidereal_time_to_greenwhich_sidereal_time():
     LST = get_local_sidereal_time(date, longitude)
     GST = convert_local_sidereal_time_to_greenwhich_sidereal_time(LST, observer)
     assert GST == 15.463990399019053
+
+
+def test_convert_greenwhich_sidereal_time_to_universal_time():
+    d = datetime(2021, 5, 14, 23, 30, 0, 0)
+    GST = get_greenwhich_sidereal_time(d)
+    UTC = convert_greenwhich_sidereal_time_to_universal_coordinate_time(d, GST)
+    assert UTC.year == d.year
+    assert UTC.month == d.month
+    assert UTC.day == d.day
+    assert UTC.hour == d.hour
+    assert UTC.minute == d.minute
+    assert UTC.second == d.second
