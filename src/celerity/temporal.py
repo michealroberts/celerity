@@ -9,6 +9,7 @@
 from datetime import datetime, timezone
 from math import floor, pow
 
+from .common import GeographicCoordinate
 from .constants import J1900, J2000
 
 # *****************************************************************************************************************
@@ -170,6 +171,32 @@ def get_universal_time(date: datetime) -> float:
         A += 24
 
     return 0.99727 * A
+
+
+# *****************************************************************************************************************
+
+
+def convert_local_sidereal_time_to_greenwhich_sidereal_time(
+    LST: float, observer: GeographicCoordinate
+) -> float:
+    """
+    Converts the Local Sidereal Time (LST) to the Greenwich Sidereal Time (GST).
+
+    :param date: The datetime object to convert.
+    :param longitude: The longitude of the observer.
+    :return: The Local Sidereal Time (LST) of the given date normalised to UTC.
+    """
+    lon = observer["lon"]
+
+    GST = LST - (lon / 15.0)
+
+    if GST < 0:
+        GST += 24
+
+    if GST > 24:
+        GST -= 24
+
+    return GST
 
 
 # *****************************************************************************************************************
