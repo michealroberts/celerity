@@ -78,7 +78,7 @@ def get_greenwhich_sidereal_time(date: datetime) -> float:
     d = date.astimezone(tz=timezone.utc)
 
     # Convert the UTC time to a decimal fraction of hours:
-    UTC = d.microsecond * 1e-6 + d.second + d.minute * 60 + d.hour
+    UTC = d.microsecond / 1e-6 + d.second / 60 + d.minute / 60 + d.hour
 
     A = UTC * 1.002737909
 
@@ -200,3 +200,75 @@ def convert_local_sidereal_time_to_greenwhich_sidereal_time(
 
 
 # *****************************************************************************************************************
+
+
+def convert_greenwhich_sidereal_time_to_universal_coordinate_time(
+    date: datetime, GST: float
+) -> datetime:
+    """
+    Convert the Greenwich Sidereal Time (GST) to the Universal Coordinated Time (UTC).
+
+    :param date: The datetime object to convert.
+    :param GST: The Greenwich Sidereal Time (GST) to convert.
+    :return: The Universal Coordinated Time (UTC) of the given date normalised to UTC.
+    """
+    # Adjust the date to UTC:
+    date = date.astimezone(tz=timezone.utc)
+
+    # Get the Julian Date at 0h:
+    JD = get_julian_date(datetime(date.year, date.month, date.day, 0, 0, 0, 0))
+
+    # Get the Julian Date at 0h on 1st January for the current year:
+    JD_0 = (
+        get_julian_date(
+            datetime(date.year, 1, 1, 0, 0, 0, 0).astimezone(tz=timezone.utc)
+        )
+        - 1
+    )
+
+    # Get the number of Julian days since 1st January for the current year:
+    d = JD - JD_0
+
+    # Calculate the number of centuries since J1900.0 and JD_0:
+    T = (JD_0 - 2415020.0) / 36525
+
+    R = 6.6460656 + 2400.051262 * T + 0.00002581 * pow(T, 2)
+
+    B = 24 - R + (24 * (date.year - 1900))
+
+    T_0 = (0.0657098 * d) - B
+
+    if T_0 < 0:
+        T_0 += 24
+
+    if T_0 > 24:
+        T_0 -= 24
+
+    A = GST - T_0
+
+    # Correct for negative hour angles
+    if A < 0:
+        A += 24
+
+    UTC = 0.99727 * A
+
+    # Convert decimal hours to hours, minutes and seconds:
+
+    hours = floor(UTC)
+
+    minutes = floor((UTC - hours) * 60)
+
+    seconds = floor(((UTC - hours) * 60 - minutes) * 60)
+
+    microseconds = floor((((UTC - hours) * 60 - minutes) * 60 - seconds) * 1000000)
+
+    return datetime(
+        date.year,
+        date.month,
+        date.day,
+        hours,
+        minutes,
+        seconds,
+        microseconds,
+        tzinfo=timezone.utc,
+    )
