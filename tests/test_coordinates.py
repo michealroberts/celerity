@@ -1,7 +1,10 @@
 from datetime import datetime
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
-from src.celerity.coordinates import convert_equatorial_to_horizontal
+from src.celerity.coordinates import (
+    convert_equatorial_to_horizontal,
+    get_correction_to_equatorial,
+)
 
 # For testing we need to specify a date because most calculations are
 # differential w.r.t a time component. We set it to the author's birthday:
@@ -20,6 +23,11 @@ observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
 
 def test_convert_equatorial_to_horizontal():
     horizontal = convert_equatorial_to_horizontal(date, observer, betelgeuse)
-
     assert horizontal["alt"] == 72.78539444063765
-    # assert horizontal["az"] == 134.44877920325155
+    assert horizontal["az"] == 134.44877920325158
+
+
+def test_get_correction_to_equatorial():
+    target = get_correction_to_equatorial(date, betelgeuse)
+    assert target["ra"] == 88.53030813147811
+    assert target["dec"] == 7.447242478781279
