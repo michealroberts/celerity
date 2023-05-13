@@ -1,4 +1,4 @@
-# Celerity
+[![Celerity banner](./.github/assets/banner.png)](https://celerity.observerly.com)
 
 Celerity is a lightweight, research-grade, zero-dependency type-safe Python library for astronomical calculations to plan your observations. It's only dependency is the Python 3.11+ standard library.
 
