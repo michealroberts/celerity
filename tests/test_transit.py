@@ -1,7 +1,11 @@
 from datetime import datetime
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
-from src.celerity.transit import get_does_object_rise_or_set, get_transit
+from src.celerity.transit import (
+    get_does_object_rise_or_set,
+    get_transit,
+    is_object_circumpolar,
+)
 
 # For testing we need to specify a date because most calculations are
 # differential w.r.t a time component. We set it to the author's birthday:
@@ -14,6 +18,8 @@ latitude: float = 19.820611
 longitude: float = -155.468094
 
 betelgeuse: EquatorialCoordinate = {"ra": 88.7929583, "dec": 7.4070639}
+
+polaris: EquatorialCoordinate = {"ra": 37.952659, "dec": 89.264108}
 
 observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
 
@@ -29,6 +35,11 @@ def test_get_does_object_rise_or_set():
 
     d = get_does_object_rise_or_set({"lat": -85, "lon": 0}, betelgeuse)
     assert d == False
+
+
+def test_is_object_circumpolar():
+    p = is_object_circumpolar(polaris, observer, 0)
+    assert p == True
 
 
 def test_get_transit():

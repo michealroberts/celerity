@@ -39,6 +39,33 @@ class TransitParameters(TypedDict):
 # *****************************************************************************************************************
 
 
+def is_object_circumpolar(
+    target: EquatorialCoordinate, observer: GeographicCoordinate, horizon: float
+) -> bool:
+    """
+    An object is considered circumpolar if it is always above the observer's
+    horizon and never sets. This is true when the object's declination is
+    greater than 90 degrees minus the observer's latitude.
+
+    :param target: The equatorial coordinate of the observed object.
+    :param observer: The geographic coordinate of the observer.
+    :param horizon: The observer's horizon (in degrees).
+    :return: True if the object is circumpolar, False otherwise.
+    """
+    # We only need the declination of the target object:
+    dec = target["dec"]
+
+    # We only need the latitude of the observer:
+    lat = observer["lat"]
+
+    # If the object's declination is greater than 90 degrees minus the observer's latitude,
+    # then the object is circumpolar (always above the observer's horizon and never sets).
+    return dec > 90 - lat + horizon
+
+
+# *****************************************************************************************************************
+
+
 def get_does_object_rise_or_set(
     observer: GeographicCoordinate,
     target: EquatorialCoordinate,
