@@ -255,3 +255,21 @@ def get_true_ecliptic_longitude(date: datetime) -> float:
 
 
 # *****************************************************************************************************************
+
+
+def get_corrected_ecliptic_longitude_of_the_ascending_node(date: datetime) -> float:
+    """
+    The corrected ecliptic longitude of the ascending node is the angle where
+    the Moon's orbit crosses the ecliptic corrected for perturbations in the
+    Moon's orbit due to the Sun
+
+    :param date: The datetime object to convert.
+    :return: The corrected ecliptic longitude of the ascending node of the Moon in degrees
+    """
+    # Get the ecliptic longitude of the ascending node:
+    Ω = get_mean_ecliptic_longitude_of_the_ascending_node(date)
+
+    # Get the solar mean anomaly:
+    M = get_solar_mean_anomaly(date)
+
+    return Ω - 0.16 * sin(radians(M))
