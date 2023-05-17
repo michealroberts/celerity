@@ -7,7 +7,7 @@
 # *****************************************************************************************************************
 
 from datetime import datetime
-from math import atan2, cos, degrees, pow, radians, sin
+from math import asin, atan2, cos, degrees, pow, radians, sin
 
 from .epoch import get_number_of_fractional_days_since_j2000
 from .sun import get_ecliptic_longitude as get_mean_solar_ecliptic_longitude
@@ -307,3 +307,31 @@ def get_ecliptic_longitude(date: datetime) -> float:
         λ += 360
 
     return λ
+
+
+# *****************************************************************************************************************
+
+
+def get_ecliptic_latitude(date: datetime) -> float:
+    """
+    The ecliptic latitude for the Mon is the angle between the ecliptic and
+    the current position of the Mon, as seen from the centre of the Earth,
+    corrected for the equation of center and the Mon's ecliptic longitude at
+    perigee at the epoch.
+
+    :param date: The datetime object to convert.
+    :return: The ecliptic latitude in degrees.
+    """
+    # Get the true ecliptic longitude:
+    λt = get_true_ecliptic_longitude(date)
+
+    # Get the corrected ecliptic longitude of the ascending node:
+    Ωcorr = get_corrected_ecliptic_longitude_of_the_ascending_node(date)
+
+    # Get the Moon's orbital inclination:
+    ι = radians(5.1453964)
+
+    # Calculate the ecliptic longitude of the Moon (in degrees):
+    β = degrees(asin(sin(radians(λt - Ωcorr)) * sin(ι)))
+
+    return β
