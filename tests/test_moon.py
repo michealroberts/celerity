@@ -4,6 +4,7 @@ from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.moon import (
     get_annual_equation_correction,
     get_corrected_ecliptic_longitude_of_the_ascending_node,
+    get_ecliptic_longitude,
     get_evection_correction,
     get_mean_anomaly,
     get_mean_anomaly_correction,
@@ -77,3 +78,8 @@ def test_get_true_ecliptic_longitude():
 def test_get_corrected_ecliptic_longitude_of_the_ascending_node():
     Ω = get_corrected_ecliptic_longitude_of_the_ascending_node(date)
     assert Ω == 71.56888914504515
+
+
+def test_get_ecliptic_longitude():
+    λ = get_ecliptic_longitude(date)
+    assert λ == 76.99043727540315
