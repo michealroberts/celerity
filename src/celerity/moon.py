@@ -7,8 +7,10 @@
 # *****************************************************************************************************************
 
 from datetime import datetime
-from math import asin, atan2, cos, degrees, pow, radians, sin
+from math import asin, atan2, cos, degrees, pow, radians, sin, tan
 
+from .astrometry import get_obliquity_of_the_ecliptic
+from .common import EquatorialCoordinate
 from .epoch import get_number_of_fractional_days_since_j2000
 from .sun import get_ecliptic_longitude as get_mean_solar_ecliptic_longitude
 from .sun import get_ecliptic_longitude as get_solar_ecliptic_longitude
@@ -335,3 +337,36 @@ def get_ecliptic_latitude(date: datetime) -> float:
     β = degrees(asin(sin(radians(λt - Ωcorr)) * sin(ι)))
 
     return β
+
+
+# *****************************************************************************************************************
+
+
+def get_equatorial_coordinate(date: datetime) -> EquatorialCoordinate:
+    """
+    The equatorial coordinate of the Moon is the standard equatorial coordinate
+    of the Moon, as seen from the centre of the Earth, corrected for the equation
+    of center and the Moon's ecliptic longitude at perigee at the epoch.
+
+    :param date: The datetime object to convert.
+    :return: The equatorial coordinate in degrees.
+    """
+    # Get the ecliptic longitude:
+    λ = radians(get_ecliptic_longitude(date))
+
+    # Get the ecliptic latitude:
+    β = radians(get_ecliptic_latitude(date))
+
+    # Get the obliquity of the ecliptic:
+    ε = radians(get_obliquity_of_the_ecliptic(date))
+
+    # Get the corresponding Right Ascension, α:
+    ra = degrees(atan2(sin(λ) * cos(ε) - tan(β) * sin(ε), cos(λ))) % 360
+
+    # Correct ra for negative angles
+    if ra < 0:
+        ra += 360
+
+    dec = degrees(asin(sin(β) * cos(ε) + cos(β) * sin(ε) * sin(λ)))
+
+    return {"ra": ra, "dec": dec}
