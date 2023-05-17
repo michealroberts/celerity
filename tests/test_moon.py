@@ -6,6 +6,7 @@ from src.celerity.moon import (
     get_corrected_ecliptic_longitude_of_the_ascending_node,
     get_ecliptic_latitude,
     get_ecliptic_longitude,
+    get_equatorial_coordinate,
     get_evection_correction,
     get_mean_anomaly,
     get_mean_anomaly_correction,
@@ -89,3 +90,10 @@ def test_get_ecliptic_longitude():
 def test_get_ecliptic_latitude():
     β = get_ecliptic_latitude(date)
     assert β == 0.4874504338736112
+
+
+def test_get_equatorial_coordinate():
+    date = datetime(2015, 1, 2, 3, 0, 0, 0, tzinfo=timezone.utc)
+    eq = get_equatorial_coordinate(date)
+    assert eq["ra"] == 63.854089783072595
+    assert eq["dec"] == 17.246094608898062
