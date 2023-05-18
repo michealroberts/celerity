@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.sun import (
     get_angular_diameter,
+    get_distance,
     get_ecliptic_longitude,
     get_equation_of_center,
     get_equatorial_coordinate,
@@ -69,3 +70,9 @@ def test_get_angular_diameter():
     date = datetime(2015, 2, 15, 0, 0, 0, 0, tzinfo=timezone.utc)
     θ = get_angular_diameter(date)
     assert θ == 0.5398164296031396
+
+
+def test_get_distance():
+    date = datetime(2015, 2, 15, 0, 0, 0, 0, tzinfo=timezone.utc)
+    d = get_distance(date)
+    assert d == 147744945752.45538
