@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.moon import (
+    get_age,
     get_angular_diameter,
     get_annual_equation_correction,
     get_corrected_ecliptic_longitude_of_the_ascending_node,
@@ -111,3 +112,10 @@ def test_get_distance():
     date = datetime(2015, 1, 2, 3, 0, 0, 0, tzinfo=timezone.utc)
     d = get_distance(date)
     assert d - 363410767 < 0.1
+
+
+def test_get_age():
+    date = datetime(2015, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc)
+    age = get_age(date)
+    assert age["A"] == 130.40251122256336
+    assert age["a"] == 10.696845549747305

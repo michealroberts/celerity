@@ -10,7 +10,7 @@ from datetime import datetime
 from math import asin, atan2, cos, degrees, pow, radians, sin, tan
 
 from .astrometry import get_obliquity_of_the_ecliptic
-from .common import EquatorialCoordinate, get_F_orbital_parameter
+from .common import Age, EquatorialCoordinate, get_F_orbital_parameter
 from .epoch import get_number_of_fractional_days_since_j2000
 from .sun import get_ecliptic_longitude as get_mean_solar_ecliptic_longitude
 from .sun import get_ecliptic_longitude as get_solar_ecliptic_longitude
@@ -413,3 +413,37 @@ def get_distance(date: datetime) -> float:
     F = get_F_orbital_parameter(ν, 0.0549)
 
     return 3.84400e8 / F
+
+
+# *****************************************************************************************************************
+
+
+def get_age(date: datetime) -> Age:
+    """
+    The age of the Moon is calculated by ascertaining the number of degrees
+    the Moon has traversed in it's orbit, given that it takes the Moon
+    29.5306 days to traverse a full 360° in one orbit cycle.
+
+    :param date: The datetime object to convert.
+    :return: The age of the Moon in both degrees and days.
+    """
+
+    # Get the true ecliptic longitude:
+    λt = get_true_ecliptic_longitude(date)
+
+    # Get the solar ecliptic longitude:
+    λ = get_solar_ecliptic_longitude(date)
+
+    # Get the Moon's age in degrees:
+    A = (λt - λ) % 360
+
+    # correct for negative angles:
+    if A < 0:
+        A += 360
+
+    # Get the Moon's age in days by multiplying the age, A,
+    # by the number of degrees traversed per day given that
+    # the Moon orbits the Earth every 29.5306 days:
+    age = A * (29.5306 / 360)
+
+    return {"A": A, "a": age}
