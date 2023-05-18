@@ -7,7 +7,7 @@
 # *****************************************************************************************************************
 
 from datetime import datetime
-from math import asin, atan2, cos, degrees, pow, radians, sin, tan
+from math import acos, asin, atan2, cos, degrees, pow, radians, sin, tan
 
 from .astrometry import get_obliquity_of_the_ecliptic
 from .common import Age, EquatorialCoordinate, get_F_orbital_parameter
@@ -447,3 +447,46 @@ def get_age(date: datetime) -> Age:
     age = A * (29.5306 / 360)
 
     return {"A": A, "a": age}
+
+
+# *****************************************************************************************************************
+
+
+def get_phase_angle(date: datetime) -> float:
+    """
+    The phase angle of the Moon is the angle subtended by the incident
+    light from the Sun as seen from the Earth's line of sight.
+
+    :param date: The datetime object to convert.
+    :return: The phase angle of the Moon in degrees.
+    """
+    # Get the ecliptic longitude:
+    λ = get_ecliptic_longitude(date)
+
+    # Get the ecliptic latitude:
+    β = radians(get_ecliptic_latitude(date))
+
+    # Get the solar ecliptic longitude:
+    λS = get_solar_ecliptic_longitude(date)
+
+    # Get the mean anomaly:
+    M = radians(get_mean_anomaly(date))
+
+    # Get the age of the Moon in degrees:
+    d = degrees(acos(cos(radians(λ - λS)) * cos(β)))
+
+    # Get the phase angle of the Moon in degrees:
+    PA = (
+        180
+        - d
+        - (
+            0.1468
+            * ((1 - (0.0549 * sin(M))) / (1 - (0.0167 * sin(M))))
+            * sin(radians(d))
+        )
+    )
+
+    return PA
+
+
+# *****************************************************************************************************************
