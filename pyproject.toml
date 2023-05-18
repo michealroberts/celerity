@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "celerity"
-version = "0.15.0"
+version = "0.16.0"
 description = "Celerity is a lightweight, zero-dependency and type-safe Python library for astronomical calculations."
 authors = [
     "Michael J. Roberts <michael@observerly.com>"
