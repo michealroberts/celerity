@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import TypedDict
 
 from src.celerity.astrometry import (
+    get_angular_separation,
     get_hour_angle,
     get_obliquity_of_the_ecliptic,
     get_parallactic_angle,
@@ -20,7 +21,16 @@ longitude: float = -155.468094
 
 betelgeuse: EquatorialCoordinate = {"ra": 88.7929583, "dec": 7.4070639}
 
+arcturus: EquatorialCoordinate = {"ra": 213.9153, "dec": 19.182409}
+
+spica: EquatorialCoordinate = {"ra": 201.2983, "dec": -11.1614}
+
 observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
+
+
+def test_get_angular_separation():
+    θ = get_angular_separation(arcturus, spica)
+    assert θ == 32.79290589269233
 
 
 def test_get_hour_angle():
