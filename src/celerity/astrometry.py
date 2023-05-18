@@ -7,10 +7,42 @@
 # *****************************************************************************************************************
 
 from datetime import datetime
-from math import atan2, cos, degrees, pow, radians, sin, tan
+from math import acos, atan2, cos, degrees, pow, radians, sin, tan
 
 from .common import EquatorialCoordinate, GeographicCoordinate
 from .temporal import get_julian_date, get_local_sidereal_time
+
+# *****************************************************************************************************************
+
+
+def get_angular_separation(A: EquatorialCoordinate, B: EquatorialCoordinate) -> float:
+    """
+    The angular separation between two objects in the sky is the angle between the two objects
+    as seen by an observer on Earth.
+
+    :param A: The equatorial coordinate of the observed object.
+    :param B: The equatorial coordinate of the observed object.
+    :return The angular separation in degrees between target A and target B.
+    """
+    # Calculate the angular separation between A and B (in degrees):
+    θ = (
+        degrees(
+            acos(
+                sin(radians(A["dec"])) * sin(radians(B["dec"]))
+                + cos(radians(A["dec"]))
+                * cos(radians(B["dec"]))
+                * cos(radians(A["ra"] - B["ra"]))
+            )
+        )
+        % 360
+    )
+
+    # Correct for negative angles:
+    if θ < 0:
+        θ += 360
+
+    return θ
+
 
 # *****************************************************************************************************************
 
