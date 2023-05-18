@@ -16,6 +16,7 @@ from src.celerity.moon import (
     get_mean_ecliptic_longitude,
     get_mean_ecliptic_longitude_of_the_ascending_node,
     get_mean_geometric_longitude,
+    get_phase_angle,
     get_true_anomaly,
     get_true_ecliptic_longitude,
 )
@@ -119,3 +120,9 @@ def test_get_age():
     age = get_age(date)
     assert age["A"] == 130.40251122256336
     assert age["a"] == 10.696845549747305
+
+
+def test_get_phase_angle():
+    date = datetime(2015, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc)
+    PA = get_phase_angle(date)
+    assert PA == 49.66441438659977
