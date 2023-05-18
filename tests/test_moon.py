@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.moon import (
+    get_angular_diameter,
     get_annual_equation_correction,
     get_corrected_ecliptic_longitude_of_the_ascending_node,
     get_ecliptic_latitude,
@@ -97,3 +98,9 @@ def test_get_equatorial_coordinate():
     eq = get_equatorial_coordinate(date)
     assert eq["ra"] == 63.854089783072595
     assert eq["dec"] == 17.246094608898062
+
+
+def test_get_angular_diameter():
+    date = datetime(2015, 1, 2, 3, 0, 0, 0, tzinfo=timezone.utc)
+    d = get_angular_diameter(date)
+    assert d == 0.5480234986129843

@@ -10,7 +10,7 @@ from datetime import datetime
 from math import asin, atan2, cos, degrees, pow, radians, sin, tan
 
 from .astrometry import get_obliquity_of_the_ecliptic
-from .common import EquatorialCoordinate
+from .common import EquatorialCoordinate, get_F_orbital_parameter
 from .epoch import get_number_of_fractional_days_since_j2000
 from .sun import get_ecliptic_longitude as get_mean_solar_ecliptic_longitude
 from .sun import get_ecliptic_longitude as get_solar_ecliptic_longitude
@@ -370,3 +370,24 @@ def get_equatorial_coordinate(date: datetime) -> EquatorialCoordinate:
     dec = degrees(asin(sin(β) * cos(ε) + cos(β) * sin(ε) * sin(λ)))
 
     return {"ra": ra, "dec": dec}
+
+
+# *****************************************************************************************************************
+
+
+def get_angular_diameter(date: datetime) -> float:
+    """
+    The angular diameter of the Moon is the angle subtended by the Moon, as seen
+    from the centre of the Earth.
+
+    :param date: The datetime object to convert.
+    :return: The angular diameter in degrees.
+    """
+    # Get the true anomaly:
+    ν = get_true_anomaly(date)
+
+    # Get the F orbital paramater which applies corrections
+    # due to the Moon's orbital eccentricity:
+    F = get_F_orbital_parameter(ν, 0.0549)
+
+    return 0.5181 * F
