@@ -5,6 +5,7 @@ from src.celerity.moon import (
     get_angular_diameter,
     get_annual_equation_correction,
     get_corrected_ecliptic_longitude_of_the_ascending_node,
+    get_distance,
     get_ecliptic_latitude,
     get_ecliptic_longitude,
     get_equatorial_coordinate,
@@ -104,3 +105,9 @@ def test_get_angular_diameter():
     date = datetime(2015, 1, 2, 3, 0, 0, 0, tzinfo=timezone.utc)
     d = get_angular_diameter(date)
     assert d == 0.5480234986129843
+
+
+def test_get_distance():
+    date = datetime(2015, 1, 2, 3, 0, 0, 0, tzinfo=timezone.utc)
+    d = get_distance(date)
+    assert d - 363410767 < 0.1
