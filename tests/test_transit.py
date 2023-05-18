@@ -5,6 +5,7 @@ from src.celerity.transit import (
     get_does_object_rise_or_set,
     get_transit,
     is_object_circumpolar,
+    is_object_never_visible,
 )
 
 # For testing we need to specify a date because most calculations are
@@ -37,9 +38,31 @@ def test_get_does_object_rise_or_set():
     assert d == False
 
 
+def test_is_object_never_visible():
+    d = is_object_never_visible(observer, polaris, 0)
+    assert d == False
+
+    d = is_object_never_visible({"lat": -85, "lon": 0}, polaris, 0)
+    assert d == True
+
+    d = is_object_never_visible(observer, betelgeuse, 0)
+    assert d == False
+
+    d = is_object_never_visible({"lat": -50, "lon": 0}, betelgeuse, 0)
+    assert d == True
+
+    d = is_object_never_visible({"lat": -85, "lon": 0}, betelgeuse, 0)
+    assert d == True
+
+
 def test_is_object_circumpolar():
-    p = is_object_circumpolar(polaris, observer, 0)
+    p = is_object_circumpolar(observer, polaris, 0)
     assert p == True
+
+    so = is_object_circumpolar(
+        {"lat": -85, "lon": 0}, {"ra": 317.398, "dec": -88.956}, 0
+    )
+    assert so == True
 
 
 def test_get_transit():

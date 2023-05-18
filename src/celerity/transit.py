@@ -40,7 +40,7 @@ class TransitParameters(TypedDict):
 
 
 def is_object_circumpolar(
-    target: EquatorialCoordinate, observer: GeographicCoordinate, horizon: float
+    observer: GeographicCoordinate, target: EquatorialCoordinate, horizon: float
 ) -> bool:
     """
     An object is considered circumpolar if it is always above the observer's
@@ -60,7 +60,33 @@ def is_object_circumpolar(
 
     # If the object's declination is greater than 90 degrees minus the observer's latitude,
     # then the object is circumpolar (always above the observer's horizon and never sets).
-    return dec > 90 - lat + horizon
+    return dec > (90 - lat - horizon) if lat > 0 else dec < (90 - lat - horizon)
+
+
+# *****************************************************************************************************************
+
+
+def is_object_never_visible(
+    observer: GeographicCoordinate, target: EquatorialCoordinate, horizon: float
+) -> bool:
+    """
+    An object is never visible if it is always below the observer's horizon and never rises.
+    This is true when the object's declination is less than the observer's latitude minus 90 degrees.
+
+    :param target: The equatorial coordinate of the observed object.
+    :param observer: The geographic coordinate of the observer.
+    :param horizon: The observer's horizon (in degrees).
+    :return: True if the object is never visible, False otherwise.
+    """
+    # We only need the declination of the target object:
+    dec = target["dec"]
+
+    # We only need the latitude of the observer:
+    lat = observer["lat"]
+
+    # If the object's declination is less than the observer's latitude minus 90 degrees,
+    # then the object is never visible (always below the observer's horizon and never rises).
+    return dec < (lat - 90 + horizon) if lat > 0 else dec > (lat - 90 + horizon)
 
 
 # *****************************************************************************************************************
