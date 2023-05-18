@@ -223,3 +223,25 @@ def get_angular_diameter(date: datetime) -> float:
     F = get_F_orbital_parameter(ν, 0.016708)
 
     return 0.533128 * F
+
+
+# *****************************************************************************************************************
+
+
+def get_distance(date: datetime) -> float:
+    """
+    The distance to the Sun is the distance between the centre of the Earth
+    and the centre of the Sun, corrected for the equation of center and the
+    Sun's ecliptic longitude at perigee at the epoch.
+
+    :param date: The datetime object to convert.
+    :return: The distance in metres.
+    """
+    # Get the true anomaly:
+    ν = get_true_anomaly(date)
+
+    # Get the F orbital paramater which applies corrections
+    # due to the Sun's orbital eccentricity:
+    F = get_F_orbital_parameter(ν, 0.016708)
+
+    return 1.495985e11 / F
