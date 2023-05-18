@@ -490,3 +490,22 @@ def get_phase_angle(date: datetime) -> float:
 
 
 # *****************************************************************************************************************
+
+
+def get_illumination(date: datetime) -> float:
+    """
+    The total percentage illumination of the Moon as seen from Earth
+    (i.e., the visible portion of the Moon), not to be confused with
+    the total illumination of the Moon by the Sun which is always 50%.
+
+    :param date: The datetime object to convert.
+    :return: The visible portion illumination of the Moon (in unitless %)
+    """
+    # Get the phase angle:
+    PA = get_phase_angle(date)
+
+    # Get the total illuminated % fraction:
+    return 50 * (1 + cos(radians(PA)))
+
+
+# *****************************************************************************************************************
