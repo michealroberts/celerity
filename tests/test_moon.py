@@ -11,6 +11,7 @@ from src.celerity.moon import (
     get_ecliptic_longitude,
     get_equatorial_coordinate,
     get_evection_correction,
+    get_illumination,
     get_mean_anomaly,
     get_mean_anomaly_correction,
     get_mean_ecliptic_longitude,
@@ -126,3 +127,9 @@ def test_get_phase_angle():
     date = datetime(2015, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc)
     PA = get_phase_angle(date)
     assert PA == 49.66441438659977
+
+
+def test_get_illumination():
+    date = datetime(2015, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc)
+    K = get_illumination(date)
+    assert K == 82.36316687224799
