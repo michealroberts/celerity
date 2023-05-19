@@ -1,9 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.transit import (
     get_does_object_rise_or_set,
     get_transit,
+    is_object_below_horizon,
     is_object_circumpolar,
     is_object_never_visible,
 )
@@ -63,6 +64,18 @@ def test_is_object_circumpolar():
         {"lat": -85, "lon": 0}, {"ra": 317.398, "dec": -88.956}, 0
     )
     assert so == True
+
+
+def test_is_object_below_horizon():
+    # Polaris should be above the horizon on May 14, 2021:
+    p = is_object_below_horizon(date, observer, polaris, 0)
+    assert p == False
+
+    # Betelgeuse should be below the horizon at 3am on July 14, 2021:
+    b = is_object_below_horizon(
+        datetime(2021, 7, 14, 3, 0, 0, tzinfo=timezone.utc), observer, betelgeuse, 0
+    )
+    assert b == True
 
 
 def test_get_transit():
