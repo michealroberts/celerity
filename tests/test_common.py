@@ -1,7 +1,9 @@
 from src.celerity.common import (
     EquatorialCoordinate,
+    HorizontalCoordinate,
     get_F_orbital_parameter,
     is_equatorial_coordinate,
+    is_horizontal_coordinate,
 )
 
 # For testing, we will define the star Betelgeuse:
@@ -16,6 +18,16 @@ def test_is_equatorial_coordinate():
 
     target = is_equatorial_coordinate({"alt": 88.7929583, "az": 7.4070639})
     assert target is None
+
+
+def test_is_horizontal_coordinate():
+    target = is_horizontal_coordinate(betelgeuse)
+    assert target is None
+
+    target = is_horizontal_coordinate({"alt": 88.7929583, "az": 7.4070639})
+    assert target is not None
+    assert target["alt"] == 88.7929583
+    assert target["az"] == 7.4070639
 
 
 def test_get_F_orbital_parameter():
