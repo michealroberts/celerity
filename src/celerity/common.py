@@ -7,7 +7,7 @@
 # *****************************************************************************************************************
 
 from math import cos, pow, radians
-from typing import TypedDict
+from typing import Any, TypedDict
 
 # *****************************************************************************************************************
 
@@ -39,6 +39,20 @@ class GeographicCoordinate(TypedDict):
 class HorizontalCoordinate(TypedDict):
     alt: float
     az: float
+
+
+# *****************************************************************************************************************
+
+
+def is_equatorial_coordinate(coordinate: Any) -> EquatorialCoordinate | None:
+    if type(coordinate) is not dict:
+        return None
+
+    return (
+        EquatorialCoordinate({"ra": coordinate["ra"], "dec": coordinate["dec"]})
+        if "ra" in coordinate and "dec" in coordinate
+        else None
+    )
 
 
 # *****************************************************************************************************************
