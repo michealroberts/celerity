@@ -6,10 +6,18 @@
 
 # *****************************************************************************************************************
 
+from datetime import datetime
 from math import acos, cos, degrees, radians, sin, tan
 from typing import Literal, TypedDict, Union
 
-from .common import EquatorialCoordinate, GeographicCoordinate
+from .common import (
+    EquatorialCoordinate,
+    GeographicCoordinate,
+    HorizontalCoordinate,
+    is_equatorial_coordinate,
+    is_horizontal_coordinate,
+)
+from .coordinates import convert_equatorial_to_horizontal
 
 # *****************************************************************************************************************
 
@@ -87,6 +95,40 @@ def is_object_never_visible(
     # If the object's declination is less than the observer's latitude minus 90 degrees,
     # then the object is never visible (always below the observer's horizon and never rises).
     return dec < (lat - 90 + horizon) if lat > 0 else dec > (lat - 90 + horizon)
+
+
+# *****************************************************************************************************************
+
+
+def is_object_below_horizon(
+    date: datetime,
+    observer: GeographicCoordinate,
+    target: EquatorialCoordinate | HorizontalCoordinate,
+    horizon: float,
+) -> bool:
+    """
+    An object is never visible if it is always below the observer's horizon and never rises.
+    This is true when the object's declination is less than the observer's latitude minus 90 degrees.
+
+    :param target: The equatorial or horizontal coordinate of the observed object.
+    :param observer: The geographic coordinate of the observer.
+    :param horizon: The observer's horizon (in degrees).
+    :return: True if the object is never visible, False otherwise.
+    """
+    # Attempt to type narrow the target coordinate as an equatorial coordinate:
+    eq = is_equatorial_coordinate(target)
+
+    if eq:
+        # Convert the target's equatorial coordinate to horizontal coordinates:
+        target = convert_equatorial_to_horizontal(date, observer, eq)
+
+    hz = is_horizontal_coordinate(target)
+    assert hz is not None
+
+    # If the object's horizontal altitude local to some observer is less than the
+    # observer's horizon, then the object is never visible (always below the
+    # observer's horizon).
+    return hz["alt"] < 0 + horizon
 
 
 # *****************************************************************************************************************
