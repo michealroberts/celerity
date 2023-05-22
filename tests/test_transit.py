@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.transit import (
     get_does_object_rise_or_set,
+    get_next_rise,
     get_transit,
     is_object_below_horizon,
     is_object_circumpolar,
@@ -22,6 +23,8 @@ longitude: float = -155.468094
 betelgeuse: EquatorialCoordinate = {"ra": 88.7929583, "dec": 7.4070639}
 
 polaris: EquatorialCoordinate = {"ra": 37.952659, "dec": 89.264108}
+
+LMC: EquatorialCoordinate = {"ra": 80.8941667, "dec": -69.7561111}
 
 observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
 
@@ -84,3 +87,26 @@ def test_get_transit():
     assert T["LSTs"] == 12.098575460027751
     assert T["R"] == 82.12362992591511
     assert T["S"] == 277.8763700740849
+
+
+def test_get_next_rise():
+    # By 9pm on May 14, 2021, Betelgeuse should have already risen:
+    date = datetime(2021, 5, 14, 21, 0, 0, 0)
+    # Therefore the next rise should be on May 15, 2021:
+    r = get_next_rise(date, observer, betelgeuse, 0)
+    assert r["LST"] == 23.740485646638913
+    assert r["GST"] == 10.105025246638917
+    assert r["az"] == 82.12362992591511
+    assert r["date"] == datetime(2021, 5, 15, 18, 31, 28, 716561, tzinfo=timezone.utc)
+
+    # Test where we know the object is circumpolar for the observer:
+    r = get_next_rise(date, observer, polaris, 0)
+    assert r == True
+
+    # Test where we known the object only rises at specific times of the year:
+    date = datetime(2021, 1, 12, 0, 0, 0, 0)
+    r = get_next_rise(date, {"lat": 20.2437, "lon": observer["lon"]}, LMC, 0)
+    assert r["date"] == datetime(2021, 1, 12, 8, 16, 12, 950867, tzinfo=timezone.utc)
+    assert r["LST"] == 5.375729797576824
+    assert r["GST"] == 15.740269397576824
+    assert r["az"] == 179.91065185064514

@@ -6,7 +6,7 @@
 
 # *****************************************************************************************************************
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from math import acos, cos, degrees, radians, sin, tan
 from typing import Literal, TypedDict, Union
 
@@ -18,6 +18,12 @@ from .common import (
     is_horizontal_coordinate,
 )
 from .coordinates import convert_equatorial_to_horizontal
+from .temporal import (
+    convert_greenwhich_sidereal_time_to_universal_coordinate_time,
+    convert_local_sidereal_time_to_greenwhich_sidereal_time,
+    get_greenwhich_sidereal_time,
+    get_local_sidereal_time,
+)
 
 # *****************************************************************************************************************
 
@@ -34,6 +40,22 @@ class Transit(TypedDict):
     LSTs: float
     R: float
     S: float
+
+
+# *****************************************************************************************************************
+
+
+class Rise(TypedDict):
+    """
+    :property date: The date of rise.
+    :property LSTr: The local sidereal time of rise.
+    :property R: The azimuthal angle (in degrees) of the object at rise.
+    """
+
+    date: datetime
+    LST: float
+    GST: float
+    az: float
 
 
 # *****************************************************************************************************************
@@ -209,6 +231,67 @@ def get_transit(
         LSTs -= 24
 
     return {"LSTr": LSTr, "LSTs": LSTs, "R": R, "S": S}
+
+
+# *****************************************************************************************************************
+
+
+def get_next_rise(
+    date: datetime,
+    observer: GeographicCoordinate,
+    target: EquatorialCoordinate,
+    horizon: float = 0,
+) -> Rise | bool:
+    now = date
+
+    # If the object is circumpolar, it never rises:
+    if is_object_circumpolar(observer, target, horizon):
+        return True
+
+    # # If the object is never visible, it never rises:
+    if is_object_never_visible(observer, target, horizon):
+        return False
+
+    # Get the transit parameters:
+    transit = get_transit(observer, target)
+
+    if not transit:
+        return get_next_rise(
+            date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1),
+            observer,
+            target,
+            horizon,
+        )
+
+    # Get the local sidereal time of rise:
+    LST = get_local_sidereal_time(date, observer["lon"])
+
+    LSTr = transit["LSTr"]
+
+    # Get the current Greenwhich sidereal time:
+    GST = get_greenwhich_sidereal_time(date)
+
+    # Convert the local sidereal time of rise to Greenwhich sidereal time:
+    GSTr = convert_local_sidereal_time_to_greenwhich_sidereal_time(LSTr, observer)
+
+    # Convert the Greenwhich sidereal time to universal coordinate time for the date specified:
+    rise = convert_greenwhich_sidereal_time_to_universal_coordinate_time(date, GSTr)
+
+    # If the rise is before the current time, then we know the next rise is tomorrow:
+    if rise < now.astimezone(tz=timezone.utc):
+        return get_next_rise(
+            date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1),
+            observer,
+            target,
+            horizon,
+        )
+
+    return {
+        "date": rise,
+        "LST": transit["LSTr"],
+        "GST": GSTr,
+        "az": transit["R"],
+    }
 
 
 # *****************************************************************************************************************
