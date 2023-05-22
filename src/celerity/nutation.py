@@ -22,7 +22,7 @@ from .temporal import get_julian_date
 def get_correction_to_equatorial_for_nutation(
     date: datetime,
     target: EquatorialCoordinate,
-):
+) -> EquatorialCoordinate:
     """
     Corrects the equatorial coordinates of a target for nutation in longitude and obliquity.
 
