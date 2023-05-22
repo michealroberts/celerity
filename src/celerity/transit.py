@@ -61,6 +61,22 @@ class Rise(TypedDict):
 # *****************************************************************************************************************
 
 
+class Set(TypedDict):
+    """
+    :property date: The date of set.
+    :property LSTr: The local sidereal time of set.
+    :property R: The azimuthal angle (in degrees) of the object at set.
+    """
+
+    date: datetime
+    LST: float
+    GST: float
+    az: float
+
+
+# *****************************************************************************************************************
+
+
 class TransitParameters(TypedDict):
     Ar: float
     H1: float
@@ -242,6 +258,18 @@ def get_next_rise(
     target: EquatorialCoordinate,
     horizon: float = 0,
 ) -> Rise | bool:
+    """
+    Determines the next rise time for an object, if at all.
+
+    :param date: The date to start searching for the next rise.
+    :param observer: The geographic coordinate of the observer.
+    :param target: The equatorial coordinate of the observed object.
+    :param horizon: The observer's horizon (in degrees).
+
+    :return: The next rise time or False if the object never rises,
+    or True if the object is always above the horizon (circumpolar)
+    for the observer.
+    """
     now = date
 
     # If the object is circumpolar, it never rises:
@@ -263,13 +291,7 @@ def get_next_rise(
             horizon,
         )
 
-    # Get the local sidereal time of rise:
-    LST = get_local_sidereal_time(date, observer["lon"])
-
     LSTr = transit["LSTr"]
-
-    # Get the current Greenwhich sidereal time:
-    GST = get_greenwhich_sidereal_time(date)
 
     # Convert the local sidereal time of rise to Greenwhich sidereal time:
     GSTr = convert_local_sidereal_time_to_greenwhich_sidereal_time(LSTr, observer)
@@ -291,6 +313,73 @@ def get_next_rise(
         "LST": transit["LSTr"],
         "GST": GSTr,
         "az": transit["R"],
+    }
+
+
+# *****************************************************************************************************************
+
+
+def get_next_set(
+    date: datetime,
+    observer: GeographicCoordinate,
+    target: EquatorialCoordinate,
+    horizon: float = 0,
+) -> Rise | bool:
+    """
+    Determines the next set time for an object, if at all.
+
+    :param date: The date to start searching for the next set.
+    :param observer: The geographic coordinate of the observer.
+    :param target: The equatorial coordinate of the observed object.
+    :param horizon: The observer's horizon (in degrees).
+
+    :return: The next set time or True if the object never sets,
+    or False if the object is always above the horizon (circumpolar)
+    for the observer.
+    """
+    now = date
+
+    # If the object is circumpolar, it never rises:
+    if is_object_circumpolar(observer, target, horizon):
+        return False
+
+    # # If the object is never visible, it never rises:
+    if is_object_never_visible(observer, target, horizon):
+        return True
+
+    # Get the transit parameters:
+    transit = get_transit(observer, target)
+
+    if not transit:
+        return get_next_set(
+            date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1),
+            observer,
+            target,
+            horizon,
+        )
+
+    LSTs = transit["LSTs"]
+
+    # Convert the local sidereal time of rise to Greenwhich sidereal time:
+    GSTs = convert_local_sidereal_time_to_greenwhich_sidereal_time(LSTs, observer)
+
+    # Convert the Greenwhich sidereal time to universal coordinate time for the date specified:
+    set = convert_greenwhich_sidereal_time_to_universal_coordinate_time(date, GSTs)
+
+    # If the set is before the current time, then we know the next rise is tomorrow:
+    if set < now.astimezone(tz=timezone.utc):
+        return get_next_set(
+            date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1),
+            observer,
+            target,
+            horizon,
+        )
+
+    return {
+        "date": set,
+        "LST": transit["LSTs"],
+        "GST": GSTs,
+        "az": transit["S"],
     }
 
 

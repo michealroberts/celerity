@@ -4,6 +4,7 @@ from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.transit import (
     get_does_object_rise_or_set,
     get_next_rise,
+    get_next_set,
     get_transit,
     is_object_below_horizon,
     is_object_circumpolar,
@@ -110,3 +111,25 @@ def test_get_next_rise():
     assert r["LST"] == 5.375729797576824
     assert r["GST"] == 15.740269397576824
     assert r["az"] == 179.91065185064514
+
+
+def test_get_next_set():
+    # By 7am on May 14, 2021, Betelgeuse should have already set:
+    date = datetime(2021, 5, 14, 7, 0, 0, 0)
+    s = get_next_set(date, observer, betelgeuse, 0)
+    assert s["LST"] == 12.098575460027751
+    assert s["GST"] == 22.463115060027754
+    assert s["az"] == 277.8763700740849
+    assert s["date"] == datetime(2021, 5, 15, 6, 54, 52, 256582, tzinfo=timezone.utc)
+
+    # Test where we know the object is circumpolar for the observer:
+    s = get_next_set(date, observer, polaris, 0)
+    assert s == False
+
+    # Test where we known the object only rises at specific times of the year:
+    date = datetime(2021, 1, 12, 0, 0, 0, 0)
+    s = get_next_set(date, {"lat": 20.2437, "lon": observer["lon"]}, LMC, 0)
+    assert s["date"] == datetime(2021, 1, 12, 8, 18, 16, 557970, tzinfo=timezone.utc)
+    assert s["LST"] == 5.410159095756511
+    assert s["GST"] == 15.774698695756513
+    assert s["az"] == 180.08934814935486
