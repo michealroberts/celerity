@@ -76,3 +76,31 @@ def get_solar_transit(
         sunset = None
 
     return sunrise, transit, sunset
+
+
+# *****************************************************************************************************************
+
+
+def is_night(
+    date: datetime, observer: GeographicCoordinate, horizon: float = 0
+) -> bool:
+    """
+    Determine if the Sun is below the horizon at the given datetime and location.
+
+    :param date: The datetime to check.
+    :param observer: The geographic coordinates of the observer.
+    :param horizon: The altitude of the horizon in degrees.
+    """
+
+    # Get the time of the sunset for the given date:
+    sunrise, _, sunset = get_solar_transit(date, observer, horizon)
+
+    if (sunrise is not None and date < sunrise) or (
+        sunset is not None and date > sunset
+    ):
+        return True
+
+    return False
+
+
+# *****************************************************************************************************************
