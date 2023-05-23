@@ -30,3 +30,26 @@ def get_summer_solstice(year: int) -> datetime:
 
 
 # *****************************************************************************************************************
+
+
+def get_winter_solstice(year: int) -> datetime:
+    """
+    Get the datetime of the winter solstice for the given year.
+
+    :param year: The year to get the winter solstice for.
+    :return: The datetime of the winter solstice for the given year.
+    """
+    T = year / 1000
+
+    # Get the Julian date of the winter solstice (using Meeus' formula):
+    JD = (
+        1721414.3920 + 365.2428898 * year - 0.010965 * pow(T, 2) - 0.0084885 * pow(T, 3)
+    )
+
+    # Convert the Julian date to a datetime UTC object:
+    return datetime.utcfromtimestamp((JD - 2440587.5) * 86400).astimezone(
+        tz=timezone.utc
+    )
+
+
+# *****************************************************************************************************************
