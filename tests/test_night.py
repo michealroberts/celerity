@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from src.celerity.common import GeographicCoordinate
-from src.celerity.night import get_solar_transit, is_night
+from src.celerity.night import get_night, get_solar_transit, is_night
 
 # For testing we need to specify a date because most calculations are
 # differential w.r.t a time component. We set it to the author's birthday:
@@ -42,6 +42,12 @@ def test_get_solar_transit():
     assert d[1] == datetime(2021, 5, 14, 12, 20, 0, 0, tzinfo=timezone.utc)
     # Set, in UTC (BST is UTC+1 and we're expecting it to set around 9pm BST)
     assert d[2] == datetime(2021, 5, 14, 22, 43, 0, 0, tzinfo=timezone.utc)
+
+
+def test_get_night():
+    d = get_night(date, observer)
+    assert d["start"] == datetime(2021, 5, 14, 19, 56, 0, 0, tzinfo=timezone.utc)
+    assert d["end"] == datetime(2021, 5, 15, 4, 45, 0, 0, tzinfo=timezone.utc)
 
 
 def test_is_night():
