@@ -7,13 +7,20 @@
 # *****************************************************************************************************************
 
 from datetime import datetime, timedelta
-from math import radians
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, TypedDict
 
 from .common import GeographicCoordinate, HorizontalCoordinate
 from .coordinates import convert_equatorial_to_horizontal
 from .refraction import get_correction_to_horizontal_for_refraction
 from .sun import get_equatorial_coordinate
+
+# *****************************************************************************************************************
+
+
+class Night(TypedDict):
+    start: datetime
+    end: datetime
+
 
 # *****************************************************************************************************************
 
@@ -76,6 +83,32 @@ def get_solar_transit(
         sunset = None
 
     return sunrise, transit, sunset
+
+
+# *****************************************************************************************************************
+
+
+def get_night(
+    date: datetime, observer: GeographicCoordinate, horizon: float = 0
+) -> Optional[Night]:
+    """
+    Determine the start and end of the night for the given date and location.
+
+    :param date: The date to check.
+    :param observer: The geographic coordinates of the observer.
+    :param horizon: The altitude of the horizon in degrees.
+    """
+    # Get the time of the sunset for the given date::
+    _, _, sunset = get_solar_transit(date, observer, horizon)
+
+    # Get the time of the sunrise for the following date:
+    sunrise, _, _ = get_solar_transit(date + timedelta(days=1), observer, horizon)
+
+    # The observer could be in perpetual daylight or perpetual night, e.g., the North Pole or South Pole:
+    if sunset is None or sunrise is None:
+        return None
+
+    return {"start": sunset, "end": sunrise}
 
 
 # *****************************************************************************************************************
