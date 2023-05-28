@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.moon import (
+    Phase,
     get_age,
     get_angular_diameter,
     get_annual_equation_correction,
@@ -18,6 +19,7 @@ from src.celerity.moon import (
     get_mean_ecliptic_longitude,
     get_mean_ecliptic_longitude_of_the_ascending_node,
     get_mean_geometric_longitude,
+    get_phase,
     get_phase_angle,
     get_true_anomaly,
     get_true_ecliptic_longitude,
@@ -140,3 +142,21 @@ def test_get_illumination():
     date = datetime(2015, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc)
     K = get_illumination(date)
     assert K == 82.36316687224799
+
+
+def test_get_phase():
+    date = datetime(2015, 1, 2, 2, 0, 0, 0, tzinfo=timezone.utc)
+    phase = get_phase(date)
+    assert phase == Phase.WaxingGibbous
+
+    date = datetime(2015, 1, 5, 7, 0, 0, 0, tzinfo=timezone.utc)
+    phase = get_phase(date)
+    assert phase == Phase.Full
+
+    date = datetime(2015, 1, 7, 23, 0, 0, 0, tzinfo=timezone.utc)
+    phase = get_phase(date)
+    assert phase == Phase.WaningGibbous
+
+    date = datetime(2015, 2, 12, 17, 0, 0, 0, tzinfo=timezone.utc)
+    phase = get_phase(date)
+    assert phase == Phase.LastQuarter
