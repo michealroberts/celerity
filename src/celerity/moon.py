@@ -7,6 +7,7 @@
 # *****************************************************************************************************************
 
 from datetime import datetime
+from enum import Enum
 from math import acos, asin, atan2, cos, degrees, pow, radians, sin, tan
 
 from .astrometry import get_obliquity_of_the_ecliptic
@@ -16,6 +17,20 @@ from .sun import get_ecliptic_longitude as get_mean_solar_ecliptic_longitude
 from .sun import get_ecliptic_longitude as get_solar_ecliptic_longitude
 from .sun import get_mean_anomaly as get_solar_mean_anomaly
 from .temporal import get_julian_date
+
+# *****************************************************************************************************************
+
+
+class Phase(Enum):
+    New = "New"
+    WaxingCrescent = "Waxing Crescent"
+    FirstQuarter = "First Quarter"
+    WaxingGibbous = "Waxing Gibbous"
+    Full = "Full"
+    WaningGibbous = "Waning Gibbous"
+    LastQuarter = "Last Quarter"
+    WaningCrescent = "Waning Crescent"
+
 
 # *****************************************************************************************************************
 
@@ -526,6 +541,48 @@ def get_illumination(date: datetime) -> float:
 
     # Get the total illuminated % fraction:
     return 50 * (1 + cos(radians(PA)))
+
+
+# *****************************************************************************************************************
+
+
+def get_phase(date: datetime) -> Phase:
+    """
+    Get the human readable phase name, e.g., "New Moon" of the Moon.
+
+    :param date: The datetime object to convert.
+    :return: The phase of the Moon.
+    """
+    # Get the age of the Moon:
+    d = get_age(date)
+
+    # Get the age of the Moon in degrees:
+    D = d["a"]
+
+    print(D)
+
+    if D >= 3.7 and D < 7.4:
+        return Phase.WaxingCrescent
+
+    if D >= 7.4 and D < 11.1:
+        return Phase.FirstQuarter
+
+    if D >= 11.1 and D < 14.6:
+        return Phase.WaxingGibbous
+
+    if D >= 14.6 and D < 15.0:
+        return Phase.Full
+
+    if D >= 15.0 and D < 22.1:
+        return Phase.WaningGibbous
+
+    if D >= 22.1 and D < 25.8:
+        return Phase.LastQuarter
+
+    if D >= 25.8 and D < 29.5:
+        return Phase.WaningCrescent
+
+    return Phase.New
 
 
 # *****************************************************************************************************************
