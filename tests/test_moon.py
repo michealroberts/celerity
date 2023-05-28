@@ -9,6 +9,7 @@ from src.celerity.moon import (
     get_distance,
     get_ecliptic_latitude,
     get_ecliptic_longitude,
+    get_elongation,
     get_equatorial_coordinate,
     get_evection_correction,
     get_illumination,
@@ -102,6 +103,12 @@ def test_get_equatorial_coordinate():
     eq = get_equatorial_coordinate(date)
     assert eq["ra"] == 63.854089783072595
     assert eq["dec"] == 17.246094608898062
+
+
+def test_get_elongation():
+    date = datetime(2015, 1, 2, 3, 0, 0, 0, tzinfo=timezone.utc)
+    elongation = get_elongation(date)
+    assert elongation == 143.73394864456367
 
 
 def test_get_angular_diameter():

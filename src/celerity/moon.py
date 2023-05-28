@@ -375,6 +375,35 @@ def get_equatorial_coordinate(date: datetime) -> EquatorialCoordinate:
 # *****************************************************************************************************************
 
 
+def get_elongation(date: datetime):
+    """
+    The elongation of the Moon is the angle between the Sun and the Moon, as
+    seen from the reference observer Earth.
+
+    :param date:
+    :return: The Lunar elongation in degrees.
+    """
+    # Get the ecliptic longitude:
+    λ = get_ecliptic_longitude(date)
+
+    # Get the ecliptic latitude:
+    β = radians(get_ecliptic_latitude(date))
+
+    # Get the solar ecliptic longitude:
+    λS = get_solar_ecliptic_longitude(date)
+
+    # Get the age of the Moon in degrees:
+    d = degrees(acos(cos(radians(λ - λS)) * cos(β))) % 360
+
+    if d < 0:
+        d += 360
+
+    return d
+
+
+# *****************************************************************************************************************
+
+
 def get_angular_diameter(date: datetime) -> float:
     """
     The angular diameter of the Moon is the angle subtended by the Moon, as seen
@@ -460,20 +489,11 @@ def get_phase_angle(date: datetime) -> float:
     :param date: The datetime object to convert.
     :return: The phase angle of the Moon in degrees.
     """
-    # Get the ecliptic longitude:
-    λ = get_ecliptic_longitude(date)
-
-    # Get the ecliptic latitude:
-    β = radians(get_ecliptic_latitude(date))
-
-    # Get the solar ecliptic longitude:
-    λS = get_solar_ecliptic_longitude(date)
-
     # Get the mean anomaly:
     M = radians(get_mean_anomaly(date))
 
-    # Get the age of the Moon in degrees:
-    d = degrees(acos(cos(radians(λ - λS)) * cos(β)))
+    # Get the age of the Moon in degrees (elongation):
+    d = get_elongation(date)
 
     # Get the phase angle of the Moon in degrees:
     PA = (
