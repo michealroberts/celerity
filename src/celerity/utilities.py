@@ -6,6 +6,12 @@
 
 # *****************************************************************************************************************
 
+from math import floor
+
+from .common import Angle
+
+# *****************************************************************************************************************
+
 
 def get_normalised_azimuthal_degree(degree: float) -> float:
     """
@@ -51,6 +57,29 @@ def get_normalised_inclination_degree(degree: float) -> float:
         d % 90
 
     return d
+
+
+# *****************************************************************************************************************
+
+
+def convert_degree_to_dms(degree: float) -> Angle:
+    """
+    Convert coordinate (in decimal degrees) to degrees (°), minutes ('), seconds (").
+
+    :param degree: decimal degree
+    :return: the components of the degree in degrees, minutes, seconds
+    """
+
+    degree = get_normalised_inclination_degree(degree)
+
+    deg = floor(abs(degree))
+
+    min = floor((abs(degree) - deg) * 60)
+
+    # Get the second component:
+    sec = round((abs(degree) - deg - min / 60) * 3600 * 1000) / 1000
+
+    return {"deg": deg if degree >= 0 else -deg, "min": min, "sec": sec}
 
 
 # *****************************************************************************************************************

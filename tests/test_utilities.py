@@ -1,4 +1,5 @@
 from src.celerity.utilities import (
+    convert_degree_to_dms,
     get_normalised_azimuthal_degree,
     get_normalised_inclination_degree,
 )
@@ -72,3 +73,10 @@ def test_get_normalised_inclination_degree():
 
     degree = get_normalised_inclination_degree(-130)
     assert degree == -50
+
+
+def test_convert_degree_to_dms():
+    dms = convert_degree_to_dms(-11.1614)
+    assert dms == {"deg": -11, "min": 9, "sec": 41.04}
+    dms = convert_degree_to_dms(7.4070639)
+    assert dms == {"deg": 7, "min": 24, "sec": 25.43}
