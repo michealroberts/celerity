@@ -29,6 +29,15 @@ class Angle(TypedDict):
 # *****************************************************************************************************************
 
 
+class HourAngle(TypedDict):
+    hour: float
+    min: float
+    sec: float
+
+
+# *****************************************************************************************************************
+
+
 class EquatorialCoordinate(TypedDict):
     ra: float
     dec: float
