@@ -8,7 +8,7 @@
 
 from math import floor
 
-from .common import Angle
+from .common import Angle, HourAngle
 
 # *****************************************************************************************************************
 
@@ -83,3 +83,16 @@ def convert_degree_to_dms(degree: float) -> Angle:
 
 
 # *****************************************************************************************************************
+
+
+def convert_degree_to_hms(degree: float) -> HourAngle:
+    degree = get_normalised_azimuthal_degree(degree)
+
+    hour = floor(abs(degree) / 15)
+
+    min = floor((abs(degree) / 15 - hour) * 60)
+
+    # Get the second component:
+    sec = round((abs(degree) / 15 - hour - min / 60) * 3600 * 1000) / 1000
+
+    return {"hour": hour, "min": min, "sec": sec}
