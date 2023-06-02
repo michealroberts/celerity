@@ -9,7 +9,7 @@
 from math import floor
 
 from .common import Angle
-from .utilities import convert_degree_to_dms
+from .utilities import convert_degree_to_dms, convert_degree_to_hms
 
 # *****************************************************************************************************************
 
@@ -23,6 +23,20 @@ def format_degree_as_dms(degree: float) -> str:
     """
     dms = convert_degree_to_dms(degree)
     return f"{dms['deg']:+03d}° {dms['min']:02d}' {dms['sec']:05.2f}\""
+
+
+# *****************************************************************************************************************
+
+
+def format_degree_as_hms(degree: float) -> str:
+    """
+    Convert coordinate (in decimal degrees) to hours (h), minutes (m), seconds (s).
+
+    :param degree: decimal degree
+    :return: e.g., string '0h 0m 00s'
+    """
+    hms = convert_degree_to_hms(degree)
+    return f"{hms['hour']:02d}h {hms['min']:02d}m {hms['sec']:05.2f}s"
 
 
 # *****************************************************************************************************************
