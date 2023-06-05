@@ -272,3 +272,76 @@ def convert_greenwhich_sidereal_time_to_universal_coordinate_time(
         microseconds,
         tzinfo=timezone.utc,
     )
+
+
+# *****************************************************************************************************************
+
+
+class Time(datetime):
+    when: datetime
+
+    def __new__(cls, when: datetime):
+        cls.when = when
+
+        return super(Time, cls).__new__(
+            cls,
+            when.year,
+            when.month,
+            when.day,
+            when.hour,
+            when.minute,
+            when.second,
+            when.microsecond,
+            tzinfo=timezone.utc,
+        )
+
+    def at(self, when: datetime) -> "Time":
+        """
+        Create a new Time object at the given datetime.
+        """
+        return Time(when)
+
+    @property
+    def UT(self) -> float:
+        """
+        Get the Universal Time for the given datetime.
+        """
+        return get_universal_time(self.when)
+
+    @property
+    def JD(self) -> float:
+        """
+        Get the Julian Date for the given datetime.
+        """
+        return get_julian_date(self.when)
+
+    @property
+    def MJD(self) -> float:
+        """
+        Get the Modified Julian Date for the given datetime.
+        """
+        return get_modified_julian_date(self.when)
+
+    @property
+    def GST(self) -> float:
+        """
+        Get the Greenwich Sidereal Time for the given datetime.
+        """
+        return get_greenwhich_sidereal_time(self.when)
+
+    def LST(self, longitude) -> float:
+        return get_local_sidereal_time(self.when, longitude)
+
+    def __str__(self) -> str:
+        return self.when.isoformat()
+
+    def __repr__(self) -> str:
+        return self.when.isoformat()
+
+    def __eq__(self, other: object) -> bool:
+        return (
+            isinstance(other, Time) and self.when.timestamp() == other.when.timestamp()
+        )
+
+
+# *****************************************************************************************************************
