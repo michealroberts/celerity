@@ -559,8 +559,6 @@ def get_phase(date: datetime) -> Phase:
     # Get the age of the Moon in degrees:
     D = d["a"]
 
-    print(D)
-
     if D >= 3.7 and D < 7.4:
         return Phase.WaxingCrescent
 
