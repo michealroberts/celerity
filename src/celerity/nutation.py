@@ -1,10 +1,10 @@
-# *****************************************************************************************************************
+# **************************************************************************************
 
 # @author         Michael Roberts <michael@observerly.com>
 # @package        @observerly/celerity
 # @license        Copyright © 2021-2023 observerly
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 from datetime import datetime
 from math import cos, degrees, radians, sin, tan
@@ -16,7 +16,7 @@ from .moon import get_mean_geometric_longitude as get_mean_lunar_geometric_longi
 from .sun import get_mean_geometric_longitude as get_mean_solar_geometric_longitude
 from .temporal import get_julian_date
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_correction_to_equatorial_for_nutation(
@@ -77,4 +77,4 @@ def get_correction_to_equatorial_for_nutation(
     return {"ra": Δra, "dec": Δdec}
 
 
-# *****************************************************************************************************************
+# **************************************************************************************

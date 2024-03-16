@@ -1,6 +1,5 @@
 from src.celerity.common import (
     EquatorialCoordinate,
-    HorizontalCoordinate,
     get_F_orbital_parameter,
     is_equatorial_coordinate,
     is_horizontal_coordinate,

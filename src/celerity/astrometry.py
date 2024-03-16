@@ -1,10 +1,10 @@
-# *****************************************************************************************************************
+# **************************************************************************************
 
 # @author         Michael Roberts <michael@observerly.com>
 # @package        @observerly/celerity
 # @license        Copyright © 2021-2023 observerly
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 from datetime import datetime
 from math import acos, atan2, cos, degrees, pow, radians, sin, tan
@@ -12,13 +12,13 @@ from math import acos, atan2, cos, degrees, pow, radians, sin, tan
 from .common import EquatorialCoordinate, GeographicCoordinate
 from .temporal import get_julian_date, get_local_sidereal_time
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_angular_separation(A: EquatorialCoordinate, B: EquatorialCoordinate) -> float:
     """
-    The angular separation between two objects in the sky is the angle between the two objects
-    as seen by an observer on Earth.
+    The angular separation between two objects in the sky is the angle between
+    the two objects as seen by an observer on Earth.
 
     :param A: The equatorial coordinate of the observed object.
     :param B: The equatorial coordinate of the observed object.
@@ -44,15 +44,16 @@ def get_angular_separation(A: EquatorialCoordinate, B: EquatorialCoordinate) -> 
     return θ
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_hour_angle(date: datetime, ra: float, longitude: float) -> float:
     """
-    Gets the hour angle for a particular object for a particular observer at a given datetime
+    Gets the hour angle for a particular object for a particular observer
+    at a given datetime
 
     :param date: The datetime object to convert.
-    :param ra: The right ascension of the observed object's equatorial coordinate in degrees.
+    :param ra: The right ascension of the observed object's equatorial coordinate.
     :param longitude: The longitude of the observer in degrees.
     :return The hour angle in degrees.
     """
@@ -67,15 +68,15 @@ def get_hour_angle(date: datetime, ra: float, longitude: float) -> float:
     return ha
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_obliquity_of_the_ecliptic(date: datetime) -> float:
     """
     Gets the obliquity of the ecliptic for a particular datetime
 
-    The obliquity of the ecliptic is the angle between the ecliptic and the celestial equator, and is used to
-    convert between ecliptic and equatorial coordinates.
+    The obliquity of the ecliptic is the angle between the ecliptic and the celestial
+    equator, and is used to convert between ecliptic and equatorial coordinates.
 
     :param date: The datetime object to convert.
     :return The obliquity of the ecliptic in degrees.
@@ -90,7 +91,7 @@ def get_obliquity_of_the_ecliptic(date: datetime) -> float:
     return 23.439292 - (46.845 * T + 0.00059 * pow(T, 2) + 0.001813 * pow(T, 3)) / 3600
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_parallactic_angle(
@@ -99,7 +100,8 @@ def get_parallactic_angle(
     target: EquatorialCoordinate,
 ) -> float:
     """
-    Gets the parallactic angle for a particular object for a particular observer at a given datetime
+    Gets the parallactic angle for a particular object for a particular observer
+    at a given datetime
 
     :param date: The datetime object to convert.
     :param observer: The geographic coordinate of the observer.
@@ -122,4 +124,4 @@ def get_parallactic_angle(
     )
 
 
-# *****************************************************************************************************************
+# **************************************************************************************

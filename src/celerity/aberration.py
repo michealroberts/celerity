@@ -1,13 +1,13 @@
-# *****************************************************************************************************************
+# **************************************************************************************
 
 # @author         Michael Roberts <michael@observerly.com>
 # @package        @observerly/celerity
 # @license        Copyright © 2021-2023 observerly
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 from datetime import datetime
-from math import cos, degrees, pow, radians, sin, tan
+from math import cos, pow, radians, sin, tan
 
 from .astrometry import get_obliquity_of_the_ecliptic
 from .common import EquatorialCoordinate
@@ -20,7 +20,7 @@ from .sun import get_mean_geometric_longitude as get_solar_mean_geometric_longit
 from .sun import get_true_geometric_longitude as get_solar_true_geometric_longitude
 from .temporal import get_julian_date
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_correction_to_equatorial_for_aberration(
@@ -40,7 +40,8 @@ def get_correction_to_equatorial_for_aberration(
     # Get the Julian date:
     JD = get_julian_date(date)
 
-    # Get the difference in fractional Julian centuries between the target date and J2000.0
+    # Get the difference in fractional Julian centuries between the target
+    # date and J2000.0
     T = (JD - 2451545.0) / 36525
 
     # Get the ecliptic longitude of the ascending node of the mode (in degrees):
@@ -90,3 +91,6 @@ def get_correction_to_equatorial_for_aberration(
     )
 
     return {"ra": Δra, "dec": Δdec}
+
+
+# **************************************************************************************
