@@ -1,10 +1,10 @@
-# *****************************************************************************************************************
+# **************************************************************************************
 
 # @author         Michael Roberts <michael@observerly.com>
 # @package        @observerly/celerity
 # @license        Copyright © 2021-2023 observerly
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 from datetime import datetime, timedelta, timezone
 from math import acos, cos, degrees, radians, sin, tan
@@ -21,11 +21,9 @@ from .coordinates import convert_equatorial_to_horizontal
 from .temporal import (
     convert_greenwhich_sidereal_time_to_universal_coordinate_time,
     convert_local_sidereal_time_to_greenwhich_sidereal_time,
-    get_greenwhich_sidereal_time,
-    get_local_sidereal_time,
 )
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 class Transit(TypedDict):
@@ -42,7 +40,7 @@ class Transit(TypedDict):
     S: float
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 class Rise(TypedDict):
@@ -58,7 +56,7 @@ class Rise(TypedDict):
     az: float
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 class Set(TypedDict):
@@ -74,7 +72,7 @@ class Set(TypedDict):
     az: float
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 class TransitParameters(TypedDict):
@@ -82,7 +80,7 @@ class TransitParameters(TypedDict):
     H1: float
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def is_object_circumpolar(
@@ -109,15 +107,18 @@ def is_object_circumpolar(
     return dec > (90 - lat - horizon) if lat > 0 else dec < (90 - lat - horizon)
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def is_object_never_visible(
     observer: GeographicCoordinate, target: EquatorialCoordinate, horizon: float
 ) -> bool:
     """
-    An object is never visible if it is always below the observer's horizon and never rises.
-    This is true when the object's declination is less than the observer's latitude minus 90 degrees.
+    An object is never visible if it is always below the observer's horizon and never
+    rises.
+
+    This is true when the object's declination is less than the observer's
+    latitude minus 90 degrees.
 
     :param target: The equatorial coordinate of the observed object.
     :param observer: The geographic coordinate of the observer.
@@ -130,12 +131,13 @@ def is_object_never_visible(
     # We only need the latitude of the observer:
     lat = observer["lat"]
 
-    # If the object's declination is less than the observer's latitude minus 90 degrees,
-    # then the object is never visible (always below the observer's horizon and never rises).
+    # If the object's declination is less than the observer's latitude
+    # minus 90 degrees, then the object is never visible (always below the
+    # observer's horizon and never rises).
     return dec < (lat - 90 + horizon) if lat > 0 else dec > (lat - 90 + horizon)
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def is_object_below_horizon(
@@ -145,8 +147,11 @@ def is_object_below_horizon(
     horizon: float,
 ) -> bool:
     """
-    An object is never visible if it is always below the observer's horizon and never rises.
-    This is true when the object's declination is less than the observer's latitude minus 90 degrees.
+    An object is never visible if it is always below the observer's horizon
+    and never rises.
+
+    This is true when the object's declination is less than the observer's
+    latitude minus 90 degrees.
 
     :param target: The equatorial or horizontal coordinate of the observed object.
     :param observer: The geographic coordinate of the observer.
@@ -169,7 +174,7 @@ def is_object_below_horizon(
     return hz["alt"] < 0 + horizon
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_does_object_rise_or_set(
@@ -202,7 +207,7 @@ def get_does_object_rise_or_set(
     return {"Ar": Ar, "H1": H1}
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_transit(
@@ -210,7 +215,8 @@ def get_transit(
     target: EquatorialCoordinate,
 ) -> Transit | Literal[None]:
     """
-    Determines the local sidereal time and azimuthal angle of rise and set for an object.
+    Determines the local sidereal time and azimuthal angle of rise
+    and set for an object.
 
     :param observer: The geographic coordinate of the observer.
     :param target: The equatorial coordinate of the observed object.
@@ -249,7 +255,7 @@ def get_transit(
     return {"LSTr": LSTr, "LSTs": LSTs, "R": R, "S": S}
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_next_rise(
@@ -296,7 +302,8 @@ def get_next_rise(
     # Convert the local sidereal time of rise to Greenwhich sidereal time:
     GSTr = convert_local_sidereal_time_to_greenwhich_sidereal_time(LSTr, observer)
 
-    # Convert the Greenwhich sidereal time to universal coordinate time for the date specified:
+    # Convert the Greenwhich sidereal time to universal coordinate time for the
+    # date specified:
     rise = convert_greenwhich_sidereal_time_to_universal_coordinate_time(date, GSTr)
 
     # If the rise is before the current time, then we know the next rise is tomorrow:
@@ -316,7 +323,7 @@ def get_next_rise(
     }
 
 
-# *****************************************************************************************************************
+# **************************************************************************************
 
 
 def get_next_set(
@@ -363,7 +370,8 @@ def get_next_set(
     # Convert the local sidereal time of rise to Greenwhich sidereal time:
     GSTs = convert_local_sidereal_time_to_greenwhich_sidereal_time(LSTs, observer)
 
-    # Convert the Greenwhich sidereal time to universal coordinate time for the date specified:
+    # Convert the Greenwhich sidereal time to universal coordinate time for
+    # the date specified:
     set = convert_greenwhich_sidereal_time_to_universal_coordinate_time(date, GSTs)
 
     # If the set is before the current time, then we know the next rise is tomorrow:
@@ -383,4 +391,4 @@ def get_next_set(
     }
 
 
-# *****************************************************************************************************************
+# **************************************************************************************

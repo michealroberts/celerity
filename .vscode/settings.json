@@ -1,28 +1,17 @@
 {
-  "editor.formatOnSave": true,
-  "python.formatting.provider": "none",
-  "python.formatting.blackArgs": [
-    "--line-length=88"
-  ],
-  "python.linting.enabled": true,
-  "python.linting.flake8Enabled": false,
-  "python.linting.pylintEnabled": false,
-  "python.linting.flake8Args": [
-    "--max-line-length=88"
-  ],
-  "python.linting.mypyEnabled": true,
-  "isort.args": [
-    "--profile",
-    "black"
-  ],
   "[python]": {
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": true
-    },
-    "editor.formatOnPaste": false,
-    "editor.defaultFormatter": "ms-python.black-formatter"
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.semanticHighlighting.enabled": true
   },
-  "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": "file:///Users/michael/Developer/observerly/perseus/.github/workflows/deploy.yml"
-  }
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.cursorStyle": "line",
+  "editor.formatOnSave": true,
+  "editor.rulers": [88],
+  "explorer.compactFolders": true,
+  "explorer.confirmDelete": true,
 }

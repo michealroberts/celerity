@@ -2,14 +2,10 @@
 name = "celerity"
 version = "0.23.0"
 description = "Celerity is a lightweight, zero-dependency and type-safe Python library for astronomical calculations."
-authors = [
-    "Michael J. Roberts <michael@observerly.com>"
-]
-maintainers = [
-    "Michael J. Roberts <michael@observerly.com>"
-]
+authors = ["Michael J. Roberts <michael@observerly.com>"]
+maintainers = ["Michael J. Roberts <michael@observerly.com>"]
 readme = "README.md"
-packages = [{include = "celerity", from = "src"}]
+packages = [{ include = "celerity", from = "src" }]
 repository = "https://github.com/michaelroberts/celerity"
 keywords = ["astronomy", "astrometry", "ephemeris"]
 
@@ -33,7 +29,52 @@ select = ["E", "F"]
 ignore = []
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
-fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+fixable = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "I",
+    "N",
+    "Q",
+    "S",
+    "T",
+    "W",
+    "ANN",
+    "ARG",
+    "BLE",
+    "COM",
+    "DJ",
+    "DTZ",
+    "EM",
+    "ERA",
+    "EXE",
+    "FBT",
+    "ICN",
+    "INP",
+    "ISC",
+    "NPY",
+    "PD",
+    "PGH",
+    "PIE",
+    "PL",
+    "PT",
+    "PTH",
+    "PYI",
+    "RET",
+    "RSE",
+    "RUF",
+    "SIM",
+    "SLF",
+    "TCH",
+    "TID",
+    "TRY",
+    "UP",
+    "YTT",
+]
 unfixable = []
 
 # Exclude a variety of commonly ignored directories.

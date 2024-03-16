@@ -1,8 +1,8 @@
 from datetime import datetime
 from math import isclose
 
-from src.celerity import Time
 from src.celerity.common import GeographicCoordinate
+from src.celerity.temporal import Time
 
 # For testing we need to specify a date because most calculations are
 # differential w.r.t a time component. We set it to the author's birthday:
