@@ -24,9 +24,7 @@ def get_summer_solstice(year: int) -> datetime:
     JD = 1721233.2486 + 365.2417284 * year - 0.053018 * pow(T, 2) + 0.009332 * pow(T, 3)
 
     # Convert the Julian date to a datetime UTC object:
-    return datetime.utcfromtimestamp((JD - 2440587.5) * 86400).astimezone(
-        tz=timezone.utc
-    )
+    return datetime.fromtimestamp((JD - 2440587.5) * 86400).astimezone(tz=timezone.utc)
 
 
 # **************************************************************************************
@@ -47,9 +45,7 @@ def get_winter_solstice(year: int) -> datetime:
     )
 
     # Convert the Julian date to a datetime UTC object:
-    return datetime.utcfromtimestamp((JD - 2440587.5) * 86400).astimezone(
-        tz=timezone.utc
-    )
+    return datetime.fromtimestamp((JD - 2440587.5) * 86400).astimezone(tz=timezone.utc)
 
 
 # **************************************************************************************

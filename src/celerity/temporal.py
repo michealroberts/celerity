@@ -74,11 +74,8 @@ def get_greenwhich_sidereal_time(date: datetime) -> float:
     if T_0 < 0:
         T_0 += 24
 
-    # Ensure that the date is in UTC
-    d = date.astimezone(tz=timezone.utc)
-
     # Convert the UTC time to a decimal fraction of hours:
-    UTC = d.microsecond / 1e-6 + d.second / 60 + d.minute / 60 + d.hour
+    UTC = date.microsecond / 1e-6 + date.second / 60 + date.minute / 60 + date.hour
 
     A = UTC * 1.002737909
 
@@ -101,7 +98,7 @@ def get_local_sidereal_time(date: datetime, longitude: float) -> float:
     :param longitude: The longitude of the observer.
     :return: The Local Sidereal Time (LST) of the given date normalised to UTC.
     """
-    GST = get_greenwhich_sidereal_time(date.astimezone(tz=timezone.utc))
+    GST = get_greenwhich_sidereal_time(date)
 
     d = (GST + longitude / 15.0) / 24.0
 
