@@ -26,9 +26,7 @@ def get_spring_equinox(year: int) -> datetime:
     )
 
     # Convert the Julian date to a datetime UTC object:
-    return datetime.utcfromtimestamp((JD - 2440587.5) * 86400).astimezone(
-        tz=timezone.utc
-    )
+    return datetime.fromtimestamp((JD - 2440587.5) * 86400).astimezone(tz=timezone.utc)
 
 
 # **************************************************************************************
@@ -49,9 +47,7 @@ def get_autumn_equinox(year: int) -> datetime:
     )
 
     # Convert the Julian date to a datetime UTC object:
-    return datetime.utcfromtimestamp((JD - 2440587.5) * 86400).astimezone(
-        tz=timezone.utc
-    )
+    return datetime.fromtimestamp((JD - 2440587.5) * 86400).astimezone(tz=timezone.utc)
 
 
 # **************************************************************************************

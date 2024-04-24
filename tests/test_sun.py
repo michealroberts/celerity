@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
+from src.celerity.coordinates import convert_equatorial_to_horizontal
 from src.celerity.sun import (
     get_angular_diameter,
     get_distance,
@@ -64,6 +65,24 @@ def test_get_equatorial_coordinate():
     eq = get_equatorial_coordinate(date)
     assert eq["ra"] == 318.5617376411268
     assert eq["dec"] == -16.008394691469505
+
+    hz = convert_equatorial_to_horizontal(date, observer, eq)
+
+    assert hz["alt"] == -69.40209879395105
+    assert hz["az"] == 82.77542830157664
+
+    # Add one hour to the date:
+    date = datetime(2015, 2, 5, 13, 0, 0, 0, tzinfo=timezone.utc)
+
+    eq = get_equatorial_coordinate(date)
+
+    assert eq["ra"] == 318.60368091333004
+    assert eq["dec"] == -15.995795336804742
+
+    hz = convert_equatorial_to_horizontal(date, observer, eq)
+
+    assert hz["alt"] == -55.32225076978145
+    assert hz["az"] == 89.64913544932578
 
 
 def test_get_angular_diameter():
