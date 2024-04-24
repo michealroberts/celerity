@@ -75,7 +75,7 @@ def get_greenwhich_sidereal_time(date: datetime) -> float:
         T_0 += 24
 
     # Convert the UTC time to a decimal fraction of hours:
-    UTC = date.microsecond / 1e-6 + date.second / 60 + date.minute / 60 + date.hour
+    UTC = (date.microsecond / 1e6) + date.second / 60 + date.minute / 60 + date.hour
 
     A = UTC * 1.002737909
 
