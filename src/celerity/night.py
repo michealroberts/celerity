@@ -7,12 +7,24 @@
 # **************************************************************************************
 
 from datetime import datetime, timedelta
+from enum import Enum
 from typing import List, Optional, Tuple, TypedDict
 
 from .common import GeographicCoordinate, HorizontalCoordinate
 from .coordinates import convert_equatorial_to_horizontal
 from .refraction import get_correction_to_horizontal_for_refraction
 from .sun import get_equatorial_coordinate
+
+# **************************************************************************************
+
+
+class NightPhase(Enum):
+    DAY = "Day"
+    CIVIL_TWILIGHT = "Civil Twilight"
+    NAUTICAL_TWILIGHT = "Nautical Twilight"
+    ASTRONOMICAL_TWILIGHT = "Astronomical Twilight"
+    NIGHT = "Night"
+
 
 # **************************************************************************************
 
