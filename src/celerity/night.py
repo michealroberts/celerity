@@ -37,6 +37,33 @@ class Night(TypedDict):
 # **************************************************************************************
 
 
+def get_solar_altitude(
+    date: datetime,
+    observer: GeographicCoordinate,
+    temperature=288.15,
+    pressure=101325,
+) -> float:
+    """
+    Get the altitude of the Sun at the given date and location.
+
+    :return: The altitude of the Sun in degrees.
+    """
+
+    # Get the Sun's equatorial coordinate:
+    eq = get_equatorial_coordinate(date)
+
+    # Convert the equatorial coordinate to a horizontal coordinate:
+    hz = convert_equatorial_to_horizontal(date, observer, eq)
+
+    # Correct the horizontal coordinate for atmospheric refraction:
+    hz = get_correction_to_horizontal_for_refraction(hz, temperature, pressure)
+
+    return hz["alt"]
+
+
+# **************************************************************************************
+
+
 def get_solar_transit(
     date: datetime, observer: GeographicCoordinate, horizon: float = 0
 ) -> Tuple[Optional[datetime], Optional[datetime], Optional[datetime]]:
