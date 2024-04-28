@@ -56,20 +56,20 @@ def get_solar_transit(
         eq = get_equatorial_coordinate(date)
 
         # Convert the equatorial coordinate to a horizontal coordinate:
-        hor = convert_equatorial_to_horizontal(date, observer, eq)
+        hz = convert_equatorial_to_horizontal(date, observer, eq)
 
         # Correct the horizontal coordinate for atmospheric refraction:
-        hor = get_correction_to_horizontal_for_refraction(hor, 288.15, 101325)
+        hz = get_correction_to_horizontal_for_refraction(hz, 288.15, 101325)
 
         # Find the altitude of the Sun where it crosses over the horizon:
-        if hor["alt"] > horizon and rise is None:
+        if hz["alt"] > horizon and rise is None:
             rise = i
 
         # Find the altitude of the Sun where it crosses back under the horizon:
-        if hor["alt"] < horizon and set is None and rise is not None:
+        if hz["alt"] < horizon and set is None and rise is not None:
             set = i
 
-        sun.append(hor)
+        sun.append(hz)
 
         # Increment the date by 1 second:
         date += timedelta(minutes=1)
@@ -116,7 +116,8 @@ def get_night(
     # Get the time of the sunrise for the following date:
     sunrise, _, _ = get_solar_transit(date + timedelta(days=1), observer, horizon)
 
-    # The observer could be in perpetual daylight or perpetual night, e.g., the North Pole or South Pole:
+    # The observer could be in perpetual daylight or perpetual night, e.g., the
+    # North Pole or South Pole:
     if sunset is None or sunrise is None:
         return None
 
