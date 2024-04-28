@@ -5,6 +5,7 @@ from src.celerity.night import (
     NightPhase,
     get_night,
     get_night_phase,
+    get_solar_altitude,
     get_solar_transit,
     is_night,
 )
@@ -20,6 +21,27 @@ latitude: float = 49.914425
 longitude: float = -6.315165
 
 observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
+
+
+def test_get_solar_altitude():
+    # The Sun's altitude at solar transit should be 90 degrees:
+    d = get_solar_transit(date, observer)
+
+    horizon = 0
+
+    # Get the Sun's altitude at sunrise:
+    sunrise = d[0]
+    alt = get_solar_altitude(sunrise, observer)
+
+    assert abs(alt - horizon) < 0.5
+    assert alt > horizon
+
+    # Get the Sun's altitude at sunset:
+    sunset = d[2]
+    alt = get_solar_altitude(sunset, observer)
+
+    assert abs(alt - horizon) < 0.5
+    assert alt < horizon
 
 
 def test_get_solar_transit():
