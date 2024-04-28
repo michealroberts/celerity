@@ -1,7 +1,13 @@
 from datetime import datetime, timezone
 
 from src.celerity.common import GeographicCoordinate
-from src.celerity.night import get_night, get_solar_transit, is_night
+from src.celerity.night import (
+    NightPhase,
+    get_night,
+    get_night_phase,
+    get_solar_transit,
+    is_night,
+)
 
 # For testing we need to specify a date because most calculations are
 # differential w.r.t a time component. We set it to the author's birthday:
@@ -70,3 +76,30 @@ def test_is_night():
     date = datetime(2021, 5, 14, 22, 0, 0, 0, tzinfo=timezone.utc)
     n = is_night(date, observer)
     assert n is True
+
+
+def test_get_night_phase():
+    # If the Sun's altitude is less than -18 degrees, then it is night:
+    altitude = -18
+    n = get_night_phase(altitude)
+    assert n == NightPhase.NIGHT
+
+    # If the Sun's altitude is between -18 and -12 degrees, then it is
+    # astronomical twilight:
+    altitude = -12
+    n = get_night_phase(altitude)
+    assert n == NightPhase.ASTRONOMICAL_TWILIGHT
+
+    # If the Sun's altitude is between -12 and -6 degrees, then it is nautical twilight:
+    altitude = -6
+    n = get_night_phase(altitude)
+    assert n == NightPhase.NAUTICAL_TWILIGHT
+
+    # If the Sun's altitude is between -6 and 0 degrees, then it is civil twilight:
+    altitude = 0
+    n = get_night_phase(altitude)
+    assert n == NightPhase.CIVIL_TWILIGHT
+
+    # If the Sun's altitude is greater than 0 degrees, then it is day:
+    altitude = 1
+    n = get_night_phase(altitude)

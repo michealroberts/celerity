@@ -149,3 +149,27 @@ def is_night(
 
 
 # **************************************************************************************
+
+
+def get_night_phase(altitude: float) -> NightPhase:
+    """
+    Determine the phase of the night based on the altitude of the Sun.
+
+    :param altitude: The altitude of the Sun.
+    """
+    if altitude > 0:
+        return NightPhase.DAY
+
+    if altitude > -6:
+        return NightPhase.CIVIL_TWILIGHT
+
+    if altitude > -12:
+        return NightPhase.NAUTICAL_TWILIGHT
+
+    if altitude > -18:
+        return NightPhase.ASTRONOMICAL_TWILIGHT
+
+    return NightPhase.NIGHT
+
+
+# **************************************************************************************
