@@ -69,7 +69,6 @@ fixable = [
     "RUF",
     "SIM",
     "SLF",
-    "TCH",
     "TID",
     "TRY",
     "UP",
