@@ -20,10 +20,10 @@ keywords = [
     "stellar",
     "galactic",
 ]
+include = ["pyproject.toml", "README.md", "LICENSE", "src/celerity/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.263"
