@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11"]
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -38,11 +38,11 @@ jobs:
         run: poetry config pypi-token.pypi $PYPI_API_TOKEN
 
       - name: Install Dependencies
-        run: poetry install --no-root --no-dev
+        run: poetry install --no-root --without dev
 
       - name: Build Package 🐍
         run: poetry build
-      
+
       - name: Dry-run Publish to PyPI 😬
         run: poetry publish --dry-run
 
