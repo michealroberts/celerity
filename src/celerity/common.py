@@ -7,7 +7,7 @@
 # **************************************************************************************
 
 from math import cos, pow, radians
-from typing import Any, TypedDict
+from typing import Any, TypedDict, NotRequired
 
 # **************************************************************************************
 
@@ -49,6 +49,7 @@ class EquatorialCoordinate(TypedDict):
 class GeographicCoordinate(TypedDict):
     lat: float
     lon: float
+    el: NotRequired[float]
 
 
 # **************************************************************************************
