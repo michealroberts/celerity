@@ -19,8 +19,8 @@ from .common import (
 )
 from .coordinates import convert_equatorial_to_horizontal
 from .temporal import (
-    convert_greenwhich_sidereal_time_to_universal_coordinate_time,
-    convert_local_sidereal_time_to_greenwhich_sidereal_time,
+    convert_greenwich_sidereal_time_to_universal_coordinate_time,
+    convert_local_sidereal_time_to_greenwich_sidereal_time,
 )
 
 # **************************************************************************************
@@ -299,12 +299,12 @@ def get_next_rise(
 
     LSTr = transit["LSTr"]
 
-    # Convert the local sidereal time of rise to Greenwhich sidereal time:
-    GSTr = convert_local_sidereal_time_to_greenwhich_sidereal_time(LSTr, observer)
+    # Convert the local sidereal time of rise to Greenwich sidereal time:
+    GSTr = convert_local_sidereal_time_to_greenwich_sidereal_time(LSTr, observer)
 
-    # Convert the Greenwhich sidereal time to universal coordinate time for the
+    # Convert the Greenwich sidereal time to universal coordinate time for the
     # date specified:
-    rise = convert_greenwhich_sidereal_time_to_universal_coordinate_time(date, GSTr)
+    rise = convert_greenwich_sidereal_time_to_universal_coordinate_time(date, GSTr)
 
     # If the rise is before the current time, then we know the next rise is tomorrow:
     if rise < now.astimezone(tz=timezone.utc):
@@ -367,12 +367,12 @@ def get_next_set(
 
     LSTs = transit["LSTs"]
 
-    # Convert the local sidereal time of rise to Greenwhich sidereal time:
-    GSTs = convert_local_sidereal_time_to_greenwhich_sidereal_time(LSTs, observer)
+    # Convert the local sidereal time of rise to Greenwich sidereal time:
+    GSTs = convert_local_sidereal_time_to_greenwich_sidereal_time(LSTs, observer)
 
-    # Convert the Greenwhich sidereal time to universal coordinate time for
+    # Convert the Greenwich sidereal time to universal coordinate time for
     # the date specified:
-    set = convert_greenwhich_sidereal_time_to_universal_coordinate_time(date, GSTs)
+    set = convert_greenwich_sidereal_time_to_universal_coordinate_time(date, GSTs)
 
     # If the set is before the current time, then we know the next rise is tomorrow:
     if set < now.astimezone(tz=timezone.utc):
