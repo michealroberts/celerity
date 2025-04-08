@@ -45,7 +45,7 @@ def test_get_modified_julian_date():
     assert T.MJD == 59348.0
 
 
-def test_get_greenwhich_sidereal_time():
+def test_get_greenwich_sidereal_time():
     assert T.GST == 15.463990399019053
 
 

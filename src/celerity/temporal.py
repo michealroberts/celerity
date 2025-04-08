@@ -53,7 +53,7 @@ def get_modified_julian_date(date: datetime) -> float:
 # **************************************************************************************
 
 
-def get_greenwhich_sidereal_time(date: datetime) -> float:
+def get_greenwich_sidereal_time(date: datetime) -> float:
     """
     The Greenwich Sidereal Time (GST) is the hour angle of the vernal
     equinox, the ascending node of the ecliptic on the celestial equator.
@@ -103,7 +103,7 @@ def get_local_sidereal_time(date: datetime, longitude: float) -> float:
     :param longitude: The longitude of the observer.
     :return: The Local Sidereal Time (LST) of the given date normalised to UTC.
     """
-    GST = get_greenwhich_sidereal_time(date)
+    GST = get_greenwich_sidereal_time(date)
 
     d = (GST + longitude / 15.0) / 24.0
 
@@ -136,7 +136,7 @@ def get_universal_time(date: datetime) -> float:
 
     year = date.astimezone(tz=timezone.utc).year
 
-    GST = get_greenwhich_sidereal_time(date.astimezone(tz=timezone.utc))
+    GST = get_greenwich_sidereal_time(date.astimezone(tz=timezone.utc))
 
     # Get the Julian Date at 0h:
     JD = get_julian_date(
@@ -178,7 +178,7 @@ def get_universal_time(date: datetime) -> float:
 # **************************************************************************************
 
 
-def convert_local_sidereal_time_to_greenwhich_sidereal_time(
+def convert_local_sidereal_time_to_greenwich_sidereal_time(
     LST: float, observer: GeographicCoordinate
 ) -> float:
     """
@@ -204,7 +204,7 @@ def convert_local_sidereal_time_to_greenwhich_sidereal_time(
 # **************************************************************************************
 
 
-def convert_greenwhich_sidereal_time_to_universal_coordinate_time(
+def convert_greenwich_sidereal_time_to_universal_coordinate_time(
     date: datetime, GST: float
 ) -> datetime:
     """
@@ -329,7 +329,7 @@ class Time(datetime):
         """
         Get the Greenwich Sidereal Time for the given datetime.
         """
-        return get_greenwhich_sidereal_time(self.when)
+        return get_greenwich_sidereal_time(self.when)
 
     def LST(self, longitude) -> float:
         return get_local_sidereal_time(self.when, longitude)
