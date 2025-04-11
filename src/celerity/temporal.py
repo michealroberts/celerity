@@ -28,7 +28,7 @@ def get_julian_date(date: datetime) -> float:
         int(
             (
                 date.astimezone(tz=timezone.utc)
-                - datetime(1970, 1, 1).astimezone(tz=timezone.utc)
+                - datetime(1970, 1, 1, tzinfo=timezone.utc)
             ).total_seconds()
             * 1000
         )
