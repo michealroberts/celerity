@@ -51,13 +51,13 @@ def get_correction_to_equatorial_for_aberration(
     L = get_solar_mean_geometric_longitude(date)
 
     # Get the mean geometric longitude of the moon (in degrees):
-    l = get_lunar_mean_geometric_longitude(date)
+    longitude = get_lunar_mean_geometric_longitude(date)
 
     # Get the nutation in obliquity (in degrees):
     Δε = (
         9.2 * cos(radians(Ω))
         + 0.57 * cos(radians(2 * L))
-        + 0.1 * cos(radians(2 * l))
+        + 0.1 * cos(radians(2 * longitude ))
         - 0.09 * cos(radians(2 * Ω))
     ) / 3600
 

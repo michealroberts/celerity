@@ -54,10 +54,10 @@ def get_evection_correction(date: datetime) -> float:
     λ = radians(get_mean_ecliptic_longitude(date))
 
     # Get the Sun's mean ecliptic longitude:
-    l = radians(get_mean_solar_ecliptic_longitude(date))
+    longitude = radians(get_mean_solar_ecliptic_longitude(date))
 
     # Get the avection correction:
-    return 1.2739 * sin(2 * (λ - l) - M)
+    return 1.2739 * sin(2 * (λ - longitude) - M)
 
 
 # **************************************************************************************
@@ -136,7 +136,7 @@ def get_mean_geometric_longitude(date: datetime) -> float:
     # Calculate the number of centuries since J2000.0:
     T = (JD - 2451545.0) / 36525
 
-    l = (
+    longitude = (
         218.3164477
         + 481267.88123421 * T
         - 0.0015786 * pow(T, 2)
@@ -145,10 +145,10 @@ def get_mean_geometric_longitude(date: datetime) -> float:
     ) % 360
 
     # Correct for negative angles
-    if l < 0:
-        l += 360
+    if longitude < 0:
+        longitude += 360
 
-    return l
+    return longitude
 
 
 # **************************************************************************************

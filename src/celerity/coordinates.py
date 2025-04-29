@@ -7,7 +7,7 @@
 # **************************************************************************************
 
 from datetime import datetime
-from math import acos, asin, cos, degrees, radians, sin, atan2, pi
+from math import acos, asin, cos, degrees, radians, sin, atan2
 
 from .aberration import get_correction_to_equatorial_for_aberration
 from .astrometry import get_hour_angle
@@ -97,7 +97,9 @@ def convert_equatorial_to_horizontal(
         "alt": degrees(alt),
     }
 
+
 # **************************************************************************************
+
 
 def convert_horizontal_to_equatorial(
     date: datetime,
@@ -107,9 +109,9 @@ def convert_horizontal_to_equatorial(
     """
     Converts horizontal coordinates (azimuth, altitude) back to equatorial
     coordinates (right ascension, declination) for a given observer and datetime.
-    
+
     The azimuth is assumed to be measured from north toward east.
-    
+
     :param date: The datetime of observation.
     :param observer: The geographic coordinate of the observer.
     :param target: The horizontal coordinate of the observed object.
@@ -123,17 +125,17 @@ def convert_horizontal_to_equatorial(
 
     # Convert the azimuth to radians:
     A = radians(target["az"])
-    
+
     # Compute the declination:
-    dec = asin(sin(a)*sin(latitude) + cos(a)*cos(latitude)*cos(A))
-    
+    dec = asin(sin(a) * sin(latitude) + cos(a) * cos(latitude) * cos(A))
+
     # Compute the cosine of declination:
     cos_dec = cos(dec)
 
     # Protect against division by zero (object near the pole)
     if abs(cos_dec) < 1e-10:
         raise ValueError("cos(dec) is too small; hour angle is indeterminate.")
-    
+
     sin_H = -cos(a) * sin(A) / cos_dec
     cos_H = (sin(a) - sin(latitude) * sin(dec)) / (cos(latitude) * cos_dec)
 
@@ -142,13 +144,14 @@ def convert_horizontal_to_equatorial(
 
     # Compute Local Sidereal Time (LST) in degrees, and convert to radians:
     LST = get_local_sidereal_time(date, observer["lon"])
-    
+
     # Right Ascension (RA) is given by LST - the hour angle:
     ra = ((LST * 15) - degrees(ha)) % 360
-    
+
     return {
         "ra": ra,
         "dec": degrees(dec),
     }
+
 
 # **************************************************************************************
