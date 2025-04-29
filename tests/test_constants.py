@@ -8,7 +8,7 @@
 
 import unittest
 
-from celerity.constants import J1900, J1970, J2000, c
+from celerity.constants import J1900, J1970, J2000, c, h
 
 # **************************************************************************************
 
@@ -25,5 +25,7 @@ class TestConstants(unittest.TestCase):
     def test_c(self):
         self.assertEqual(c, 299792458)
 
+    def test_h(self):
+        self.assertEqual(h, 6.62607015e-34)
 
 # **************************************************************************************
