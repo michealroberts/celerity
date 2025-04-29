@@ -13,6 +13,7 @@ at 12:00 TT (Terrestrial Time), equivalent to noon on December 31, 1899.
 
 The Julian date 2415020.0 TT (Terrestrial Time).
 """
+
 J1900: float = 2415020.0
 
 # **************************************************************************************

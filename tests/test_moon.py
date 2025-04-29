@@ -61,8 +61,8 @@ def test_get_mean_anomaly_correction():
 
 
 def test_get_mean_geometric_longitude():
-    l = get_mean_geometric_longitude(date)
-    assert l == 80.32626508452813
+    longitude = get_mean_geometric_longitude(date)
+    assert longitude == 80.32626508452813
 
 
 def test_get_mean_ecliptic_longitude_of_the_ascending_node():

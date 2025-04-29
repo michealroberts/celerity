@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import TypedDict
 
 from src.celerity.astrometry import (
     get_angular_separation,

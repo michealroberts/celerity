@@ -7,7 +7,7 @@
 # **************************************************************************************
 
 from datetime import datetime
-from math import cos, degrees, radians, sin, tan
+from math import cos, radians, sin, tan
 
 from .common import EquatorialCoordinate
 from .temporal import get_julian_date

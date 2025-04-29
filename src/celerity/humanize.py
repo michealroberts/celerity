@@ -6,9 +6,7 @@
 
 # **************************************************************************************
 
-from math import floor
 
-from .common import Angle
 from .utilities import convert_degree_to_dms, convert_degree_to_hms
 
 # **************************************************************************************
