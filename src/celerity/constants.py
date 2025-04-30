@@ -58,3 +58,12 @@ The Planck constant is defined to be exactly 6.62607015 × 10^-34 J·s.
 h = 6.626_070_15e-34
 
 # **************************************************************************************
+
+"""
+The astronomical unit (AU) is a unit of length used in astronomy.
+
+It is defined as the mean distance from the Earth to the Sun.
+"""
+AU = 149597870700.0
+
+# **************************************************************************************
