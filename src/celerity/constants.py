@@ -6,6 +6,10 @@
 
 # **************************************************************************************
 
+from math import radians
+
+# **************************************************************************************
+
 """
 The previous standard epoch "J1900" was defined by international
 agreement to be equivalent to: The Gregorian date January 0.5, 1900,
@@ -65,5 +69,14 @@ The astronomical unit (AU) is a unit of length used in astronomy.
 It is defined as the mean distance from the Earth to the Sun.
 """
 AU = 149597870700.0
+
+# **************************************************************************************
+
+"""
+A parsec (short for "parallax second") is a unit of distance used in astronomy
+
+It is defined as the distance at which one astronomical unit subtends an angle of one arcsecond.
+"""
+PARSEC = AU / radians(1 / 3600)
 
 # **************************************************************************************
