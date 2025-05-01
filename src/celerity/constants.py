@@ -122,3 +122,16 @@ H0_SH0ES_2022: Final[Measurement] = Measurement(
 )
 
 # **************************************************************************************
+
+"""
+The IAU (International Astronomical Union) has adopted a value of
+the Hubble constant of 70.0 km/s/Mpc for use in cosmological calculations.
+"""
+H0_IAU_REFERENCE: Final[Measurement] = Measurement(
+    {
+        "value": 70.0,
+        "uncertainty": 2.0,
+    }
+)
+
+# **************************************************************************************

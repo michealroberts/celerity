@@ -10,6 +10,7 @@ import unittest
 
 from celerity.constants import (
     AU,
+    H0_IAU_REFERENCE,
     H0_PLANCK_2018,
     H0_SH0ES_2022,
     J1900,
@@ -52,6 +53,10 @@ class TestConstants(unittest.TestCase):
     def test_H0_SH0ES_2022(self):
         self.assertEqual(H0_SH0ES_2022["value"], 73.04)
         self.assertEqual(H0_SH0ES_2022["uncertainty"], 1.04)
+
+    def test_H0_IAU_REFERENCE(self):
+        self.assertEqual(H0_IAU_REFERENCE["value"], 70.0)
+        self.assertEqual(H0_IAU_REFERENCE["uncertainty"], 2.0)
 
 
 # **************************************************************************************
