@@ -7,6 +7,9 @@
 # **************************************************************************************
 
 from math import radians
+from typing import Final
+
+from .common import Measurement
 
 # **************************************************************************************
 
@@ -79,4 +82,22 @@ It is defined as the distance at which one astronomical unit subtends an angle o
 """
 PARSEC = AU / radians(1 / 3600)
 
+# **************************************************************************************
+
+"""
+The Hubble constant (H0) is the current rate of expansion of the universe.
+
+It is defined as the ratio of the velocity of a galaxy to its distance from us.
+
+The Hubble constant is usually expressed in units of kilometers per second per 
+megaparsec (km/s/Mpc).
+
+Planck 2018 value: 67.74 ± 0.46 km/s/Mpc
+"""
+H0_PLANCK_2018: Final[Measurement] = Measurement({
+  'value': 67.74,
+  'uncertainty': 0.46,
+})
+
+# **************************************************************************************
 # **************************************************************************************
