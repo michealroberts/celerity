@@ -55,7 +55,7 @@ J2000: float = 2451545.0
 """
 The speed of light in a vacuum is defined to be exactly 299,792,458 m/s.
 """
-c = 299_792_458 
+c = 299_792_458
 
 # **************************************************************************************
 
@@ -94,10 +94,31 @@ megaparsec (km/s/Mpc).
 
 Planck 2018 value: 67.74 ± 0.46 km/s/Mpc
 """
-H0_PLANCK_2018: Final[Measurement] = Measurement({
-  'value': 67.74,
-  'uncertainty': 0.46,
-})
+H0_PLANCK_2018: Final[Measurement] = Measurement(
+    {
+        "value": 67.74,
+        "uncertainty": 0.46,
+    }
+)
 
 # **************************************************************************************
+
+"""
+SH0ES 2022 value: 73.04 ± 1.04 km/s/Mpc
+
+The SH0ES (Supernovae, H0, and the Equation of State) collaboration is a team of
+astronomers who are measuring the Hubble constant using Type Ia supernovae as
+standard candles. The SH0ES team has been working on this problem for over a decade
+and has made significant progress in measuring the Hubble constant with high precision.
+
+N.B. The SH0ES team uses a variety of methods to measure the Hubble constant, including
+the use of Cepheid variables, Type Ia supernovae, and gravitational lensing.
+"""
+H0_SH0ES_2022: Final[Measurement] = Measurement(
+    {
+        "value": 73.04,
+        "uncertainty": 1.04,
+    }
+)
+
 # **************************************************************************************
