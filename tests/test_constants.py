@@ -8,9 +8,19 @@
 
 import unittest
 
-from celerity.constants import AU, J1900, J1970, J2000, PARSEC, c, h
+from celerity.constants import (
+    AU,
+    H0_PLANCK_2018,
+    J1900,
+    J1970,
+    J2000,
+    PARSEC,
+    c,
+    h,
+)
 
 # **************************************************************************************
+
 
 class TestConstants(unittest.TestCase):
     def test_J1900(self):
@@ -33,5 +43,15 @@ class TestConstants(unittest.TestCase):
 
     def test_PARSEC(self):
         self.assertEqual(PARSEC, 3.085677581491367e16)
+
+    def test_H0_PLANCK_2018(self):
+        self.assertEqual(H0_PLANCK_2018["value"], 67.74)
+        self.assertEqual(H0_PLANCK_2018["uncertainty"], 0.46)
+
+
+# **************************************************************************************
+
+if __name__ == "__main__":
+    unittest.main()
 
 # **************************************************************************************
