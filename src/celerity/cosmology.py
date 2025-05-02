@@ -45,6 +45,7 @@ def get_hubble_parameter(redshift: float) -> float:
 
 # **************************************************************************************
 
+# Alias for the dimensionless Hubble parameter function `get_hubble_parameter`:
 e_z = get_hubble_parameter
 
 # **************************************************************************************
