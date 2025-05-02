@@ -104,3 +104,35 @@ def get_comoving_distance(z: float, H: Measurement = H0_PLANCK_2018) -> Measurem
 
 
 # **************************************************************************************
+
+
+def get_luminosity_distance(z: float, H: Measurement = H0_PLANCK_2018) -> Measurement:
+    """
+    Luminosity distance D_L(z) = (1 + z) · D_C(z), in meters.
+
+    Args:
+        z:      Redshift (z), must be >= 0.
+        H:      Measurement of the Hubble constant (H0) in km/s/Mpc with its associated uncertainty.
+
+    Returns:
+        Measurement: Luminosity distance in meters with its associated uncertainty.
+
+    Raises:
+        ValueError: If z is negative.
+        ValueError: If the Hubble constant is not positive.
+    """
+    if z < 0:
+        raise ValueError("Redshift must be non-negative.")
+
+    # Compute comoving distance (with its propagated uncertainty)
+    d = get_comoving_distance(z, H)
+
+    return Measurement(
+        {
+            "value": (1.0 + z) * d["value"],
+            "uncertainty": (1.0 + z) * d.get("uncertainty", 0.0),
+        }
+    )
+
+
+# **************************************************************************************
