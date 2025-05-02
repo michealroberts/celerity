@@ -8,6 +8,14 @@
 
 from math import sqrt
 
+from .common import Measurement
+from .constants import (
+    H0_PLANCK_2018,
+    PARSEC,
+    c,
+)
+from .integration import perform_definite_integral
+
 # **************************************************************************************
 
 
@@ -31,8 +39,6 @@ def get_hubble_parameter(redshift: float) -> float:
     # The agreed upon radiation density parameter (Ωr):
     OMEGA_R = 9.167e-5
 
-    print(1 - OMEGA_M - OMEGA_LAMBDA)
-
     # The sum of the density parameters must approximately equal 1 for a flat universe:
     assert abs(OMEGA_M + OMEGA_LAMBDA + OMEGA_R - 1.0) < 1e-3, (
         "Density parameters must sum to 1."
@@ -47,5 +53,54 @@ def get_hubble_parameter(redshift: float) -> float:
 
 # Alias for the dimensionless Hubble parameter function `get_hubble_parameter`:
 e_z = get_hubble_parameter
+
+# **************************************************************************************
+
+
+def get_comoving_distance(z: float, H: Measurement = H0_PLANCK_2018) -> Measurement:
+    """
+    Comoving distance D_C(z) in meters.
+
+    Args:
+        z: Redshift (z), must be >= 0.
+        H: Measurement of the Hubble constant (H0) in km/s/Mpc with its associated uncertainty.
+
+    Returns:
+        Measurement: Comoving distance in meters with its associated uncertainty.
+
+    Raises:
+        ValueError: If z is negative.
+        ValueError: If the Hubble constant is not positive.
+    """
+    if z < 0:
+        raise ValueError("Redshift must be non-negative.")
+
+    # Calculate the Hubble constant in units of 1/s:
+    H0 = (H["value"] * 1_000) / (1e6 * PARSEC)
+
+    # Sense check that the Hubble constant is positive:
+    if H0 <= 0:
+        raise ValueError("Hubble constant must be positive.")
+
+    # Calculate the uncertainty in Hubble constant in units of 1/s:
+    H0_uncertainty = (H.get("uncertainty", 0.0) * 1_000) / (1e6 * PARSEC)
+
+    def integrand(x: float) -> float:
+        return 1.0 / get_hubble_parameter(x)
+
+    d_c = perform_definite_integral(f=integrand, a=0.0, b=z, n=256)
+
+    # Calculate the uncertainty in the comoving distance in meters:
+    d_c_uncertainty = (
+        (c * d_c * H0_uncertainty) / (pow(H0, 2)) if H0_uncertainty > 0 else 0.0
+    )
+
+    return Measurement(
+        {
+            "value": (c * d_c) / H0,
+            "uncertainty": d_c_uncertainty,
+        }
+    )
+
 
 # **************************************************************************************

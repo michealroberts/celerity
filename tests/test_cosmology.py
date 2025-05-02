@@ -8,12 +8,13 @@
 
 import unittest
 
-from celerity.cosmology import get_hubble_parameter
+from celerity.constants import H0_PLANCK_2018, H0_SH0ES_2022
+from celerity.cosmology import get_comoving_distance, get_hubble_parameter
 
 # **************************************************************************************
 
-class TestDimensionlessHubbleParameter(unittest.TestCase):
 
+class TestDimensionlessHubbleParameter(unittest.TestCase):
     def test_z_0_1(self):
         expected = 1.0509512424689358
         result = get_hubble_parameter(0.1)
@@ -43,9 +44,115 @@ class TestDimensionlessHubbleParameter(unittest.TestCase):
         with self.assertRaises(ValueError):
             get_hubble_parameter(-1)
 
+
 # **************************************************************************************
 
-if __name__ == '__main__':
+
+class TestComovingDistance(unittest.TestCase):
+    def test_planck_z0(self):
+        d = get_comoving_distance(0.0, H0_PLANCK_2018)
+        self.assertEqual(d["value"], 0.0)
+        self.assertEqual(d["uncertainty"], 0.0)
+
+    def test_shoes_z0(self):
+        d = get_comoving_distance(0.0, H0_SH0ES_2022)
+        self.assertEqual(d["value"], 0.0)
+        self.assertEqual(d["uncertainty"], 0.0)
+
+    def test_planck_z0_1(self):
+        d = get_comoving_distance(0.1, H0_PLANCK_2018)
+        expected_val = 1.332914e25
+        expected_unc = 9.46e22
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_planck_z1(self):
+        d = get_comoving_distance(1.0, H0_PLANCK_2018)
+        expected_val = 1.0442894e26
+        expected_unc = 7.095e23
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_planck_z10(self):
+        d = get_comoving_distance(10.0, H0_PLANCK_2018)
+        expected_val = 2.9577636e26
+        expected_unc = 2.00552e24
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_planck_z100(self):
+        d = get_comoving_distance(100.0, H0_PLANCK_2018)
+        expected_val = 3.940563e26
+        expected_unc = 2.67718e24
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_planck_z1000(self):
+        d = get_comoving_distance(1000.0, H0_PLANCK_2018)
+        expected_val = 4.52003e26
+        expected_unc = 3.072e24
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_shoes_z0_1(self):
+        d = get_comoving_distance(0.1, H0_SH0ES_2022)
+        expected_val = 1.236422e25
+        expected_unc = 1.7974e23
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+    def test_shoes_z1(self):
+        d = get_comoving_distance(1.0, H0_SH0ES_2022)
+        expected_val = 9.685148e25
+        expected_unc = 1.38116e24
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+    def test_shoes_z10(self):
+        d = get_comoving_distance(10.0, H0_SH0ES_2022)
+        expected_val = 2.7431162e26
+        expected_unc = 3.90698e24
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+    def test_shoes_z100(self):
+        d = get_comoving_distance(100.0, H0_SH0ES_2022)
+        expected_val = 3.6546818e26
+        expected_unc = 5.203e24
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+    def test_shoes_z1000(self):
+        d = get_comoving_distance(1000.0, H0_SH0ES_2022)
+        expected_val = 3.9610912e26
+        expected_unc = 5.63816e24
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+
+# **************************************************************************************
+
+if __name__ == "__main__":
     unittest.main()
 
 # **************************************************************************************
