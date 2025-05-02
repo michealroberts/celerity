@@ -10,6 +10,7 @@ from math import sqrt
 
 # **************************************************************************************
 
+
 def get_hubble_parameter(redshift: float) -> float:
     """
     Dimensionless Hubble parameter E(z) for flat ΛCDM cosmology, e.g., Ωk = 0.
@@ -33,12 +34,18 @@ def get_hubble_parameter(redshift: float) -> float:
     print(1 - OMEGA_M - OMEGA_LAMBDA)
 
     # The sum of the density parameters must approximately equal 1 for a flat universe:
-    assert abs(OMEGA_M + OMEGA_LAMBDA + OMEGA_R - 1.0) < 1e-3, "Density parameters must sum to 1."
+    assert abs(OMEGA_M + OMEGA_LAMBDA + OMEGA_R - 1.0) < 1e-3, (
+        "Density parameters must sum to 1."
+    )
 
     return sqrt(
-        OMEGA_R * pow(1 + redshift, 4) +
-        OMEGA_M * pow(1 + redshift, 3) +
-        OMEGA_LAMBDA
+        OMEGA_R * pow(1 + redshift, 4) + OMEGA_M * pow(1 + redshift, 3) + OMEGA_LAMBDA
     )
+
+
+# **************************************************************************************
+
+# Alias for the dimensionless Hubble parameter function `get_hubble_parameter`:
+e_z = get_hubble_parameter
 
 # **************************************************************************************
