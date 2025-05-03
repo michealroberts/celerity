@@ -110,3 +110,50 @@ def get_photon_energy(
 
 
 # **************************************************************************************
+
+
+def get_photon_momentum(
+    *,
+    wavelength: Optional[float] = None,
+    frequency: Optional[float] = None,
+) -> float:
+    """
+    Calculate the momentum of a photon given its wavelength or frequency.
+
+    :param wavelength: Wavelength in meters (optional, exclusive with frequency)
+    :param frequency: Frequency in Hz (optional, exclusive with wavelength)
+    :return: Photon momentum in kg·m/s
+    :raises ValueError: If neither or both parameters are provided
+    :raises ValueError: If wavelength or frequency is less than or equal to zero
+    :raises ValueError: If neither wavelength nor frequency is provided
+    """
+    # XOR logic: either one of wavelength or frequency must be provided, but not both:
+    if (wavelength is None) == (frequency is None):
+        raise ValueError(
+            "Provide exactly one of 'wavelength' or 'frequency', not both or neither."
+        )
+
+    # If neither wavelength nor frequency is provided, raise an error:
+    if not wavelength and not frequency:
+        raise ValueError("Either 'wavelength' or 'frequency' must be provided.")
+
+    # If the wavelength is provided, but it is less than or equal to zero, raise an error:
+    if wavelength is not None and wavelength <= 0:
+        raise ValueError("Wavelength must be a positive number.")
+
+    # If the frequency is provided, but it is less than or equal to zero, raise an error:
+    if frequency is not None and frequency <= 0:
+        raise ValueError("Frequency must be a positive number.")
+
+    return (
+        (PLANCK_CONSTANT / wavelength)
+        if wavelength is not None
+        else (PLANCK_CONSTANT * frequency / SPEED_OF_LIGHT)
+        if frequency is not None
+        else (_ for _ in ()).throw(
+            ValueError("Either 'wavelength' or 'frequency' must be provided.")
+        )
+    )
+
+
+# **************************************************************************************
