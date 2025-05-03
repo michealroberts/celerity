@@ -8,8 +8,11 @@
 
 import unittest
 
+from celerity.constants import c as SPEED_OF_LIGHT
+from celerity.constants import h as PLANCK_CONSTANT
 from celerity.light import (
     get_light_travel_distance,
+    get_photon_energy,
     get_photon_frequency,
     get_photon_wavelength,
 )
@@ -92,6 +95,60 @@ class TestPhotonWavelength(unittest.TestCase):
 
 
 # **************************************************************************************
+
+
+class TestPhotonEnergy(unittest.TestCase):
+    def test_energy_from_frequency(self) -> None:
+        """
+        Test photon energy calculated from frequency.
+        """
+        frequency = 6e14  # Hz
+        expected_energy = PLANCK_CONSTANT * frequency
+        result = get_photon_energy(frequency=frequency)
+        self.assertAlmostEqual(result, expected_energy, delta=1e-3 * expected_energy)
+
+    def test_energy_from_wavelength(self) -> None:
+        """
+        Test photon energy calculated from wavelength.
+        """
+        wavelength = 500e-9  # meters (500 nm)
+        expected_energy = PLANCK_CONSTANT * SPEED_OF_LIGHT / wavelength
+        result = get_photon_energy(wavelength=wavelength)
+        self.assertAlmostEqual(result, expected_energy, delta=1e-3 * expected_energy)
+
+    def test_raises_on_both_parameters(self) -> None:
+        """
+        Test that passing both wavelength and frequency raises a ValueError.
+        """
+        with self.assertRaises(ValueError):
+            get_photon_energy(wavelength=500e-9, frequency=6e14)
+
+    def test_raises_on_neither_parameter(self) -> None:
+        """
+        Test that passing neither wavelength nor frequency raises a ValueError.
+        """
+        with self.assertRaises(ValueError):
+            get_photon_energy()
+
+    def test_negative_frequency_raises(self) -> None:
+        """
+        Test that a negative frequency raises a ValueError or returns invalid result.
+        (This depends on implementation decision — adjust if needed.)
+        """
+        with self.assertRaises(ValueError):
+            get_photon_energy(frequency=-1e14)
+
+    def test_negative_wavelength_raises(self) -> None:
+        """
+        Test that a negative wavelength raises a ValueError or returns invalid result.
+        (This depends on implementation decision — adjust if needed.)
+        """
+        with self.assertRaises(ValueError):
+            get_photon_energy(wavelength=-500e-9)
+
+
+# **************************************************************************************
+
 
 if __name__ == "__main__":
     unittest.main()

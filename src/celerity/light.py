@@ -6,7 +6,10 @@
 
 # **************************************************************************************
 
+from typing import Optional
+
 from .constants import c as SPEED_OF_LIGHT
+from .constants import h as PLANCK_CONSTANT
 
 # **************************************************************************************
 
@@ -57,6 +60,53 @@ def get_photon_wavelength(
         raise ValueError("Frequency must be a positive number.")
 
     return SPEED_OF_LIGHT / frequency
+
+
+# **************************************************************************************
+
+
+def get_photon_energy(
+    *,
+    wavelength: Optional[float] = None,
+    frequency: Optional[float] = None,
+) -> float:
+    """
+    Calculate the energy of a photon given its wavelength.
+
+    :param wavelength: Wavelength in meters (optional, exclusive with frequency)
+    :param frequency: Frequency in Hz (optional, exclusive with wavelength)
+    :return: Photon energy in joules
+    :raises ValueError: If neither or both parameters are provided
+    :raises ValueError: If wavelength or frequency is less than or equal to zero
+    :raises ValueError: If neither wavelength nor frequency is provided
+    """
+    # XOR logic: either one of wavelength or frequency must be provided, but not both:
+    if (wavelength is None) == (frequency is None):
+        raise ValueError(
+            "Provide exactly one of 'wavelength' or 'frequency', not both or neither."
+        )
+
+    # If neither wavelength nor frequency is provided, raise an error:
+    if not wavelength and not frequency:
+        raise ValueError("Either 'wavelength' or 'frequency' must be provided.")
+
+    # If the wavelength is provided, but it is less than or equal to zero, raise an error:
+    if wavelength is not None and wavelength <= 0:
+        raise ValueError("Wavelength must be a positive number.")
+
+    # If the frequency is provided, but it is less than or equal to zero, raise an error:
+    if frequency is not None and frequency <= 0:
+        raise ValueError("Frequency must be a positive number.")
+
+    return (
+        frequency * PLANCK_CONSTANT
+        if frequency is not None
+        else PLANCK_CONSTANT * SPEED_OF_LIGHT / wavelength
+        if wavelength is not None
+        else (_ for _ in ()).throw(
+            ValueError("Either 'wavelength' or 'frequency' must be provided.")
+        )
+    )
 
 
 # **************************************************************************************
