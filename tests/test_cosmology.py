@@ -10,6 +10,7 @@ import unittest
 
 from celerity.constants import H0_PLANCK_2018, H0_SH0ES_2022
 from celerity.cosmology import (
+    get_angular_diameter_distance,
     get_comoving_distance,
     get_hubble_parameter,
     get_luminosity_distance,
@@ -253,6 +254,111 @@ class TestLuminosityDistance(unittest.TestCase):
         d = get_luminosity_distance(1000.0, H0_SH0ES_2022)
         expected_val = 3.9650522912e29
         expected_unc = 5.64379816e27
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+
+# **************************************************************************************
+
+
+class TestAngularDiameterDistance(unittest.TestCase):
+    def test_planck_z0(self):
+        d = get_angular_diameter_distance(0.0, H0_PLANCK_2018)
+        self.assertEqual(d["value"], 0.0)
+        self.assertEqual(d["uncertainty"], 0.0)
+
+    def test_shoes_z0(self):
+        d = get_angular_diameter_distance(0.0, H0_SH0ES_2022)
+        self.assertEqual(d["value"], 0.0)
+        self.assertEqual(d["uncertainty"], 0.0)
+
+    def test_planck_z0_1(self):
+        d = get_angular_diameter_distance(0.1, H0_PLANCK_2018)
+        expected_val = 1.21174e25
+        expected_unc = 8.6e22
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_planck_z1(self):
+        d = get_angular_diameter_distance(1.0, H0_PLANCK_2018)
+        expected_val = 5.221447e25
+        expected_unc = 3.5475e23
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_planck_z10(self):
+        d = get_angular_diameter_distance(10.0, H0_PLANCK_2018)
+        expected_val = 2.688876e25
+        expected_unc = 1.8232e23
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_planck_z100(self):
+        d = get_angular_diameter_distance(100.0, H0_PLANCK_2018)
+        expected_val = 3.901548e24
+        expected_unc = 2.65067e22
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_planck_z1000(self):
+        d = get_angular_diameter_distance(1000.0, H0_PLANCK_2018)
+        expected_val = 4.515514e23
+        expected_unc = 3.06893e21
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.05 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.20 * expected_unc
+        )
+
+    def test_shoes_z0_1(self):
+        d = get_angular_diameter_distance(0.1, H0_SH0ES_2022)
+        expected_val = 1.12402e25
+        expected_unc = 1.634e23
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+    def test_shoes_z1(self):
+        d = get_angular_diameter_distance(1.0, H0_SH0ES_2022)
+        expected_val = 4.842574e25
+        expected_unc = 6.9058e23
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+    def test_shoes_z10(self):
+        d = get_angular_diameter_distance(10.0, H0_SH0ES_2022)
+        expected_val = 2.493742e25
+        expected_unc = 3.5518e23
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+    def test_shoes_z100(self):
+        d = get_angular_diameter_distance(100.0, H0_SH0ES_2022)
+        expected_val = 3.618497e24
+        expected_unc = 5.15149e22
+        self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
+        self.assertAlmostEqual(
+            d["uncertainty"], expected_unc, delta=0.25 * expected_unc
+        )
+
+    def test_shoes_z1000(self):
+        d = get_angular_diameter_distance(1000.0, H0_SH0ES_2022)
+        expected_val = 3.957134e23
+        expected_unc = 5.63253e21
         self.assertAlmostEqual(d["value"], expected_val, delta=0.10 * expected_val)
         self.assertAlmostEqual(
             d["uncertainty"], expected_unc, delta=0.25 * expected_unc
