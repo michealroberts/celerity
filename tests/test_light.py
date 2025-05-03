@@ -8,9 +8,10 @@
 
 import unittest
 
-from celerity.light import get_light_travel_distance
+from celerity.light import get_light_travel_distance, get_photon_frequency
 
 # **************************************************************************************
+
 
 class TestLightTravelDistance(unittest.TestCase):
     def test_light_travel_distance(self):
@@ -32,5 +33,37 @@ class TestLightTravelDistance(unittest.TestCase):
 
         expected_distance = 149896229.0  # Speed of light in m/s * 0.5 seconds
         self.assertAlmostEqual(get_light_travel_distance(time), expected_distance)
+
+
+# **************************************************************************************
+
+
+class TestPhotonFrequency(unittest.TestCase):
+    def test_photon_frequency(self) -> None:
+        """
+        Test the photon frequency calculation.
+        """
+        # Calculate the frequency using the wavelength of 500 nm:
+        frequency = get_photon_frequency(500e-9)
+
+        # Expected approximate frequency in Hz for 500 nm wavelength:
+        expected_frequency = 6e14
+
+        self.assertAlmostEqual(
+            frequency, expected_frequency, delta=1e-3 * expected_frequency
+        )
+
+    def test_negative_photon_frequency(self) -> None:
+        """
+        Test the photon frequency calculation with a negative wavelength.
+        """
+        with self.assertRaises(ValueError):
+            get_photon_frequency(-500e-9)
+
+
+# **************************************************************************************
+
+if __name__ == "__main__":
+    unittest.main()
 
 # **************************************************************************************
