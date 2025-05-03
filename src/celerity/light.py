@@ -41,3 +41,22 @@ def get_photon_frequency(
 
 
 # **************************************************************************************
+
+
+def get_photon_wavelength(
+    frequency: float,
+) -> float:
+    """
+    Calculate the wavelength of a photon given its frequency (in Hz).
+
+    :param frequency: Frequency in Hz
+    :return: Photon wavelength in meters
+    :raises ValueError: If frequency is less than or equal to zero
+    """
+    if frequency <= 0:
+        raise ValueError("Frequency must be a positive number.")
+
+    return SPEED_OF_LIGHT / frequency
+
+
+# **************************************************************************************
