@@ -42,10 +42,12 @@ def get_correction_to_horizontal_for_refraction(
         * (283.15 / T)
     )
 
-    return {
-        "alt": target["alt"] + R,
-        "az": target["az"],
-    }
+    return HorizontalCoordinate(
+        {
+            "az": target["az"],
+            "alt": target["alt"] + R,
+        }
+    )
 
 
 # **************************************************************************************
