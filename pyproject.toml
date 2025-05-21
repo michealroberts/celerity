@@ -58,3 +58,10 @@ include = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+# This configuration ensures the entire namespace of your brick is included when pytest 
+# does its test lookup. Without it, pytest will raise errors because of the default way
+# it does module lookups. This occurs when using Polylith with the TDD theme.
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+asyncio_default_fixture_loop_scope = "session"
