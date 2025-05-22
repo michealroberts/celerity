@@ -20,3 +20,15 @@ class Transmission(TypedDict):
 
 
 # **************************************************************************************
+
+
+class SurfaceReflectance(TypedDict):
+    # The albedo of a reflecting surface, which is the fraction of light that is
+    # reflected by the surface (e.g., the primary mirror of a telescope). This is
+    # typically a value between 0 and 1. A value of 1 means that all light is reflected
+    # (perfect reflector) by the surface, while a value of 0 means that no light is
+    # reflected (black body):
+    albedo: float
+
+
+# **************************************************************************************
