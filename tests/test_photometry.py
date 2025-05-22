@@ -8,7 +8,7 @@
 
 import unittest
 
-from celerity.astronomy import convert_adu_to_electrons_for_frame
+from celerity.photometry import convert_adu_to_electrons_for_frame
 
 # **************************************************************************************
 
