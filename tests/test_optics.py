@@ -21,8 +21,8 @@ class TestGetOpticalSystemThroughput(unittest.TestCase):
     def test_all_elements_present(self):
         """Test throughput with primary, secondary, lens, filter, and QE all valid."""
         T = get_optical_system_throughput(
-            primary=SurfaceReflectance({"reflectivity": 0.92}),
-            secondary=SurfaceReflectance({"reflectivity": 0.90}),
+            primary=SurfaceReflectance({"albedo": 0.92}),
+            secondary=SurfaceReflectance({"albedo": 0.90}),
             lens=Transmission({"coefficient": 0.98}),
             filter=Transmission({"coefficient": 0.85}),
             QE=0.80,
@@ -31,9 +31,9 @@ class TestGetOpticalSystemThroughput(unittest.TestCase):
         self.assertAlmostEqual(T, expected, places=9)
 
     def test_without_secondary(self):
-        """Test throughput when secondary is omitted (reflectivity=1.0)."""
+        """Test throughput when secondary is omitted (albedo=1.0)."""
         T = get_optical_system_throughput(
-            primary=SurfaceReflectance({"reflectivity": 0.95}),
+            primary=SurfaceReflectance({"albedo": 0.95}),
             lens=Transmission({"coefficient": 0.99}),
             filter=Transmission({"coefficient": 0.90}),
             QE=0.75,
@@ -41,32 +41,32 @@ class TestGetOpticalSystemThroughput(unittest.TestCase):
         expected = 0.95 * 1.0 * 0.99 * 0.90 * 0.75
         self.assertAlmostEqual(T, expected, places=9)
 
-    def test_invalid_primary_reflectivity_negative(self):
-        """Primary reflectivity < 0 should raise ValueError."""
+    def test_invalid_primary_albedo_negative(self):
+        """Primary albedo < 0 should raise ValueError."""
         with self.assertRaises(ValueError):
             get_optical_system_throughput(
-                primary=SurfaceReflectance({"reflectivity": -0.1}),
+                primary=SurfaceReflectance({"albedo": -0.1}),
                 lens=Transmission({"coefficient": 0.90}),
                 filter=Transmission({"coefficient": 0.90}),
                 QE=0.90,
             )
 
-    def test_invalid_primary_reflectivity_gt_one(self):
-        """Primary reflectivity > 1 should raise ValueError."""
+    def test_invalid_primary_albedo_gt_one(self):
+        """Primary albedo > 1 should raise ValueError."""
         with self.assertRaises(ValueError):
             get_optical_system_throughput(
-                primary=SurfaceReflectance({"reflectivity": 1.1}),
+                primary=SurfaceReflectance({"albedo": 1.1}),
                 lens=Transmission({"coefficient": 0.90}),
                 filter=Transmission({"coefficient": 0.90}),
                 QE=0.90,
             )
 
-    def test_invalid_secondary_reflectivity(self):
-        """Secondary reflectivity outside [0,1] should raise ValueError."""
+    def test_invalid_secondary_albedo(self):
+        """Secondary albedo outside [0,1] should raise ValueError."""
         with self.assertRaises(ValueError):
             get_optical_system_throughput(
-                primary=SurfaceReflectance({"reflectivity": 0.90}),
-                secondary=SurfaceReflectance({"reflectivity": 1.2}),
+                primary=SurfaceReflectance({"albedo": 0.90}),
+                secondary=SurfaceReflectance({"albedo": 1.2}),
                 lens=Transmission({"coefficient": 0.90}),
                 filter=Transmission({"coefficient": 0.90}),
                 QE=0.90,
@@ -76,7 +76,7 @@ class TestGetOpticalSystemThroughput(unittest.TestCase):
         """Lens transmission coefficient < 0 should raise ValueError."""
         with self.assertRaises(ValueError):
             get_optical_system_throughput(
-                primary=SurfaceReflectance({"reflectivity": 0.90}),
+                primary=SurfaceReflectance({"albedo": 0.90}),
                 lens=Transmission({"coefficient": -0.2}),
                 filter=Transmission({"coefficient": 0.90}),
                 QE=0.90,
@@ -86,7 +86,7 @@ class TestGetOpticalSystemThroughput(unittest.TestCase):
         """Filter transmission coefficient > 1 should raise ValueError."""
         with self.assertRaises(ValueError):
             get_optical_system_throughput(
-                primary=SurfaceReflectance({"reflectivity": 0.90}),
+                primary=SurfaceReflectance({"albedo": 0.90}),
                 lens=Transmission({"coefficient": 0.90}),
                 filter=Transmission({"coefficient": 1.5}),
                 QE=0.90,
@@ -96,7 +96,7 @@ class TestGetOpticalSystemThroughput(unittest.TestCase):
         """Quantum efficiency outside [0,1] should raise ValueError."""
         with self.assertRaises(ValueError):
             get_optical_system_throughput(
-                primary=SurfaceReflectance({"reflectivity": 0.90}),
+                primary=SurfaceReflectance({"albedo": 0.90}),
                 lens=Transmission({"coefficient": 0.90}),
                 filter=Transmission({"coefficient": 0.90}),
                 QE=1.2,
