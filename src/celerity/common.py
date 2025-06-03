@@ -62,16 +62,19 @@ class HorizontalCoordinate(TypedDict):
 
 # **************************************************************************************
 
+
 class Measurement(TypedDict):
     """
     Represents a measurement with an associated value and optional uncertainty.
-    
+
     Attributes:
         value (float): The measured value.
         uncertainty (Optional[float]): The uncertainty of the measurement, if available.
     """
+
     value: float
     uncertainty: NotRequired[float]
+
 
 # **************************************************************************************
 

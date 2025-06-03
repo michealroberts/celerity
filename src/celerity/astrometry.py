@@ -7,15 +7,33 @@
 # **************************************************************************************
 
 from datetime import datetime
-from math import acos, atan2, cos, degrees, pow, radians, sin, tan
+from math import acos, atan2, cos, degrees, inf, pow, radians, sin, tan
+from typing import Union, overload
 
-from .common import EquatorialCoordinate, GeographicCoordinate
+from .common import (
+    EquatorialCoordinate,
+    GeographicCoordinate,
+    HorizontalCoordinate,
+    is_equatorial_coordinate,
+    is_horizontal_coordinate,
+)
 from .temporal import get_julian_date, get_local_sidereal_time
 
 # **************************************************************************************
 
 
-def get_angular_separation(A: EquatorialCoordinate, B: EquatorialCoordinate) -> float:
+@overload
+def get_angular_separation(
+    A: EquatorialCoordinate, B: EquatorialCoordinate
+) -> float: ...
+@overload
+def get_angular_separation(
+    A: HorizontalCoordinate, B: HorizontalCoordinate
+) -> float: ...
+def get_angular_separation(
+    A: Union[EquatorialCoordinate, HorizontalCoordinate],
+    B: Union[EquatorialCoordinate, HorizontalCoordinate],
+) -> float:
     """
     The angular separation between two objects in the sky is the angle between
     the two objects as seen by an observer on Earth.
@@ -23,19 +41,42 @@ def get_angular_separation(A: EquatorialCoordinate, B: EquatorialCoordinate) -> 
     :param A: The equatorial coordinate of the observed object.
     :param B: The equatorial coordinate of the observed object.
     :return The angular separation in degrees between target A and target B.
+    :raises TypeError: If A and B are not both EquatorialCoordinate or HorizontalCoordinate.
     """
+    θ = inf
+
     # Calculate the angular separation between A and B (in degrees):
-    θ = (
-        degrees(
-            acos(
-                sin(radians(A["dec"])) * sin(radians(B["dec"]))
-                + cos(radians(A["dec"]))
-                * cos(radians(B["dec"]))
-                * cos(radians(A["ra"] - B["ra"]))
+    α = is_equatorial_coordinate(A)
+    β = is_equatorial_coordinate(B)
+
+    if α is not None and β is not None:
+        θ = (
+            degrees(
+                acos(
+                    sin(radians(α["dec"])) * sin(radians(β["dec"]))
+                    + cos(radians(α["dec"]))
+                    * cos(radians(β["dec"]))
+                    * cos(radians(α["ra"] - β["ra"]))
+                )
             )
+            % 360
         )
-        % 360
-    )
+
+    a = is_horizontal_coordinate(A)
+    b = is_horizontal_coordinate(B)
+
+    if a is not None and b is not None:
+        θ = (
+            degrees(
+                acos(
+                    sin(radians(a["alt"])) * sin(radians(b["alt"]))
+                    + cos(radians(a["alt"]))
+                    * cos(radians(b["alt"]))
+                    * cos(radians(a["az"] - b["az"]))
+                )
+            )
+            % 360
+        )
 
     # Correct for negative angles:
     if θ < 0:
