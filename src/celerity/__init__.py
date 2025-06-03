@@ -11,7 +11,7 @@ Celerity is a lightweight, zero-dependency and type-safe
 Python library for astronomical calculations.
 """
 
-__version__ = "0.33.0"
+__version__ = "0.34.0"
 
 # **************************************************************************************
 

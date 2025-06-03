@@ -1,6 +1,6 @@
 [project]
 name = "celerity"
-version = "0.33.0"
+version = "0.34.0"
 description = "Celerity is a lightweight, zero-dependency and type-safe Python library for astronomical calculations."
 authors = [{ name = "Michael J. Roberts", email = "michael@observerly.com" }]
 requires-python = "~=3.13"
