@@ -6,7 +6,18 @@
 
 # **************************************************************************************
 
+from typing import TypedDict
 from urllib import request
+
+# **************************************************************************************
+
+
+class DUT1Entry(TypedDict):
+    # The Modified Julian Date (MJD) of the DUT1 entry:
+    mjd: float
+    # The DUT1 value, e.g., UT1 - UTC (in seconds)
+    dut1: float
+
 
 # **************************************************************************************
 
