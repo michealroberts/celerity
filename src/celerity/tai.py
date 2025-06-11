@@ -177,3 +177,16 @@ def get_tai_utc_offset(date: datetime) -> float:
 
 
 # **************************************************************************************
+
+
+def get_tt_utc_offset(date: datetime) -> float:
+    """
+    Returns the TT-UTC offset (in seconds) for the given date.
+
+    :return: The TT-UTC offset in seconds.
+    """
+    # TT is always 32.184 seconds ahead of TAI:
+    return get_tai_utc_offset(date) + 32.184
+
+
+# **************************************************************************************

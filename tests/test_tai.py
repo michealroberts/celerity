@@ -9,7 +9,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from celerity.tai import IERS_LEAP_SECONDS, get_tai_utc_offset
+from celerity.tai import IERS_LEAP_SECONDS, get_tai_utc_offset, get_tt_utc_offset
 
 # **************************************************************************************
 
@@ -78,6 +78,44 @@ class TestTAIUTCOffset(unittest.TestCase):
         # After last known leap insertion
         when = datetime(2020, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
         self.assertEqual(get_tai_utc_offset(when), 37.0)
+
+
+# **************************************************************************************
+
+
+class TestTTUTCOffset(unittest.TestCase):
+    def test_before_1972(self) -> None:
+        when = datetime(1970, 1, 1, 0, 0, 0)
+        self.assertEqual(get_tt_utc_offset(when), 0.0 + 32.184)
+
+    def test_at_introduction_1972(self) -> None:
+        when = datetime(1972, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        self.assertEqual(get_tt_utc_offset(when), 10.0 + 32.184)
+
+    def test_just_before_first_leap(self) -> None:
+        when = datetime(1972, 6, 30, 23, 59, 59, tzinfo=timezone.utc)
+        self.assertEqual(get_tt_utc_offset(when), 10.0 + 32.184)
+
+    def test_at_first_leap_effective(self) -> None:
+        when = datetime(1972, 7, 1, 0, 0, 0, tzinfo=timezone.utc)
+        self.assertEqual(get_tt_utc_offset(when), 11.0 + 32.184)
+
+    def test_after_several_leaps(self) -> None:
+        when = datetime(1999, 6, 1, 12, 0, 0, tzinfo=timezone.utc)
+        self.assertEqual(get_tt_utc_offset(when), 31.0 + 32.184)
+
+    def test_exact_entry_boundaries(self) -> None:
+        for entry in IERS_LEAP_SECONDS:
+            when = entry["at"]
+            self.assertEqual(get_tt_utc_offset(when), entry["offset"] + 32.184)
+
+    def test_naive_datetime(self) -> None:
+        when = datetime(2012, 7, 1, 0, 0, 0)
+        self.assertEqual(get_tt_utc_offset(when), 34.0 + 32.184)
+
+    def test_post_2016(self) -> None:
+        when = datetime(2020, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        self.assertEqual(get_tt_utc_offset(when), 37.0 + 32.184)
 
 
 # **************************************************************************************
