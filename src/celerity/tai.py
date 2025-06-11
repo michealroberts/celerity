@@ -141,3 +141,39 @@ IERS_LEAP_SECONDS: Final[List[IERSTAIUTCOffsetEntry]] = [
 ]
 
 # **************************************************************************************
+
+
+def get_tai_utc_offset(date: datetime) -> float:
+    """
+    Returns the TAI-UTC offset (in seconds) for the given date.
+
+    :param date: The datetime for which to get the TAI-UTC offset.
+    :return: The TAI-UTC offset in seconds.
+    """
+    # Ensure the date is in UTC:
+    date = (
+        date.replace(tzinfo=timezone.utc)
+        if date.tzinfo is None
+        else date.astimezone(tz=timezone.utc)
+    )
+
+    # If the datetime is before TAI was introduced, return 0.0:
+    if date < datetime(1972, 1, 1, tzinfo=timezone.utc):
+        return 0.0
+
+    # If the datetime is greater than or equal to 1972-01-01, then we know we have a
+    # minimum offset of 10 seconds:
+    offset = 10.0
+
+    # If the datetime is after TAI was introduced, return the current TAI-UTC offset:
+    for entry in IERS_LEAP_SECONDS:
+        if entry["at"] <= date:
+            offset = entry["offset"]
+        else:
+            break
+
+    # Return the TAI-UTC offset for the date (in seconds):
+    return offset
+
+
+# **************************************************************************************
