@@ -8,6 +8,7 @@
 
 from datetime import datetime, timezone
 from math import floor, pow
+from typing import Tuple
 
 from .common import GeographicCoordinate
 from .constants import J1900, J2000
@@ -48,6 +49,41 @@ def get_modified_julian_date(date: datetime) -> float:
     :return: The Modified Julian Date (MJD) of the given date normalised to UTC.
     """
     return get_julian_date(date) - 2400000.5
+
+
+# **************************************************************************************
+
+
+def get_modified_julian_date_as_parts(when: datetime) -> Tuple[int, float]:
+    """
+    Convert a UTC datetime object to Modified Julian Date (MJD) and its
+    corresponding seconds of the day (e.g., 0.0 to 86400.0).
+
+    :param when: The datetime object to convert.
+    :return: A tuple containing the Modified Julian Date (MJD) and the seconds of the day.
+    """
+    # If the datetime does not have a timezone (e.g., a naive datetime), assume UTC;
+    # otherwise, convert it to UTC:
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=timezone.utc)
+    else:
+        when = when.astimezone(tz=timezone.utc)
+
+    # Get the Modified Julian Date for the given datetime:
+    MJD = get_modified_julian_date(when)
+
+    # Get the UTC date at midnight for the given datetime:
+    midnight = when.replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0,
+    )
+
+    # Calculate the seconds of the day since midnight for the currrent datetime:
+    seconds_of_day = (when - midnight).total_seconds()
+
+    return floor(MJD), seconds_of_day
 
 
 # **************************************************************************************
