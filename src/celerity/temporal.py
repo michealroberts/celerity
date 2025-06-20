@@ -89,7 +89,7 @@ def get_modified_julian_date_as_parts(when: datetime) -> Tuple[int, float]:
 # **************************************************************************************
 
 
-def get_greenwich_sidereal_time(date: datetime) -> float:
+def get_greenwich_sidereal_time(date: datetime, dut1: float = 0.0) -> float:
     """
     The Greenwich Sidereal Time (GST) is the hour angle of the vernal
     equinox, the ascending node of the ecliptic on the celestial equator.
@@ -116,7 +116,7 @@ def get_greenwich_sidereal_time(date: datetime) -> float:
         + (date.second / 3600)
         + (date.minute / 60)
         + date.hour
-    )
+    ) + (dut1 / 3600.0)
 
     A = UTC * 1.002737909
 
