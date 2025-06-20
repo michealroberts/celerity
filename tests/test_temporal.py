@@ -74,6 +74,7 @@ def test_get_modified_julian_date_as_parts():
 
 def test_get_greenwich_sidereal_time():
     assert get_greenwich_sidereal_time(date) == 15.463990399019053
+    assert get_greenwich_sidereal_time(date, 1.0) == 15.464268937327109
 
 
 # **************************************************************************************
