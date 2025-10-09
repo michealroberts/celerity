@@ -1,5 +1,5 @@
-from math import isclose
 from datetime import datetime
+from math import isclose
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.coordinates import (
@@ -20,7 +20,7 @@ longitude: float = -155.468094
 
 betelgeuse: EquatorialCoordinate = {"ra": 88.7929583, "dec": 7.4070639}
 
-observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
+observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
 
 
 def test_convert_equatorial_to_horizontal():

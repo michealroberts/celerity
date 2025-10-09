@@ -100,7 +100,7 @@ def is_object_circumpolar(
     dec = target["dec"]
 
     # We only need the latitude of the observer:
-    lat = observer["lat"]
+    lat = observer["latitude"]
 
     # If the object's declination is greater than 90 degrees minus the observer's latitude,
     # then the object is circumpolar (always above the observer's horizon and never sets).
@@ -129,7 +129,7 @@ def is_object_never_visible(
     dec = target["dec"]
 
     # We only need the latitude of the observer:
-    lat = observer["lat"]
+    lat = observer["latitude"]
 
     # If the object's declination is less than the observer's latitude
     # minus 90 degrees, then the object is never visible (always below the
@@ -188,7 +188,7 @@ def get_does_object_rise_or_set(
     :param target: The equatorial coordinate of the observed object.
     :return either false when the object does not rise or set or the transit parameters.
     """
-    lat = radians(observer["lat"])
+    lat = radians(observer["latitude"])
 
     dec = radians(target["dec"])
 

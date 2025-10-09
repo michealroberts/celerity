@@ -34,7 +34,11 @@ betelgeuse: EquatorialCoordinate = {"ra": 88.7929583, "dec": 7.4070639}
 
 # **************************************************************************************
 
-observer: GeographicCoordinate = {"lat": latitude, "lon": longitude, "el": 0.0}
+observer: GeographicCoordinate = {
+    "latitude": latitude,
+    "longitude": longitude,
+    "elevation": 0.0,
+}
 
 # **************************************************************************************
 

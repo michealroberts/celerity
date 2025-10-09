@@ -7,7 +7,7 @@
 # **************************************************************************************
 
 from datetime import datetime
-from math import acos, asin, cos, degrees, radians, sin, atan2
+from math import acos, asin, atan2, cos, degrees, radians, sin
 
 from .aberration import get_correction_to_equatorial_for_aberration
 from .astrometry import get_hour_angle
@@ -75,22 +75,22 @@ def convert_equatorial_to_horizontal(
     :param target: The equatorial coordinate of the observed object.
     :return The horizontal coordinate of the observed object.
     """
-    lat, lon = radians(observer["lat"]), observer["lon"]
+    latitude, longitude = radians(observer["latitude"]), observer["longitude"]
 
     dec = radians(target["dec"])
 
     # Divide-by-zero errors can occur when we have cos(90), and sin(0)/sin(180) etc
     # cosine: multiples of π/2
     # sine: 0, and multiples of π.
-    if cos(lat) == 0:
+    if cos(latitude) == 0:
         return {"az": -1, "alt": -1}
 
     # Get the hour angle for the target:
-    ha = radians(get_hour_angle(date, target["ra"], lon))
+    ha = radians(get_hour_angle(date, target["ra"], longitude))
 
-    alt = asin(sin(dec) * sin(lat) + cos(dec) * cos(lat) * cos(ha))
+    alt = asin(sin(dec) * sin(latitude) + cos(dec) * cos(latitude) * cos(ha))
 
-    az = acos((sin(dec) - sin(alt) * sin(lat)) / (cos(alt) * cos(lat)))
+    az = acos((sin(dec) - sin(alt) * sin(latitude)) / (cos(alt) * cos(latitude)))
 
     return {
         "az": 360 - degrees(az) if sin(ha) > 0 else degrees(az),
@@ -118,7 +118,7 @@ def convert_horizontal_to_equatorial(
     :return: The equatorial coordinate (RA and Dec) of the object.
     """
     # Convert the latitude to radians:
-    latitude = radians(observer["lat"])
+    latitude = radians(observer["latitude"])
 
     # Convert the altitude to radians:
     a = radians(target["alt"])
@@ -143,7 +143,7 @@ def convert_horizontal_to_equatorial(
     ha = atan2(sin_H, cos_H)
 
     # Compute Local Sidereal Time (LST) in degrees, and convert to radians:
-    LST = get_local_sidereal_time(date, observer["lon"])
+    LST = get_local_sidereal_time(date, observer["longitude"])
 
     # Right Ascension (RA) is given by LST - the hour angle:
     ra = ((LST * 15) - degrees(ha)) % 360

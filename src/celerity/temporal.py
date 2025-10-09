@@ -224,7 +224,7 @@ def convert_local_sidereal_time_to_greenwich_sidereal_time(
     :param longitude: The longitude of the observer.
     :return: The Local Sidereal Time (LST) of the given date normalised to UTC.
     """
-    lon = observer["lon"]
+    lon = observer["longitude"]
 
     GST = LST - (lon / 15.0)
 

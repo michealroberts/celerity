@@ -149,18 +149,18 @@ def get_parallactic_angle(
     :param target: The equatorial coordinate of the observed object.
     :return The parallactic angle in degrees.
     """
-    lat, lon = radians(observer["lat"]), observer["lon"]
+    latitude, longitude = radians(observer["latitude"]), observer["longitude"]
 
     dec = radians(target["dec"])
 
     # Get the hour angle for the target:
-    ha = radians(get_hour_angle(date, target["ra"], lon))
+    ha = radians(get_hour_angle(date, target["ra"], longitude))
 
     # Calculate the parallactic angle and return in degrees:
     return degrees(
         atan2(
             sin(ha),
-            tan(lat) * cos(dec) - sin(dec) * cos(ha),
+            tan(latitude) * cos(dec) - sin(dec) * cos(ha),
         )
     )
 

@@ -24,7 +24,7 @@ arcturus: EquatorialCoordinate = {"ra": 213.9153, "dec": 19.182409}
 
 spica: EquatorialCoordinate = {"ra": 201.2983, "dec": -11.1614}
 
-observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
+observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
 
 
 def test_get_angular_separation():
