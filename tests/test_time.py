@@ -14,7 +14,7 @@ latitude: float = 19.820611
 # For testing, we will fix the longitude to be Manua Kea, Hawaii, US
 longitude: float = -155.468094
 
-observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
+observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
 
 T = Time(date)
 

@@ -16,7 +16,7 @@ longitude: float = -155.468094
 
 betelgeuse: EquatorialCoordinate = {"ra": 88.7929583, "dec": 7.4070639}
 
-observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
+observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
 
 
 def test_get_correction_to_horizontal_for_refraction():

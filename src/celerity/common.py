@@ -47,9 +47,9 @@ class EquatorialCoordinate(TypedDict):
 
 
 class GeographicCoordinate(TypedDict):
-    lat: float
-    lon: float
-    el: NotRequired[float]
+    latitude: float
+    longitude: float
+    elevation: NotRequired[float]
 
 
 # **************************************************************************************

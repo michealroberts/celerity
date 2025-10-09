@@ -38,7 +38,7 @@ longitude: float = -155.468094
 
 # **************************************************************************************
 
-observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
+observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
 
 # **************************************************************************************
 

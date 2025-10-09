@@ -20,7 +20,7 @@ latitude: float = 49.914425
 # For testing, we will fix the longitude to be the Isles of Scilly, Cornwall, UK.
 longitude: float = -6.315165
 
-observer: GeographicCoordinate = {"lat": latitude, "lon": longitude}
+observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
 
 
 def test_get_solar_altitude():
