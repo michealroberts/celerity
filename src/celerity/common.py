@@ -63,6 +63,15 @@ class HorizontalCoordinate(TypedDict):
 # **************************************************************************************
 
 
+class HeliocentricSphericalCoordinate(TypedDict):
+    λ: float
+    β: float
+    r: float
+
+
+# **************************************************************************************
+
+
 class Measurement(TypedDict):
     """
     Represents a measurement with an associated value and optional uncertainty.
