@@ -11,7 +11,7 @@ from math import floor, pow
 from typing import Tuple
 
 from .common import GeographicCoordinate
-from .constants import J1900, J2000
+from .constants import J1900, J2000, JULIAN_DAYS_PER_CENTURY
 
 # **************************************************************************************
 
@@ -35,6 +35,22 @@ def get_julian_date(date: datetime) -> float:
         )
         / 86400000.0
     ) + 2440587.5
+
+
+# **************************************************************************************
+
+
+def get_julian_centuries(date: datetime) -> float:
+    """
+    The Julian centuries (T) is the number of Julian centuries since
+    epoch J2000.0.
+
+    :param date: The datetime object to convert.
+    :return: The Julian centuries (T) of the given date normalised to UTC.
+    """
+    JD = get_julian_date(date)
+
+    return (JD - J2000) / JULIAN_DAYS_PER_CENTURY
 
 
 # **************************************************************************************
