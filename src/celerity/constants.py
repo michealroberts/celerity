@@ -53,6 +53,13 @@ J2000: float = 2451545.0
 # **************************************************************************************
 
 """
+The number of Julian days in a Julian century (365.25 days per year * 100 years).
+"""
+JULIAN_DAYS_PER_CENTURY: float = 36525.0
+
+# **************************************************************************************
+
+"""
 The speed of light in a vacuum is defined to be exactly 299,792,458 m/s.
 """
 c = 299_792_458
