@@ -16,6 +16,7 @@ from src.celerity.temporal import (
     get_greenwich_sidereal_time,
     get_julian_centuries,
     get_julian_date,
+    get_julian_millennia,
     get_local_sidereal_time,
     get_modified_julian_date,
     get_modified_julian_date_as_parts,
@@ -55,6 +56,14 @@ def test_get_julian_date():
 def test_get_julian_centuries():
     T = get_julian_centuries(date)
     assert T == (2459348.5 - J2000) / 36525.0
+
+
+# **************************************************************************************
+
+
+def test_get_julian_millennia():
+    T = get_julian_centuries(date)
+    assert get_julian_millennia(date) == T / 10.0
 
 
 # **************************************************************************************
