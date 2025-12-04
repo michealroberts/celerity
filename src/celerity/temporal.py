@@ -56,6 +56,22 @@ def get_julian_centuries(date: datetime) -> float:
 # **************************************************************************************
 
 
+def get_julian_millennia(date: datetime) -> float:
+    """
+    The Julian millennia (τ) is the number of Julian millennia since
+    epoch J2000.0.
+
+    :param date: The datetime object to convert.
+    :return: The Julian millennia (τ) of the given date normalised to UTC.
+    """
+    T = get_julian_centuries(date)
+
+    return T / 10.0
+
+
+# **************************************************************************************
+
+
 def get_modified_julian_date(date: datetime) -> float:
     """
     The Modified Julian Date (MJD) is the number of fractional days since midnight
