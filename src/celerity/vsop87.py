@@ -9,6 +9,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from math import cos
+from typing import Sequence
 
 from .tai import get_tt_utc_offset
 from .temporal import get_julian_millennia
@@ -49,6 +50,20 @@ class VSOP87Term:
         τ = get_julian_millennia(when)
 
         return self.amplitude * cos(self.phase + self.frequency * τ)
+
+
+# **************************************************************************************
+
+
+@dataclass(frozen=True)
+class PlanetVSOP87Series:
+    """
+    Complete VSOP87 series for a planet in spherical ecliptic coordinates.
+    """
+
+    λ: Sequence[Sequence[VSOP87Term]]
+    β: Sequence[Sequence[VSOP87Term]]
+    r: Sequence[Sequence[VSOP87Term]]
 
 
 # **************************************************************************************
