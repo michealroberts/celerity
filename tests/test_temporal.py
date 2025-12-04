@@ -9,10 +9,12 @@
 from datetime import datetime, timezone
 
 from src.celerity.common import GeographicCoordinate
+from src.celerity.constants import J2000
 from src.celerity.temporal import (
     convert_greenwich_sidereal_time_to_universal_coordinate_time,
     convert_local_sidereal_time_to_greenwich_sidereal_time,
     get_greenwich_sidereal_time,
+    get_julian_centuries,
     get_julian_date,
     get_local_sidereal_time,
     get_modified_julian_date,
@@ -45,6 +47,14 @@ observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
 
 def test_get_julian_date():
     assert get_julian_date(date) == 2459348.5
+
+
+# **************************************************************************************
+
+
+def test_get_julian_centuries():
+    T = get_julian_centuries(date)
+    assert T == (2459348.5 - J2000) / 36525.0
 
 
 # **************************************************************************************
