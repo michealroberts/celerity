@@ -7,11 +7,16 @@
 # **************************************************************************************
 
 from datetime import datetime
-from math import acos, asin, atan2, cos, degrees, radians, sin
+from math import acos, asin, atan2, cos, degrees, radians, sin, tan
 
 from .aberration import get_correction_to_equatorial_for_aberration
-from .astrometry import get_hour_angle
-from .common import EquatorialCoordinate, GeographicCoordinate, HorizontalCoordinate
+from .astrometry import get_hour_angle, get_obliquity_of_the_ecliptic
+from .common import (
+    EquatorialCoordinate,
+    GeographicCoordinate,
+    HeliocentricSphericalCoordinate,
+    HorizontalCoordinate,
+)
 from .nutation import get_correction_to_equatorial_for_nutation
 from .precession import get_correction_to_equatorial_for_precession_of_equinoxes
 from .temporal import get_local_sidereal_time
@@ -151,6 +156,55 @@ def convert_horizontal_to_equatorial(
     return {
         "ra": ra,
         "dec": degrees(dec),
+    }
+
+
+# **************************************************************************************
+
+
+def convert_heliocentric_to_equatorial(
+    date: datetime,
+    target: HeliocentricSphericalCoordinate,
+) -> EquatorialCoordinate:
+    """
+    Converts heliocentric coordinates (λ, β, r) back to equatorial coordinates
+    (right ascension, declination) for a given observer and datetime.
+
+    :param date: The datetime of observation.
+    :param target: The horizontal coordinate of the observed object.
+    :raises ValueError: If the declination is out of the valid range.
+    :return: The equatorial coordinate (RA and Dec) of the object.
+    """
+    # Get the true obliquity of the ecliptic (in degrees):
+    ε = radians(get_obliquity_of_the_ecliptic(date))
+
+    λ = radians(target["λ"])
+
+    β = radians(target["β"])
+
+    ra = (
+        degrees(
+            atan2(
+                sin(λ) * cos(ε) - tan(β) * sin(ε),
+                cos(λ),
+            )
+        )
+        % 360
+    )
+
+    dec = degrees(
+        asin(
+            sin(β) * cos(ε) + cos(β) * sin(ε) * sin(λ),
+        )
+    )
+
+    # Ensure that RA is within the valid range of 0 to 360 degrees:
+    if ra < 0:
+        ra += 360
+
+    return {
+        "ra": ra,
+        "dec": dec,
     }
 
 
