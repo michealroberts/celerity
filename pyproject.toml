@@ -1,6 +1,6 @@
 [project]
 name = "celerity"
-version = "0.39.0"
+version = "0.40.0"
 description = "Celerity is a lightweight, zero-dependency and type-safe Python library for astronomical calculations."
 authors = [{ name = "Michael J. Roberts", email = "michael@observerly.com" }]
 requires-python = "~=3.11"
@@ -9,17 +9,21 @@ maintainers = [
     { name = "Michael J. Roberts", email = "michael@observerly.com" },
 ]
 keywords = [
-    "astronomy",
     "astrometry",
+    "astronomy",
     "ephemeris",
     "equatorial",
-    "topocentric",
+    "galactic",
+    "heliocentric",
     "horizontal",
     "lunar",
-    "solar",
+    "moon",
     "planetary",
+    "planets",
+    "solar",
     "stellar",
-    "galactic",
+    "sun",
+    "topocentric",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",

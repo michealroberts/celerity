@@ -11,7 +11,7 @@ Celerity is a lightweight, zero-dependency and type-safe
 Python library for astronomical calculations.
 """
 
-__version__ = "0.39.0"
+__version__ = "0.40.0"
 
 # **************************************************************************************
 
@@ -48,7 +48,7 @@ from .temporal import Time
 
 # **************************************************************************************
 
-__all__ = [
+__all__: list[str] = [
     "aberration",
     "astrometry",
     "common",
