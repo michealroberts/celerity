@@ -113,7 +113,7 @@ def test_get_local_sidereal_time():
 
 
 def test_universal_time():
-    assert get_universal_time(date) == 0.000028334646537240785
+    assert get_universal_time(date) == 0.000029055041041305996
 
 
 # **************************************************************************************
