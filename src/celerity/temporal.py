@@ -212,10 +212,7 @@ def get_universal_time(date: datetime) -> float:
     )
 
     # Get the Julian Date at 0h on 1st January for the current year:
-    JD_0 = (
-        get_julian_date(datetime(year, 1, 1, 0, 0, 0, 0).astimezone(tz=timezone.utc))
-        + 30
-    )
+    JD_0 = get_julian_date(datetime(year, 1, 1, 0, 0, 0, 0).astimezone(tz=timezone.utc))
 
     # Get the number of days since 1st January for the current year:
     days = JD - JD_0
@@ -225,20 +222,11 @@ def get_universal_time(date: datetime) -> float:
 
     R = 6.6460656 + 2400.051262 * T + 0.00002581 * pow(T, 2)
 
-    B = 24 - R + 24 * (year - 1900)
+    B = (24 - R + 24 * (year - 1900)) % 24
 
-    T_0 = 0.0657098 * days - B
+    T_0 = (0.0657098 * days - B) % 24
 
-    if T_0 < 0:
-        T_0 += 24
-
-    if T_0 > 24:
-        T_0 -= 24
-
-    A = GST - T_0
-
-    if A < 0:
-        A += 24
+    A = (GST - T_0) % 24
 
     return 0.99727 * A
 
