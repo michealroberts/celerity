@@ -7,7 +7,7 @@
 # **************************************************************************************
 
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Sequence, Tuple
 
 # **************************************************************************************
 
@@ -56,6 +56,18 @@ class DESegment:
 
     # Chebyshev coefficients for z:
     z: Tuple[float, ...]
+
+
+# **************************************************************************************
+
+
+@dataclass(frozen=True)
+class PlanetDE442Series:
+    """
+    Complete DE442 ephemeris series for a planet relative to the Solar System Barycenter.
+    """
+
+    segments: Sequence[DESegment]
 
 
 # **************************************************************************************
