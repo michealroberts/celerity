@@ -7,6 +7,7 @@
 # **************************************************************************************
 
 from dataclasses import dataclass
+from typing import Tuple
 
 # **************************************************************************************
 
@@ -24,6 +25,37 @@ class DETerm:
     """
 
     coefficient: float
+
+
+# **************************************************************************************
+
+
+@dataclass(frozen=True)
+class DESegment:
+    """
+    A single DE ephemeris segment containing Chebyshev coefficients for a body's
+    barycentric position over a fixed time interval.
+
+    A segment corresponds to one contiguous time span in the development ephemeris.
+
+    Within this interval, the position of a body is represented by three independent
+    Chebyshev series (x, y, z), each defined by a set of coefficients.
+    """
+
+    # Start epoch (Julian days, TDB):
+    start: float
+
+    # End epoch (Julian days, TDB):
+    end: float
+
+    # Chebyshev coefficients for x:
+    x: Tuple[float, ...]
+
+    # Chebyshev coefficients for y:
+    y: Tuple[float, ...]
+
+    # Chebyshev coefficients for z:
+    z: Tuple[float, ...]
 
 
 # **************************************************************************************
