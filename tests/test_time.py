@@ -76,6 +76,22 @@ def test_international_atomic_time():
 
 
 # **************************************************************************************
+
+
+def test_ut1_timezone_offset_matches_wall_time_shift():
+    ut1 = T.UT1
+    utc = T.when.astimezone(timezone.utc)
+    difference = (ut1.replace(tzinfo=None) - utc.replace(tzinfo=None)).total_seconds()
+    assert isclose(difference, ut1.utcoffset().total_seconds(), abs_tol=1e-6)
+    # UT1-UTC offset magnitude should be less than 1 second:
+    assert abs(difference) < 1.0
+    difference = (ut1 - utc).total_seconds()
+    assert isclose(difference, 0.0, abs_tol=1e-6)
+
+
+# **************************************************************************************
+
+
 def test_get_julian_date():
     assert T.JD == 2459348.5
 

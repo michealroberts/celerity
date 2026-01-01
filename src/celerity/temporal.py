@@ -409,6 +409,22 @@ class Time(datetime):
         return (now + timedelta(seconds=offset)).replace(tzinfo=TZ)
 
     @property
+    def UT1(self) -> datetime:
+        """
+        Get the Universal Time 1 for the given datetime.
+        """
+        # Ensure the datetime is in UTC:
+        now = self.when.astimezone(tz=timezone.utc)
+
+        # Get the UT1-UTC offset for the given datetime (seconds):
+        offset = get_ut1_utc_offset(now)
+
+        # Create the UT1 timezone:
+        TZ = timezone(timedelta(seconds=offset), name="UT1")
+
+        return (now + timedelta(seconds=offset)).replace(tzinfo=TZ)
+
+    @property
     def JD(self) -> float:
         """
         Get the Julian Date for the given datetime.
