@@ -9,7 +9,7 @@
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from celerity.iers import get_ut1_utc_offset
+from celerity.temporal import get_ut1_utc_offset
 
 # **************************************************************************************
 
