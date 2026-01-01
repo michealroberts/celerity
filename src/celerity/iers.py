@@ -6,13 +6,9 @@
 
 # **************************************************************************************
 
-from datetime import datetime
 from json import loads
 from typing import TypedDict
-from urllib.parse import urlencode
 from urllib.request import Request, urlopen
-
-from .temporal import get_modified_julian_date_as_parts
 
 # **************************************************************************************
 
@@ -67,29 +63,6 @@ def fetch_iers_rapid_service_data(url: str) -> DUT1Entry:
         mjd=data["MJD"],
         dut1=float(data["Value"]) * 0.001,
     )
-
-
-# **************************************************************************************
-
-
-def get_ut1_utc_offset(when: datetime) -> float:
-    MJD, _ = get_modified_julian_date_as_parts(when)
-
-    # Setup the query parameters for the IERS Rapid Service data:
-    q = {
-        "param": "UT1-UTC",
-        "mjd": MJD,
-        "series": "Finals All IAU1980",
-    }
-
-    # Construct the URL for the IERS Rapid Service data with the UT1-UTC, mjd and series
-    # parameters set:
-    url = f"{IERS_DUT1_URL}?{urlencode(q, safe=' ')}".replace("+", "%20")
-
-    # Fetch the DUT1 entry from the IERS Rapid Service data:
-    entry = fetch_iers_rapid_service_data(url)
-
-    return entry["dut1"]
 
 
 # **************************************************************************************
