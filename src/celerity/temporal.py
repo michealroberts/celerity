@@ -6,12 +6,13 @@
 
 # **************************************************************************************
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from math import floor, pow
 from typing import Tuple
 
 from .common import GeographicCoordinate
 from .constants import J1900, J2000, JULIAN_DAYS_PER_CENTURY
+from .tai import get_tai_utc_offset
 
 # **************************************************************************************
 
@@ -365,6 +366,22 @@ class Time(datetime):
         Get the Universal Time for the given datetime.
         """
         return get_universal_time(self.when)
+
+    @property
+    def TAI(self) -> datetime:
+        """
+        Get the International Atomic Time for the given datetime.
+        """
+        # Ensure the datetime is in UTC:
+        now = self.when.astimezone(tz=timezone.utc)
+
+        # Get the TAI-UTC offset for the given datetime:
+        offset = get_tai_utc_offset(now)
+
+        # Create the TAI timezone:
+        TZ = timezone(timedelta(seconds=offset), name="TAI")
+
+        return (now + timedelta(seconds=offset)).replace(tzinfo=TZ)
 
     @property
     def JD(self) -> float:
