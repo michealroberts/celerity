@@ -6,20 +6,23 @@
 
 # **************************************************************************************
 
-from celerity.iers import (
-    IERS_DUT1_URL,
-    fetch_iers_rapid_service_data,
-)
+from datetime import datetime, timezone
+
+from celerity.temporal import get_ut1_utc_offset
 
 # **************************************************************************************
 
 if __name__ == "__main__":
     try:
-        # Fetch the latest IERS Rapid Service data
-        data = fetch_iers_rapid_service_data(url=IERS_DUT1_URL)
-        print("IERS Rapid Service Data fetched successfully.")
-        print(data)
+        now = datetime.now(timezone.utc)
+        # Fetch the IERS Rapid Service data again to demonstrate caching:
+        dut1 = get_ut1_utc_offset(now)
+        print(f"UT1-UTC offset at {now.isoformat()}: {dut1} seconds")
+
+        # This should hit the cache:
+        dut1 = get_ut1_utc_offset(now)
+        print(f"UT1-UTC offset at {now.isoformat()}: {dut1} seconds")
     except Exception as e:
-        print(f"An error occurred while fetching IERS data: {e}")
+        print(f"An error occurred while getting UT1-UTC offset: {e}")
 
 # **************************************************************************************

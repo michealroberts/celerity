@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 
 from .common import GeographicCoordinate
 from .constants import J1900, J2000, JULIAN_DAYS_PER_CENTURY
-from .iers import IERS_DUT1_URL, fetch_iers_rapid_service_data
+from .iers import IERS_EOP_BASE_URL, fetch_iers_rapid_service_data
 from .tai import get_tai_utc_offset
 
 # **************************************************************************************
@@ -350,7 +350,7 @@ def get_ut1_utc_offset(when: datetime) -> float:
 
     # Construct the URL for the IERS Rapid Service data with the UT1-UTC, mjd and series
     # parameters set:
-    url = f"{IERS_DUT1_URL}?{urlencode(q, safe=' ')}".replace("+", "%20")
+    url = f"{IERS_EOP_BASE_URL}?{urlencode(q, safe=' ')}".replace("+", "%20")
 
     # Fetch the DUT1 entry from the IERS Rapid Service data:
     entry = fetch_iers_rapid_service_data(url)
