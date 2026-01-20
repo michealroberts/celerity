@@ -1,9 +1,9 @@
 [project]
 name = "celerity"
-version = "0.40.0"
+version = "0.41.0"
 description = "Celerity is a lightweight, zero-dependency and type-safe Python library for astronomical calculations."
 authors = [{ name = "Michael J. Roberts", email = "michael@observerly.com" }]
-requires-python = "~=3.11"
+requires-python = "~=3.11, <4"
 readme = "README.md"
 maintainers = [
     { name = "Michael J. Roberts", email = "michael@observerly.com" },
