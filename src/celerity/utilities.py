@@ -62,6 +62,19 @@ def get_normalised_inclination_degree(degree: float) -> float:
 # **************************************************************************************
 
 
+def convert_arcseconds_to_degrees(arcseconds: float) -> float:
+    """
+    Convert arcseconds to decimal degrees.
+
+    :param arcseconds: The angle in arcseconds
+    :return: The angle in decimal degrees
+    """
+    return arcseconds / 3600.0
+
+
+# **************************************************************************************
+
+
 def convert_degree_to_dms(degree: float) -> Angle:
     """
     Convert coordinate (in decimal degrees) to degrees (°), minutes ('), seconds (").
@@ -96,3 +109,6 @@ def convert_degree_to_hms(degree: float) -> HourAngle:
     sec = round((abs(degree) / 15 - hour - min / 60) * 3600 * 1000) / 1000
 
     return {"hour": hour, "min": min, "sec": sec}
+
+
+# **************************************************************************************
