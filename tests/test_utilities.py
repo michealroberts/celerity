@@ -1,4 +1,5 @@
 from src.celerity.utilities import (
+    convert_arcseconds_to_degrees,
     convert_degree_to_dms,
     convert_degree_to_hms,
     get_normalised_azimuthal_degree,
@@ -88,3 +89,17 @@ def test_convert_degree_to_hms():
     assert hms == {"hour": 5, "min": 55, "sec": 10.31}
     hms = convert_degree_to_hms(-88.7929583)
     assert hms == {"hour": 18, "min": 4, "sec": 49.69}
+
+
+def test_convert_arcseconds_to_degrees():
+    degrees = convert_arcseconds_to_degrees(3600)
+    assert degrees == 1.0
+
+    degrees = convert_arcseconds_to_degrees(1800)
+    assert degrees == 0.5
+
+    degrees = convert_arcseconds_to_degrees(7200)
+    assert degrees == 2.0
+
+    degrees = convert_arcseconds_to_degrees(-3600)
+    assert degrees == -1.0
