@@ -74,6 +74,17 @@ def convert_arcseconds_to_degrees(arcseconds: float) -> float:
 
 # **************************************************************************************
 
+def convert_degrees_to_arcseconds(degrees: float) -> float:
+    """
+    Convert decimal degrees to arcseconds.
+
+    :param degrees: The angle in decimal degrees
+    :return: The angle in arcseconds
+    """
+    return degrees * 3600.0
+
+# **************************************************************************************
+
 
 def convert_degree_to_dms(degree: float) -> Angle:
     """
