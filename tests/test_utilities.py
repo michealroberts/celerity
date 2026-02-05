@@ -2,6 +2,7 @@ from src.celerity.utilities import (
     convert_arcseconds_to_degrees,
     convert_degree_to_dms,
     convert_degree_to_hms,
+    convert_degrees_to_arcseconds,
     get_normalised_azimuthal_degree,
     get_normalised_inclination_degree,
 )
@@ -103,3 +104,17 @@ def test_convert_arcseconds_to_degrees():
 
     degrees = convert_arcseconds_to_degrees(-3600)
     assert degrees == -1.0
+
+
+def test_convert_degrees_to_arcseconds():
+    arcseconds = convert_degrees_to_arcseconds(1)
+    assert arcseconds == 3600.0
+
+    arcseconds = convert_degrees_to_arcseconds(0.5)
+    assert arcseconds == 1800.0
+
+    arcseconds = convert_degrees_to_arcseconds(2)
+    assert arcseconds == 7200.0
+
+    arcseconds = convert_degrees_to_arcseconds(-1)
+    assert arcseconds == -3600.0
