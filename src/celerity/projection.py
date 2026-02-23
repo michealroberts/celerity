@@ -6,7 +6,9 @@
 
 # **************************************************************************************
 
-from .common import PolarCoordinate, SphericalCoordinate
+from math import cos, radians, sin
+
+from .common import CartesianCoordinate, PolarCoordinate, SphericalCoordinate
 
 # **************************************************************************************
 
@@ -45,6 +47,29 @@ def project_spherical_to_polar(target: SphericalCoordinate) -> PolarCoordinate:
     return PolarCoordinate(
         {"radial_distance": radial_distance, "polar_angle": longitude}
     )
+
+
+# **************************************************************************************
+
+
+def project_polar_to_cartesian(target: PolarCoordinate) -> CartesianCoordinate:
+    """
+    Converts a polar coordinate into a Cartesian 2D representation suitable for
+    use in a polar plot.
+
+    The convention used is:
+    - The x-axis points in the direction of polar_angle = 0°.
+    - The y-axis points in the direction of polar_angle = 90°.
+    - The polar_angle is measured counter-clockwise from the positive x-axis.
+    - The radial_distance is the distance from the origin (pole).
+
+    :param target: The polar coordinate with radial_distance and polar_angle in degrees.
+    :return: The corresponding Cartesian coordinate with x and y components.
+    """
+    r = target["radial_distance"]
+    θ = radians(target["polar_angle"])
+
+    return CartesianCoordinate({"x": r * cos(θ), "y": r * sin(θ)})
 
 
 # **************************************************************************************

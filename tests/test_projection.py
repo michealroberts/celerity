@@ -6,10 +6,10 @@
 
 # **************************************************************************************
 
-from math import isclose
+from math import isclose, sqrt
 
-from src.celerity.common import SphericalCoordinate
-from src.celerity.projection import project_spherical_to_polar
+from src.celerity.common import PolarCoordinate, SphericalCoordinate
+from src.celerity.projection import project_polar_to_cartesian, project_spherical_to_polar
 
 # **************************************************************************************
 
@@ -163,6 +163,95 @@ def test_project_spherical_to_polar_returns_typed_dict_keys():
     result = project_spherical_to_polar(target)
     assert "radial_distance" in result
     assert "polar_angle" in result
+
+
+# **************************************************************************************
+
+
+def test_project_polar_to_cartesian_origin():
+    # A zero radial distance (pole) maps to the Cartesian origin:
+    target: PolarCoordinate = {"radial_distance": 0.0, "polar_angle": 0.0}
+    result = project_polar_to_cartesian(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-12)
+    assert isclose(result["y"], 0.0, abs_tol=1e-12)
+
+
+# **************************************************************************************
+
+
+def test_project_polar_to_cartesian_polar_angle_0():
+    # polar_angle = 0° → all radial distance on the positive x-axis:
+    target: PolarCoordinate = {"radial_distance": 90.0, "polar_angle": 0.0}
+    result = project_polar_to_cartesian(target)
+    assert isclose(result["x"], 90.0)
+    assert isclose(result["y"], 0.0, abs_tol=1e-12)
+
+
+# **************************************************************************************
+
+
+def test_project_polar_to_cartesian_polar_angle_90():
+    # polar_angle = 90° → all radial distance on the positive y-axis:
+    target: PolarCoordinate = {"radial_distance": 90.0, "polar_angle": 90.0}
+    result = project_polar_to_cartesian(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-12)
+    assert isclose(result["y"], 90.0)
+
+
+# **************************************************************************************
+
+
+def test_project_polar_to_cartesian_polar_angle_180():
+    # polar_angle = 180° → all radial distance on the negative x-axis:
+    target: PolarCoordinate = {"radial_distance": 90.0, "polar_angle": 180.0}
+    result = project_polar_to_cartesian(target)
+    assert isclose(result["x"], -90.0)
+    assert isclose(result["y"], 0.0, abs_tol=1e-12)
+
+
+# **************************************************************************************
+
+
+def test_project_polar_to_cartesian_polar_angle_270():
+    # polar_angle = 270° → all radial distance on the negative y-axis:
+    target: PolarCoordinate = {"radial_distance": 90.0, "polar_angle": 270.0}
+    result = project_polar_to_cartesian(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-12)
+    assert isclose(result["y"], -90.0)
+
+
+# **************************************************************************************
+
+
+def test_project_polar_to_cartesian_polar_angle_45():
+    # polar_angle = 45° → equal x and y components:
+    target: PolarCoordinate = {"radial_distance": 45.0, "polar_angle": 45.0}
+    result = project_polar_to_cartesian(target)
+    expected = 45.0 * sqrt(2) / 2
+    assert isclose(result["x"], expected)
+    assert isclose(result["y"], expected)
+
+
+# **************************************************************************************
+
+
+def test_project_polar_to_cartesian_returns_typed_dict_keys():
+    # The return value must contain exactly the expected keys:
+    target: PolarCoordinate = {"radial_distance": 30.0, "polar_angle": 60.0}
+    result = project_polar_to_cartesian(target)
+    assert "x" in result
+    assert "y" in result
+
+
+# **************************************************************************************
+
+
+def test_project_polar_to_cartesian_roundtrip_radial_distance():
+    # The Euclidean distance from the origin should equal the original radial_distance:
+    target: PolarCoordinate = {"radial_distance": 70.0, "polar_angle": 123.0}
+    result = project_polar_to_cartesian(target)
+    recovered = sqrt(result["x"] ** 2 + result["y"] ** 2)
+    assert isclose(recovered, target["radial_distance"])
 
 
 # **************************************************************************************

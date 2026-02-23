@@ -88,6 +88,14 @@ class PolarCoordinate(TypedDict):
 # **************************************************************************************
 
 
+class CartesianCoordinate(TypedDict):
+    x: float
+    y: float
+
+
+# **************************************************************************************
+
+
 class Measurement(TypedDict):
     """
     Represents a measurement with an associated value and optional uncertainty.
