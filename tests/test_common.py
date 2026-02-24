@@ -1,5 +1,6 @@
 from src.celerity.common import (
     EquatorialCoordinate,
+    SphericalCoordinate,
     get_F_orbital_parameter,
     is_equatorial_coordinate,
     is_horizontal_coordinate,
@@ -37,3 +38,12 @@ def test_get_F_orbital_parameter():
     # Test for the Moon:
     F = get_F_orbital_parameter(6.086312, 0.0549)
     assert F == 1.0577787008793529
+
+
+# **************************************************************************************
+
+
+def test_spherical_coordinate():
+    coordinate: SphericalCoordinate = {"φ": 45.0, "θ": 90.0}
+    assert coordinate["φ"] == 45.0
+    assert coordinate["θ"] == 90.0
