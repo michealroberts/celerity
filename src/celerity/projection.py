@@ -87,13 +87,10 @@ def project_spherical_to_polar_stereographic(
     """
     polar = project_spherical_to_polar(target)
 
-    r = polar["r"]
-    theta = radians(polar["θ"])
-
     return CartesianCoordinate(
         {
-            "x": r * cos(theta),
-            "y": r * sin(theta),
+            "x": polar["r"] * cos(radians(polar["θ"])),
+            "y": polar["r"] * sin(radians(polar["θ"])),
         }
     )
 
