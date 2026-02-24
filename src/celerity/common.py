@@ -63,6 +63,14 @@ class HorizontalCoordinate(TypedDict):
 # **************************************************************************************
 
 
+class CartesianCoordinate(TypedDict):
+    x: float
+    y: float
+
+
+# **************************************************************************************
+
+
 class PolarCoordinate(TypedDict):
     r: float
     θ: float
