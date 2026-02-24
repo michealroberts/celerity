@@ -39,7 +39,7 @@ class EarthOrbitalParameters(TypedDict):
     dut1: float
 
     # The excess length of day (LOD) above the nominal 86400 SI seconds (in
-    # milliseconds), representing the day-to-day variation in the Earth's rotation
+    # seconds), representing the day-to-day variation in the Earth's rotation
     # rate. A positive LOD indicates the Earth is rotating more slowly than the
     # standard rate (i.e., the day is longer than 86400 seconds):
     lod: float
