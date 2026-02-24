@@ -65,7 +65,7 @@ class HorizontalCoordinate(TypedDict):
 
 class PolarCoordinate(TypedDict):
     r: float
-    φ: float
+    θ: float
 
 
 # **************************************************************************************
