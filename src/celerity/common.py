@@ -63,6 +63,14 @@ class HorizontalCoordinate(TypedDict):
 # **************************************************************************************
 
 
+class PolarCoordinate(TypedDict):
+    r: float
+    φ: float
+
+
+# **************************************************************************************
+
+
 class HeliocentricSphericalCoordinate(TypedDict):
     λ: float
     β: float

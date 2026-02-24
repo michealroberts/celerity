@@ -1,5 +1,6 @@
 from src.celerity.common import (
     EquatorialCoordinate,
+    PolarCoordinate,
     SphericalCoordinate,
     get_F_orbital_parameter,
     is_equatorial_coordinate,
@@ -47,6 +48,15 @@ def test_spherical_coordinate():
     coordinate: SphericalCoordinate = {"φ": 45.0, "θ": 90.0}
     assert coordinate["φ"] == 45.0
     assert coordinate["θ"] == 90.0
+
+
+# **************************************************************************************
+
+
+def test_polar_coordinate():
+    coordinate: PolarCoordinate = {"r": 1.0, "φ": 45.0}
+    assert coordinate["r"] == 1.0
+    assert coordinate["φ"] == 45.0
 
 
 # **************************************************************************************
