@@ -32,21 +32,30 @@ def project_spherical_to_polar(
     :return: A PolarCoordinate with r (co-latitude, in degrees) and θ (longitude,
         in degrees, normalised to [0°, 360°)).
     """
-
     # Clamp the latitude φ to the valid range [-90°, 90°]:
     latitude = max(-90.0, min(90.0, target["φ"]))
 
     # Normalise the longitude θ to [0°, 360°):
-    longitude = target["θ"] % 360.0
+    theta = target["θ"] % 360.0
 
     # The radial distance is the co-latitude (angular distance from the North Pole):
     r = 90.0 - latitude
 
     # At the poles the polar angle is geometrically undefined; return 0.0 by convention:
     if r == 0.0 or r == 180.0:
-        return {"r": r, "θ": 0.0}
+        return PolarCoordinate(
+            {
+                "r": r,
+                "θ": 0.0,
+            }
+        )
 
-    return {"r": r, "θ": longitude}
+    return PolarCoordinate(
+        {
+            "r": r,
+            "θ": theta,
+        }
+    )
 
 
 # **************************************************************************************
