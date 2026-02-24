@@ -54,9 +54,9 @@ def test_spherical_coordinate():
 
 
 def test_polar_coordinate():
-    coordinate: PolarCoordinate = {"r": 1.0, "φ": 45.0}
+    coordinate: PolarCoordinate = {"r": 1.0, "θ": 45.0}
     assert coordinate["r"] == 1.0
-    assert coordinate["φ"] == 45.0
+    assert coordinate["θ"] == 45.0
 
 
 # **************************************************************************************
