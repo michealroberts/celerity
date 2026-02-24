@@ -72,6 +72,14 @@ class HeliocentricSphericalCoordinate(TypedDict):
 # **************************************************************************************
 
 
+class SphericalCoordinate(TypedDict):
+    φ: float
+    θ: float
+
+
+# **************************************************************************************
+
+
 class Measurement(TypedDict):
     """
     Represents a measurement with an associated value and optional uncertainty.
