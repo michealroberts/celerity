@@ -50,14 +50,14 @@ class EarthOrbitalParameters(TypedDict):
     # along the direction of increasing ecliptic longitude and accounts for
     # unpredictable free-core nutation and other geophysical effects not captured
     # by the precession-nutation model:
-    dpsi: float
+    dψ: float
 
     # dε — the celestial pole offset in ecliptic obliquity, measured in degrees,
     # representing the observed deviation of the true celestial pole from the
     # position predicted by the IAU 1980 theory of nutation. This offset is applied
     # along the direction of increasing ecliptic obliquity and, together with dψ,
     # fully describes the residual between the observed and modeled pole position:
-    deps: float
+    dε: float
 
 
 # **************************************************************************************

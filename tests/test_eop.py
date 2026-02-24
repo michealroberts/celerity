@@ -25,8 +25,8 @@ class TestEarthOrbitalParameters(unittest.TestCase):
             "y_pole": 0.234567,
             "dut1": -0.0417670,
             "lod": 1.234,
-            "dpsi": -0.135,
-            "deps": -0.045,
+            "dψ": -0.135,
+            "dε": -0.045,
         }
 
     def test_modified_julian_date(self) -> None:
@@ -44,11 +44,11 @@ class TestEarthOrbitalParameters(unittest.TestCase):
     def test_lod(self) -> None:
         self.assertAlmostEqual(self.eop["lod"], 1.234, places=3)
 
-    def test_dpsi(self) -> None:
-        self.assertAlmostEqual(self.eop["dpsi"], -0.135, places=3)
+    def test_dψ(self) -> None:
+        self.assertAlmostEqual(self.eop["dψ"], -0.135, places=3)
 
-    def test_deps(self) -> None:
-        self.assertAlmostEqual(self.eop["deps"], -0.045, places=3)
+    def test_dε(self) -> None:
+        self.assertAlmostEqual(self.eop["dε"], -0.045, places=3)
 
     def test_all_keys_present(self) -> None:
         expected_keys = {
@@ -57,8 +57,8 @@ class TestEarthOrbitalParameters(unittest.TestCase):
             "y_pole",
             "dut1",
             "lod",
-            "dpsi",
-            "deps",
+            "dψ",
+            "dε",
         }
         self.assertEqual(set(self.eop.keys()), expected_keys)
 
