@@ -6,8 +6,17 @@
 
 # **************************************************************************************
 
+from enum import Enum
 from math import cos, pow, radians
 from typing import Any, NotRequired, TypedDict
+
+# **************************************************************************************
+
+
+class GeographicPole(str, Enum):
+    NORTH = "north"
+    SOUTH = "south"
+
 
 # **************************************************************************************
 

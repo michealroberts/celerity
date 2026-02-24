@@ -8,7 +8,7 @@
 
 from math import isclose
 
-from src.celerity.common import SphericalCoordinate
+from src.celerity.common import GeographicPole, SphericalCoordinate
 from src.celerity.projection import (
     project_spherical_to_polar,
     project_spherical_to_polar_stereographic,
@@ -362,6 +362,75 @@ def test_project_spherical_to_polar_stereographic_cartesian_distance_equals_r():
             target: SphericalCoordinate = {"φ": float(lat), "θ": float(lon)}
             polar = project_spherical_to_polar(target)
             cart = project_spherical_to_polar_stereographic(target)
+            distance = sqrt(cart["x"] ** 2 + cart["y"] ** 2)
+            assert isclose(distance, polar["r"], abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_south_pole_centered_south_pole():
+    # South pole is r=0 when centred on south pole
+    target: SphericalCoordinate = {"φ": -90.0, "θ": 42.0}
+    result = project_spherical_to_polar(target, GeographicPole.SOUTH)
+    assert result["r"] == 0.0
+    assert result["θ"] == 0.0
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_south_pole_centered_north_pole():
+    # North pole is r=180 when centred on south pole
+    target: SphericalCoordinate = {"φ": 90.0, "θ": 42.0}
+    result = project_spherical_to_polar(target, GeographicPole.SOUTH)
+    assert result["r"] == 180.0
+    assert result["θ"] == 0.0
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_south_pole_centered_equator():
+    target: SphericalCoordinate = {"φ": 0.0, "θ": 90.0}
+    result = project_spherical_to_polar(target, GeographicPole.SOUTH)
+    assert result["r"] == 90.0
+    assert result["θ"] == 90.0
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_south_pole_centered_south_pole():
+    # South pole projects to origin when centred on south pole
+    target: SphericalCoordinate = {"φ": -90.0, "θ": 42.0}
+    result = project_spherical_to_polar_stereographic(target, GeographicPole.SOUTH)
+    assert isclose(result["x"], 0.0, abs_tol=1e-9)
+    assert isclose(result["y"], 0.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_south_pole_centered_equator_90():
+    target: SphericalCoordinate = {"φ": 0.0, "θ": 90.0}
+    result = project_spherical_to_polar_stereographic(target, GeographicPole.SOUTH)
+    assert isclose(result["x"], 0.0, abs_tol=1e-9)
+    assert isclose(result["y"], 90.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_south_pole_centered_distance_equals_r():
+    # Euclidean distance equals r for south-pole-centred projection
+    from math import sqrt
+
+    for lat in range(-90, 91, 15):
+        for lon in range(0, 360, 45):
+            target: SphericalCoordinate = {"φ": float(lat), "θ": float(lon)}
+            polar = project_spherical_to_polar(target, GeographicPole.SOUTH)
+            cart = project_spherical_to_polar_stereographic(target, GeographicPole.SOUTH)
             distance = sqrt(cart["x"] ** 2 + cart["y"] ** 2)
             assert isclose(distance, polar["r"], abs_tol=1e-9)
 
