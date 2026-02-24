@@ -6,8 +6,13 @@
 
 # **************************************************************************************
 
+from math import isclose
+
 from src.celerity.common import SphericalCoordinate
-from src.celerity.projection import project_spherical_to_polar
+from src.celerity.projection import (
+    project_spherical_to_polar,
+    project_spherical_to_polar_stereographic,
+)
 
 # **************************************************************************************
 
@@ -184,6 +189,181 @@ def test_project_spherical_to_polar_polar_angle_range():
         target: SphericalCoordinate = {"φ": 30.0, "θ": float(lon)}
         result = project_spherical_to_polar(target)
         assert 0.0 <= result["θ"] < 360.0
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_equator_zero_longitude():
+    target: SphericalCoordinate = {"φ": 0.0, "θ": 0.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 90.0, abs_tol=1e-9)
+    assert isclose(result["y"], 0.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_equator_90_longitude():
+    target: SphericalCoordinate = {"φ": 0.0, "θ": 90.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-9)
+    assert isclose(result["y"], 90.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_equator_180_longitude():
+    target: SphericalCoordinate = {"φ": 0.0, "θ": 180.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], -90.0, abs_tol=1e-9)
+    assert isclose(result["y"], 0.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_equator_270_longitude():
+    target: SphericalCoordinate = {"φ": 0.0, "θ": 270.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-9)
+    assert isclose(result["y"], -90.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_northern_hemisphere():
+    target: SphericalCoordinate = {"φ": 45.0, "θ": 90.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-9)
+    assert isclose(result["y"], 45.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_southern_hemisphere():
+    target: SphericalCoordinate = {"φ": -45.0, "θ": 180.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], -135.0, abs_tol=1e-9)
+    assert isclose(result["y"], 0.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_north_pole():
+    target: SphericalCoordinate = {"φ": 90.0, "θ": 42.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-9)
+    assert isclose(result["y"], 0.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_south_pole():
+    target: SphericalCoordinate = {"φ": -90.0, "θ": 42.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 180.0, abs_tol=1e-9)
+    assert isclose(result["y"], 0.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_longitude_normalisation_above_360():
+    # 450° should normalise to 90°
+    target: SphericalCoordinate = {"φ": 0.0, "θ": 450.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-9)
+    assert isclose(result["y"], 90.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_longitude_normalisation_negative():
+    # -90° should normalise to 270°
+    target: SphericalCoordinate = {"φ": 0.0, "θ": -90.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-9)
+    assert isclose(result["y"], -90.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_longitude_wrap_360():
+    # 360° should normalise to 0°
+    target: SphericalCoordinate = {"φ": 0.0, "θ": 360.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 90.0, abs_tol=1e-9)
+    assert isclose(result["y"], 0.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_latitude_clamp_above_90():
+    # Latitude above +90° should be clamped to +90°
+    target: SphericalCoordinate = {"φ": 95.0, "θ": 0.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 0.0, abs_tol=1e-9)
+    assert isclose(result["y"], 0.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_latitude_clamp_below_minus_90():
+    # Latitude below -90° should be clamped to -90°
+    target: SphericalCoordinate = {"φ": -95.0, "θ": 0.0}
+    result = project_spherical_to_polar_stereographic(target)
+    assert isclose(result["x"], 180.0, abs_tol=1e-9)
+    assert isclose(result["y"], 0.0, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_near_north_pole():
+    target: SphericalCoordinate = {"φ": 89.0, "θ": 45.0}
+    result = project_spherical_to_polar_stereographic(target)
+    from math import cos, radians, sin
+
+    assert isclose(result["x"], 1.0 * cos(radians(45.0)), abs_tol=1e-9)
+    assert isclose(result["y"], 1.0 * sin(radians(45.0)), abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_near_south_pole():
+    target: SphericalCoordinate = {"φ": -89.0, "θ": 135.0}
+    result = project_spherical_to_polar_stereographic(target)
+    from math import cos, radians, sin
+
+    assert isclose(result["x"], 179.0 * cos(radians(135.0)), abs_tol=1e-9)
+    assert isclose(result["y"], 179.0 * sin(radians(135.0)), abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_project_spherical_to_polar_stereographic_cartesian_distance_equals_r():
+    # The Euclidean distance from origin should equal the polar radial distance r
+    from math import sqrt
+
+    for lat in range(-90, 91, 15):
+        for lon in range(0, 360, 45):
+            target: SphericalCoordinate = {"φ": float(lat), "θ": float(lon)}
+            polar = project_spherical_to_polar(target)
+            cart = project_spherical_to_polar_stereographic(target)
+            distance = sqrt(cart["x"] ** 2 + cart["y"] ** 2)
+            assert isclose(distance, polar["r"], abs_tol=1e-9)
 
 
 # **************************************************************************************

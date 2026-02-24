@@ -6,7 +6,9 @@
 
 # **************************************************************************************
 
-from .common import PolarCoordinate, SphericalCoordinate
+from math import cos, radians, sin
+
+from .common import CartesianCoordinate, PolarCoordinate, SphericalCoordinate
 
 # **************************************************************************************
 
@@ -54,6 +56,44 @@ def project_spherical_to_polar(
         {
             "r": r,
             "θ": theta,
+        }
+    )
+
+
+# **************************************************************************************
+
+
+def project_spherical_to_polar_stereographic(
+    target: SphericalCoordinate,
+) -> CartesianCoordinate:
+    """
+    Projects spherical sky coordinates into a polar stereographic Cartesian
+    representation centred on the North Pole.
+
+    Convention: the pole is the North Pole (φ = +90°). The radial distance r
+    is the angular distance from the North Pole (co-latitude), ranging from 0°
+    at the North Pole to 180° at the South Pole. The polar angle θ corresponds
+    to the longitude measured eastward, normalised to [0°, 360°). The Cartesian
+    x-axis points toward θ = 0° and the y-axis points toward θ = 90°.
+
+    The latitude (φ) is clamped to [-90°, 90°] and the longitude (θ) is
+    normalised to [0°, 360°) before conversion. At the poles, where the polar
+    angle is geometrically undefined, it is taken as 0.0° by convention,
+    placing the South Pole on the positive x-axis.
+
+    :param target: A SphericalCoordinate with φ (latitude, in degrees, clamped
+        to [-90°, 90°]) and θ (longitude, in degrees, normalised to [0°, 360°)).
+    :return: A CartesianCoordinate with x and y (in degrees).
+    """
+    polar = project_spherical_to_polar(target)
+
+    r = polar["r"]
+    theta = radians(polar["θ"])
+
+    return CartesianCoordinate(
+        {
+            "x": r * cos(theta),
+            "y": r * sin(theta),
         }
     )
 
