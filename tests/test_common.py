@@ -47,3 +47,6 @@ def test_spherical_coordinate():
     coordinate: SphericalCoordinate = {"φ": 45.0, "θ": 90.0}
     assert coordinate["φ"] == 45.0
     assert coordinate["θ"] == 90.0
+
+
+# **************************************************************************************
