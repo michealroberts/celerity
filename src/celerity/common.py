@@ -64,8 +64,8 @@ class HorizontalCoordinate(TypedDict):
 
 
 class SphericalCoordinate(TypedDict):
-    longitude: float
-    latitude: float
+    φ: float
+    θ: float
 
 
 # **************************************************************************************
