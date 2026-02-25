@@ -24,13 +24,13 @@ class EarthOrbitalParameters(TypedDict):
     # to the IERS Reference Pole (IRP), measured in degrees along the direction
     # of the IERS Reference Meridian (IRM) toward Greenwich. Positive values indicate
     # displacement of the pole toward the Greenwich meridian:
-    x_pole: float
+    x_polar_motion: float
 
     # The y-coordinate of the Earth's celestial intermediate pole (CIP) with respect
     # to the IERS Reference Pole (IRP), measured in degrees along the meridian
     # 90° west of the IERS Reference Meridian (IRM). Positive values indicate
     # displacement of the pole toward 90° west longitude:
-    y_pole: float
+    y_polar_motion: float
 
     # The difference UT1 - UTC (in seconds), representing the offset between
     # Universal Time 1 (UT1, which tracks the actual rotation of the Earth) and
@@ -50,14 +50,14 @@ class EarthOrbitalParameters(TypedDict):
     # along the direction of increasing ecliptic longitude and accounts for
     # unpredictable free-core nutation and other geophysical effects not captured
     # by the precession-nutation model:
-    dψ: float
+    pole_offset_in_ecliptic_longitude: float
 
     # dε — the celestial pole offset in ecliptic obliquity, measured in degrees,
     # representing the observed deviation of the true celestial pole from the
     # position predicted by the IAU 1980 theory of nutation. This offset is applied
     # along the direction of increasing ecliptic obliquity and, together with dψ,
     # fully describes the residual between the observed and modeled pole position:
-    dε: float
+    pole_offset_in_ecliptic_obliquity: float
 
 
 # **************************************************************************************
