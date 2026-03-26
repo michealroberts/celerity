@@ -18,6 +18,33 @@ from .sun import get_mean_geometric_longitude as get_mean_solar_geometric_longit
 # **************************************************************************************
 
 
+def get_nutation_in_longitude(date: datetime) -> float:
+    """
+    Gets the nutation in longitude for a particular datetime.
+
+    :param date: The datetime object to convert.
+    :return: The nutation in longitude in degrees.
+    """
+    # Get the ecliptic longitude of the ascending node of the Moon (in degrees)
+    Ω = get_mean_ecliptic_longitude_of_the_ascending_node(date)
+
+    # Get the mean solar geometric longitude (in degrees):
+    L = get_mean_solar_geometric_longitude(date)
+
+    # Get the mean lunar geometric longitude (in degrees):
+    longitude = get_mean_lunar_geometric_longitude(date)
+
+    return (
+        -17.2 * sin(radians(Ω))
+        - 1.32 * sin(radians(2 * L))
+        - 0.23 * sin(radians(2 * longitude))
+        + 0.21 * sin(radians(2 * Ω))
+    ) / 3600.0
+
+
+# **************************************************************************************
+
+
 def get_correction_to_equatorial_for_nutation(
     date: datetime,
     target: EquatorialCoordinate,
