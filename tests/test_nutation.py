@@ -12,6 +12,7 @@ from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.nutation import (
     get_correction_to_equatorial_for_nutation,
     get_nutation_in_longitude,
+    get_nutation_in_obliquity,
 )
 
 # **************************************************************************************
@@ -43,6 +44,12 @@ observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
 def test_get_nutation_in_longitude():
     Δψ = get_nutation_in_longitude(date)
     assert Δψ == -0.004878239753472116
+
+# **************************************************************************************
+
+def test_get_nutation_in_obliquity():
+    Δε = get_nutation_in_obliquity(date)
+    assert Δε == 0.0007584246898327098
 
 # **************************************************************************************
 
