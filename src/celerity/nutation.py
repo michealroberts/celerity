@@ -85,41 +85,22 @@ def get_correction_to_equatorial_for_nutation(
     """
     ra, dec = radians(target["ra"]), radians(target["dec"])
 
-    # Get the ecliptic longitude of the ascending node of the mode (in degrees)
-    Ω = get_mean_ecliptic_longitude_of_the_ascending_node(date)
+    # Get the nutation in longitude (in degrees)
+    Δψ = get_nutation_in_longitude(date)
 
-    # Get the mean solar geometric longitude (in degrees):
-    L = get_mean_solar_geometric_longitude(date)
-
-    # Get the mean lunar geometric longitude (in degrees):
-    longitude = get_mean_lunar_geometric_longitude(date)
-
-    # Get the nutation in longitude (in arcseconds)
-    Δψ = (
-        -17.2 * sin(radians(Ω))
-        - 1.32 * sin(radians(2 * L))
-        - 0.23 * sin(radians(2 * longitude))
-        + 0.21 * sin(radians(2 * Ω))
-    )
-
-    # Get the nutation in obliquity (in arcseconds)
-    Δε = (
-        9.2 * cos(radians(Ω))
-        + 0.57 * cos(radians(2 * L))
-        + 0.1 * cos(radians(2 * longitude))
-        - 0.09 * cos(radians(2 * Ω))
-    )
+    # Get the nutation in obliquity (in degrees)
+    Δε = get_nutation_in_obliquity(date)
 
     # Get the true obliquity of the ecliptic (in degrees):
-    ε = radians(get_obliquity_of_the_ecliptic(date) + Δε / 3600)
+    ε = radians(get_obliquity_of_the_ecliptic(date) + Δε)
 
     # Calculate the nutation correction in right ascension (in degrees)
-    Δra = (degrees(cos(ε) + sin(ε) * sin(ra) * tan(dec)) * Δψ / 3600) - degrees(
+    Δra = (degrees(cos(ε) + sin(ε) * sin(ra) * tan(dec)) * Δψ) - degrees(
         cos(ra) * tan(dec)
-    ) * Δε / 3600
+    ) * Δε
 
     # Calculate the nutation correction in declination (in degrees)
-    Δdec = degrees(sin(ε) * cos(ra)) * Δψ / 3600 + degrees(sin(ra)) * Δε / 3600
+    Δdec = degrees(sin(ε) * cos(ra)) * Δψ + degrees(sin(ra)) * Δε
 
     return {"ra": Δra, "dec": Δdec}
 
