@@ -19,6 +19,7 @@ from src.celerity.coordinates import (
     convert_equatorial_to_horizontal,
     convert_heliocentric_to_equatorial,
     convert_horizontal_to_equatorial,
+    get_apparent_equatorial_coordinate,
     get_correction_to_equatorial,
 )
 
@@ -75,9 +76,29 @@ def test_convert_horizontal_to_equatorial():
 
 
 def test_get_correction_to_equatorial():
-    target = get_correction_to_equatorial(date, betelgeuse)
+    # get_correction_to_equatorial mutates its input, so pass a copy to keep the
+    # shared fixture intact for the other tests:
+    target = get_correction_to_equatorial(
+        date, EquatorialCoordinate(ra=betelgeuse["ra"], dec=betelgeuse["dec"])
+    )
     assert target["ra"] == 89.07286804165851
     assert target["dec"] == 7.40903204891558
+
+
+# **************************************************************************************
+
+
+def test_get_apparent_equatorial_coordinate():
+    j2000 = EquatorialCoordinate(ra=betelgeuse["ra"], dec=betelgeuse["dec"])
+
+    apparent = get_apparent_equatorial_coordinate(date, j2000)
+    assert apparent["ra"] == 89.07286804165851
+    assert apparent["dec"] == 7.40903204891558
+
+    # The alias must not mutate the coordinate it was given:
+    assert j2000["ra"] == betelgeuse["ra"]
+    assert j2000["dec"] == betelgeuse["dec"]
+    assert apparent is not j2000
 
 
 # **************************************************************************************
