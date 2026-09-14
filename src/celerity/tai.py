@@ -25,8 +25,11 @@ class IERSTAIUTCOffsetEntry(TypedDict):
 
 # **************************************************************************************
 
-# The IERS leap seconds data, representing the TAI-UTC offset at specific dates.
-# This data is based on the IERS Bulletin C and is subject to change.
+# The IERS leap seconds data, representing the TAI-UTC offset (in seconds) in force
+# from each date, as announced in IERS Bulletin C. The first entry is the initial offset
+# of 10 seconds at the introduction of the current UTC system on 1972-01-01, and each of
+# the 27 subsequent entries records the offset after a positive leap second was inserted
+# at the end of the preceding day. This data is subject to change with future bulletins.
 # see https://data.iana.org/time-zones/data/leap-seconds.list
 # see https://hpiers.obspm.fr/eop-pc/earthor/utc/leapsecond.html
 IERS_LEAP_SECONDS: Final[List[IERSTAIUTCOffsetEntry]] = [
@@ -67,72 +70,76 @@ IERS_LEAP_SECONDS: Final[List[IERSTAIUTCOffsetEntry]] = [
         "offset": 18.0,
     },
     {
-        "at": datetime(1981, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1980, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 19.0,
     },
     {
-        "at": datetime(1982, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1981, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 20.0,
     },
     {
-        "at": datetime(1983, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1982, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 21.0,
     },
     {
-        "at": datetime(1985, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1983, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 22.0,
     },
     {
-        "at": datetime(1988, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1985, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 23.0,
     },
     {
-        "at": datetime(1990, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1988, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 24.0,
     },
     {
-        "at": datetime(1991, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1990, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 25.0,
     },
     {
-        "at": datetime(1992, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1991, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 26.0,
     },
     {
-        "at": datetime(1993, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1992, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 27.0,
     },
     {
-        "at": datetime(1994, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1993, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 28.0,
     },
     {
-        "at": datetime(1996, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1994, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 29.0,
     },
     {
-        "at": datetime(1997, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1996, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 30.0,
     },
     {
-        "at": datetime(1999, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1997, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 31.0,
     },
     {
-        "at": datetime(2006, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(1999, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 32.0,
     },
     {
-        "at": datetime(2009, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(2006, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 33.0,
     },
     {
-        "at": datetime(2012, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(2009, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 34.0,
     },
     {
-        "at": datetime(2015, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "at": datetime(2012, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
         "offset": 35.0,
+    },
+    {
+        "at": datetime(2015, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 36.0,
     },
     {
         "at": datetime(2017, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
