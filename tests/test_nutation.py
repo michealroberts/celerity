@@ -43,13 +43,13 @@ observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
 
 def test_get_nutation_in_longitude():
     Δψ = get_nutation_in_longitude(date)
-    assert Δψ == -0.004878239753472116
+    assert Δψ == -0.004863947727194747
 
 # **************************************************************************************
 
 def test_get_nutation_in_obliquity():
     Δε = get_nutation_in_obliquity(date)
-    assert Δε == 0.0007584246898327098
+    assert Δε == 0.0007474263655767607
 
 # **************************************************************************************
 
@@ -57,7 +57,7 @@ def test_get_correction_to_equatorial_for_nutation():
     t = get_correction_to_equatorial_for_nutation(date, betelgeuse)
     ra = t["ra"] + betelgeuse["ra"]
     dec = t["dec"] + betelgeuse["dec"]
-    assert ra == 88.78822826957918
-    assert dec == 7.407781283524082
+    assert ra == 88.78824215116342
+    assert dec == 7.407770407405704
 
 # **************************************************************************************

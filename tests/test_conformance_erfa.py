@@ -35,10 +35,10 @@ from src.celerity.precession import (
 # **************************************************************************************
 
 # The tolerance on the nutation in longitude and obliquity, and on the nutation
-# correction to an equatorial coordinate. celerity uses the truncated four-term IAU 1980
-# series, so the difference from IAU 2000A is dominated by the omitted short-period
-# terms:
-TOLERANCE_IN_NUTATION: float = 0.2 / 3600
+# correction to an equatorial coordinate. celerity uses the IAU 2000B series evaluated
+# in TT, so the difference from IAU 2000A is at the milliarcsecond level and reflects the
+# terms omitted from the truncated series:
+TOLERANCE_IN_NUTATION: float = 0.002 / 3600
 
 # **************************************************************************************
 
@@ -57,9 +57,9 @@ TOLERANCE_IN_ABERRATION: float = 0.3 / 3600
 # **************************************************************************************
 
 # The tolerance on the full apparent place, i.e. the precession, nutation and aberration
-# corrections applied in turn. This is currently dominated by the truncated nutation
-# series and the first-order aberration model above:
-TOLERANCE_IN_APPARENT_PLACE: float = 0.3 / 3600
+# corrections applied in turn. This is currently dominated by the first-order aberration
+# model and the mean obliquity used when applying the nutation:
+TOLERANCE_IN_APPARENT_PLACE: float = 0.05 / 3600
 
 # **************************************************************************************
 
