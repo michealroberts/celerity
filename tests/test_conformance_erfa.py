@@ -50,15 +50,16 @@ TOLERANCE_IN_PRECESSION: float = 4.0 / 3600
 # **************************************************************************************
 
 # The tolerance on the aberration correction to an equatorial coordinate. celerity uses
-# a first-order annual aberration model whose difference from ERFA grows with time and
-# with declination, and is largest for Dubhe in 2026:
-TOLERANCE_IN_ABERRATION: float = 25.0 / 3600
+# a first-order annual aberration model (Meeus, Astronomical Algorithms, 23.3), so the
+# difference from ERFA is dominated by the neglected second-order and planetary terms:
+TOLERANCE_IN_ABERRATION: float = 0.3 / 3600
 
 # **************************************************************************************
 
 # The tolerance on the full apparent place, i.e. the precession, nutation and aberration
-# corrections applied in turn. This inherits the aberration model's error above:
-TOLERANCE_IN_APPARENT_PLACE: float = 25.0 / 3600
+# corrections applied in turn. This is currently dominated by the precession model's
+# error above:
+TOLERANCE_IN_APPARENT_PLACE: float = 4.0 / 3600
 
 # **************************************************************************************
 
