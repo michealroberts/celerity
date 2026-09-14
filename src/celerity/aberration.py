@@ -6,19 +6,15 @@
 
 # **************************************************************************************
 
-from datetime import datetime
-from math import cos, pow, radians, sin, tan
+from datetime import datetime, timezone
+from math import atan2, cos, degrees, hypot, radians, sin, sqrt
 
-from .astrometry import get_obliquity_of_the_ecliptic
 from .common import EquatorialCoordinate
-from .earth import get_eccentricity_of_orbit
-from .moon import (
-    get_mean_ecliptic_longitude_of_the_ascending_node as get_lunar_mean_ecliptic_longitude_of_the_ascending_node,
-)
-from .moon import get_mean_geometric_longitude as get_lunar_mean_geometric_longitude
-from .sun import get_mean_geometric_longitude as get_solar_mean_geometric_longitude
-from .sun import get_true_geometric_longitude as get_solar_true_geometric_longitude
-from .temporal import get_julian_date
+from .constants import AU, c
+from .earth import get_heliocentric_velocity
+from .planet import Planet
+from .planets import get_planetary_heliocentric_coordinate
+from .sun import SCHWARZSCHILD_RADIUS_OF_THE_SUN
 
 # **************************************************************************************
 
@@ -28,67 +24,67 @@ def get_correction_to_equatorial_for_aberration(
     target: EquatorialCoordinate,
 ) -> EquatorialCoordinate:
     """
-    Corrects the equatorial coordinates of a target for abberation in
-    longitude and obliquity due to the apparent motion of the Earth.
+    Corrects the equatorial coordinates of a target for annual aberration due to the
+    orbital motion of the Earth.
 
     :param date: The datetime object to convert.
-    :param longitude: The longitude of the observer in degrees.
     :param target: The equatorial coordinates of the target.
     """
     ra, dec = radians(target["ra"]), radians(target["dec"])
 
-    # Get the Julian date:
-    JD = get_julian_date(date)
+    # Treat a naive datetime as UTC, and bring an aware datetime to UTC, so that the
+    # Earth's velocity and distance are evaluated for the same UTC instant regardless of
+    # the host's local timezone:
+    date = (
+        date.replace(tzinfo=timezone.utc)
+        if date.tzinfo is None
+        else date.astimezone(tz=timezone.utc)
+    )
 
-    # Get the difference in fractional Julian centuries between the target
-    # date and J2000.0
-    T = (JD - 2451545.0) / 36525
+    # Get the direction cosines of the target (dimensionless):
+    px, py, pz = cos(dec) * cos(ra), cos(dec) * sin(ra), sin(dec)
 
-    # Get the ecliptic longitude of the ascending node of the mode (in degrees):
-    Ω = get_lunar_mean_ecliptic_longitude_of_the_ascending_node(date)
+    # Get the heliocentric velocity of the Earth (in metres per second):
+    velocity = get_heliocentric_velocity(date)
 
-    # Get the mean geometric longitude of the sun (in degrees):
-    L = get_solar_mean_geometric_longitude(date)
+    # Get the velocity of the Earth in units of the speed of light (dimensionless):
+    vx, vy, vz = velocity["x"] / c, velocity["y"] / c, velocity["z"] / c
 
-    # Get the mean geometric longitude of the moon (in degrees):
-    longitude = get_lunar_mean_geometric_longitude(date)
+    # Get the heliocentric distance of the Earth (in metres):
+    s = get_planetary_heliocentric_coordinate(date, Planet.EARTH)["r"] * AU
 
-    # Get the nutation in obliquity (in degrees):
-    Δε = (
-        9.2 * cos(radians(Ω))
-        + 0.57 * cos(radians(2 * L))
-        + 0.1 * cos(radians(2 * longitude ))
-        - 0.09 * cos(radians(2 * Ω))
-    ) / 3600
+    # Get the reciprocal of the Lorentz factor (dimensionless):
+    bm1 = sqrt(1 - (vx**2 + vy**2 + vz**2))
 
-    # Get the true obliquity of the ecliptic (in degrees):
-    ε = radians(get_obliquity_of_the_ecliptic(date) + Δε)
+    # Get the component of the Earth's velocity along the direction of the target:
+    pdv = px * vx + py * vy + pz * vz
 
-    # Get the constant of abberation (in degrees):
-    κ = 20.49552 / 3600
+    # Get the relativistic aberration factor (dimensionless):
+    w1 = 1 + pdv / (1 + bm1)
 
-    # Get the eccentricity of the Earth's orbit (dimensionless):
-    e = get_eccentricity_of_orbit(date)
+    # Get the gravitational potential term of the Sun at the Earth (dimensionless):
+    w2 = SCHWARZSCHILD_RADIUS_OF_THE_SUN / s
 
-    # Get the longitude of perihelion (in degrees):
-    ϖ = radians(102.93735 + 1.71953 * T + 0.00046 * pow(T, 2))
+    # Calculate the x component of the aberrated direction, before normalisation:
+    ax = px * bm1 + w1 * vx + w2 * (vx - pdv * px)
 
-    # Get the true geometric longitude of the sun (in degrees):
-    S = radians(get_solar_true_geometric_longitude(date))
+    # Calculate the y component of the aberrated direction, before normalisation:
+    ay = py * bm1 + w1 * vy + w2 * (vy - pdv * py)
+
+    # Calculate the z component of the aberrated direction, before normalisation:
+    az = pz * bm1 + w1 * vz + w2 * (vz - pdv * pz)
+
+    # Calculate the aberrated right ascension (in degrees):
+    α = degrees(atan2(ay, ax)) % 360
+
+    # Calculate the aberrated declination (in degrees):
+    δ = degrees(atan2(az, hypot(ax, ay)))
 
     # Calculate the abberation correction in right ascension (in degrees):
-    Δra = -κ * (cos(ra) * cos(S) * cos(ε) + sin(ra) * sin(S)) / cos(dec) + e * κ * (
-        cos(ra) * cos(ϖ) * cos(ε) + sin(ra) * sin(ϖ)
-    ) / cos(dec)
+    Δra = (α - target["ra"] + 180) % 360 - 180
 
     # Calculate the abberation correction in declination (in degrees):
-    Δdec = -κ * (
-        (cos(S) * cos(ε) * (tan(ε) * cos(dec) - sin(ra) * sin(dec)))
-        + (cos(ra) * sin(dec) * sin(S))
-    ) + e * κ * (
-        (cos(ϖ) * cos(ε) * (tan(ε) * cos(dec) - sin(ra) * sin(dec)))
-        + (cos(ra) * sin(dec) * sin(ϖ))
-    )
+    Δdec = δ - target["dec"]
 
     return {"ra": Δra, "dec": Δdec}
 
