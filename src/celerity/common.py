@@ -80,6 +80,18 @@ class CartesianCoordinate(TypedDict):
 # **************************************************************************************
 
 
+class CartesianVelocity(TypedDict):
+    # The velocity component along the x axis (in metres per second):
+    x: float
+    # The velocity component along the y axis (in metres per second):
+    y: float
+    # The velocity component along the z axis (in metres per second):
+    z: float
+
+
+# **************************************************************************************
+
+
 class PolarCoordinate(TypedDict):
     r: float
     θ: float
