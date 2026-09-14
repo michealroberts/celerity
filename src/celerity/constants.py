@@ -74,6 +74,13 @@ h = 6.626_070_15e-34
 # **************************************************************************************
 
 """
+The Newtonian constant of gravitation is 6.67430 × 10^-11 m³·kg⁻¹·s⁻² (CODATA 2018).
+"""
+G = 6.674_30e-11
+
+# **************************************************************************************
+
+"""
 The astronomical unit (AU) is a unit of length used in astronomy.
 
 It is defined as the mean distance from the Earth to the Sun.

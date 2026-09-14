@@ -10,6 +10,7 @@ import unittest
 
 from celerity.constants import (
     AU,
+    G,
     H0_IAU_REFERENCE,
     H0_PLANCK_2018,
     H0_SH0ES_2022,
@@ -39,6 +40,9 @@ class TestConstants(unittest.TestCase):
 
     def test_h(self):
         self.assertEqual(h, 6.62607015e-34)
+
+    def test_G(self):
+        self.assertEqual(G, 6.67430e-11)
 
     def test_AU(self):
         self.assertEqual(AU, 149597870700.0)
