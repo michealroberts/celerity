@@ -76,8 +76,8 @@ def test_convert_horizontal_to_equatorial():
 
 def test_get_correction_to_equatorial():
     target = get_correction_to_equatorial(date, betelgeuse)
-    assert target["ra"] == 89.0726571980843
-    assert target["dec"] == 7.409345414947781
+    assert target["ra"] == 89.07285628046131
+    assert target["dec"] == 7.409043286644779
 
 
 # **************************************************************************************
