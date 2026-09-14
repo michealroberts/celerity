@@ -72,6 +72,29 @@ def get_correction_to_equatorial(
 # **************************************************************************************
 
 
+def get_apparent_equatorial_coordinate(
+    date: datetime,
+    target: EquatorialCoordinate,
+) -> EquatorialCoordinate:
+    """
+    Correct a J2000.0 equatorial coordinate to its apparent place at a given
+    instant.
+
+    :param date: The UTC datetime of the observation.
+    :param target: The equatorial coordinate of the target at epoch J2000.0.
+    :return The apparent equatorial coordinate of the target.
+    """
+    # get_correction_to_equatorial mutates the coordinate it corrects, so hand
+    # it a copy to preserve the caller's J2000.0 coordinate:
+    return get_correction_to_equatorial(
+        date,
+        EquatorialCoordinate(ra=target["ra"], dec=target["dec"]),
+    )
+
+
+# **************************************************************************************
+
+
 def convert_equatorial_to_horizontal(
     date: datetime,
     observer: GeographicCoordinate,
