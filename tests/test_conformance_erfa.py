@@ -43,9 +43,9 @@ TOLERANCE_IN_NUTATION: float = 0.2 / 3600
 # **************************************************************************************
 
 # The tolerance on the precession correction to an equatorial coordinate. celerity uses
-# a low-order annual rate model, so the difference from IAU 2006 grows with the elapsed
-# time from J2000.0 and with declination:
-TOLERANCE_IN_PRECESSION: float = 4.0 / 3600
+# the IAU 2006 (P03) equatorial precession angles evaluated in TT, so the difference from
+# ERFA is at the microarcsecond level and reflects only the series truncation:
+TOLERANCE_IN_PRECESSION: float = 0.001 / 3600
 
 # **************************************************************************************
 
@@ -57,9 +57,9 @@ TOLERANCE_IN_ABERRATION: float = 0.3 / 3600
 # **************************************************************************************
 
 # The tolerance on the full apparent place, i.e. the precession, nutation and aberration
-# corrections applied in turn. This is currently dominated by the precession model's
-# error above:
-TOLERANCE_IN_APPARENT_PLACE: float = 4.0 / 3600
+# corrections applied in turn. This is currently dominated by the truncated nutation
+# series and the first-order aberration model above:
+TOLERANCE_IN_APPARENT_PLACE: float = 0.3 / 3600
 
 # **************************************************************************************
 
