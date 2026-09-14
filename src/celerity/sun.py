@@ -11,6 +11,7 @@ from math import asin, atan2, cos, degrees, pow, radians, sin
 
 from .astrometry import get_obliquity_of_the_ecliptic
 from .common import EquatorialCoordinate, get_F_orbital_parameter
+from .constants import G, c
 from .temporal import get_julian_date
 
 # **************************************************************************************
@@ -18,6 +19,11 @@ from .temporal import get_julian_date
 # The mass of the Sun (in kilograms), derived from the IAU 2015 nominal solar mass
 # parameter GM = 1.3271244 × 10^20 m³·s⁻² and the CODATA 2018 value of G:
 MASS_OF_THE_SUN: float = 1.988_409_87e30
+
+# **************************************************************************************
+
+# The Schwarzschild radius of the Sun, 2GM/c² (in metres):
+SCHWARZSCHILD_RADIUS_OF_THE_SUN: float = 2 * G * MASS_OF_THE_SUN / c**2
 
 # **************************************************************************************
 

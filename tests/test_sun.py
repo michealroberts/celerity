@@ -12,6 +12,7 @@ from src.celerity.common import GeographicCoordinate
 from src.celerity.coordinates import convert_equatorial_to_horizontal
 from src.celerity.sun import (
     MASS_OF_THE_SUN,
+    SCHWARZSCHILD_RADIUS_OF_THE_SUN,
     get_angular_diameter,
     get_distance,
     get_ecliptic_longitude,
@@ -140,6 +141,13 @@ def test_get_distance():
 
 def test_mass_of_the_sun():
     assert MASS_OF_THE_SUN == 1.98840987e30
+
+
+# **************************************************************************************
+
+
+def test_schwarzschild_radius_of_the_sun():
+    assert SCHWARZSCHILD_RADIUS_OF_THE_SUN == 2953.250075063482
 
 
 # **************************************************************************************
