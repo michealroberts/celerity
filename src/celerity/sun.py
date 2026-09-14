@@ -15,6 +15,12 @@ from .temporal import get_julian_date
 
 # **************************************************************************************
 
+# The mass of the Sun (in kilograms), derived from the IAU 2015 nominal solar mass
+# parameter GM = 1.3271244 × 10^20 m³·s⁻² and the CODATA 2018 value of G:
+MASS_OF_THE_SUN: float = 1.988_409_87e30
+
+# **************************************************************************************
+
 
 def get_equation_of_center(date) -> float:
     """
