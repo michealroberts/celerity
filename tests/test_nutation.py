@@ -57,7 +57,7 @@ def test_get_correction_to_equatorial_for_nutation():
     t = get_correction_to_equatorial_for_nutation(date, betelgeuse)
     ra = t["ra"] + betelgeuse["ra"]
     dec = t["dec"] + betelgeuse["dec"]
-    assert ra == 88.52194751991885
-    assert dec == 7.448166948222143
+    assert ra == 88.78822826957918
+    assert dec == 7.407781283524082
 
 # **************************************************************************************

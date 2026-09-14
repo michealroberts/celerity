@@ -7,7 +7,7 @@
 # **************************************************************************************
 
 from datetime import datetime
-from math import cos, degrees, radians, sin, tan
+from math import cos, radians, sin, tan
 
 from .astrometry import get_obliquity_of_the_ecliptic
 from .common import EquatorialCoordinate
@@ -94,13 +94,14 @@ def get_correction_to_equatorial_for_nutation(
     # Get the true obliquity of the ecliptic (in degrees):
     ε = radians(get_obliquity_of_the_ecliptic(date) + Δε)
 
+    # The trigonometric factors are dimensionless, and Δψ and Δε are already in
+    # degrees, so no further unit conversion is applied here.
+
     # Calculate the nutation correction in right ascension (in degrees)
-    Δra = (degrees(cos(ε) + sin(ε) * sin(ra) * tan(dec)) * Δψ) - degrees(
-        cos(ra) * tan(dec)
-    ) * Δε
+    Δra = (cos(ε) + sin(ε) * sin(ra) * tan(dec)) * Δψ - cos(ra) * tan(dec) * Δε
 
     # Calculate the nutation correction in declination (in degrees)
-    Δdec = degrees(sin(ε) * cos(ra)) * Δψ + degrees(sin(ra)) * Δε
+    Δdec = sin(ε) * cos(ra) * Δψ + sin(ra) * Δε
 
     return {"ra": Δra, "dec": Δdec}
 
