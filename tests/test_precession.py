@@ -24,5 +24,5 @@ def test_get_correction_to_equatorial_for_precession_of_equinoxes():
     t = get_correction_to_equatorial_for_precession_of_equinoxes(date, betelgeuse)
     ra = t["ra"] + betelgeuse["ra"]
     dec = t["dec"] + betelgeuse["dec"]
-    assert ra == 88.8059159898502
-    assert dec == 7.40708895935797
+    assert ra == 89.08195536143779
+    assert dec == 7.409569835797029

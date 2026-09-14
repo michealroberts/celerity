@@ -40,11 +40,14 @@ def get_correction_to_equatorial_for_precession_of_equinoxes(
     # Interpolate the precession in declination (in arcseconds)
     Nd = 20.0468 - 0.0085 * T
 
+    # M and Nd are annual rates, so scale by the elapsed time in Julian years:
+    years = T * 100
+
     # Calculate the precession correction in right ascension (in seconds*)
-    Δra = M + Nd / 15 * sin(ra) * tan(dec) * T
+    Δra = (M + Nd / 15 * sin(ra) * tan(dec)) * years
 
     # Calculate the precession correction in declination (in arcseconds)
-    Δdec = Nd * cos(ra) * T
+    Δdec = Nd * cos(ra) * years
 
     return {"ra": Δra / (3600 / 15), "dec": Δdec / 3600}
 
