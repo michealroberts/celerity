@@ -77,9 +77,9 @@ def get_correction_to_equatorial_for_aberration(
     S = radians(get_solar_true_geometric_longitude(date))
 
     # Calculate the abberation correction in right ascension (in degrees):
-    Δra = -κ * (cos(ra) * cos(S) * cos(ε) + sin(ra) * sin(S) / cos(dec)) + e * κ * (
-        cos(ra) * cos(ϖ) * cos(ε) + sin(ra) * sin(ϖ) / cos(dec)
-    )
+    Δra = -κ * (cos(ra) * cos(S) * cos(ε) + sin(ra) * sin(S)) / cos(dec) + e * κ * (
+        cos(ra) * cos(ϖ) * cos(ε) + sin(ra) * sin(ϖ)
+    ) / cos(dec)
 
     # Calculate the abberation correction in declination (in degrees):
     Δdec = -κ * (
