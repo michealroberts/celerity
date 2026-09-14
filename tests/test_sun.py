@@ -1,8 +1,17 @@
+# **************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2026 observerly
+
+# **************************************************************************************
+
 from datetime import datetime, timezone
 
-from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
+from src.celerity.common import GeographicCoordinate
 from src.celerity.coordinates import convert_equatorial_to_horizontal
 from src.celerity.sun import (
+    MASS_OF_THE_SUN,
     get_angular_diameter,
     get_distance,
     get_ecliptic_longitude,
@@ -14,19 +23,27 @@ from src.celerity.sun import (
     get_true_geometric_longitude,
 )
 
+# **************************************************************************************
+
 # For testing we need to specify a date because most calculations are
 # differential w.r.t a time component. We set it to the author's birthday:
 date = datetime(2021, 5, 14, 0, 0, 0, 0, tzinfo=timezone.utc)
 
+# **************************************************************************************
+
 # For testing, we will fix the latitude to be Manua Kea, Hawaii, US
 latitude: float = 19.820611
+
+# **************************************************************************************
 
 # For testing, we will fix the longitude to be Manua Kea, Hawaii, US
 longitude: float = -155.468094
 
-betelgeuse: EquatorialCoordinate = {"ra": 88.7929583, "dec": 7.4070639}
+# **************************************************************************************
 
 observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
+
+# **************************************************************************************
 
 
 def test_get_mean_anomaly():
@@ -39,9 +56,15 @@ def test_get_mean_geometric_longitude():
     assert L == 51.96564888161811
 
 
+# **************************************************************************************
+
+
 def test_get_equation_of_center():
     C = get_equation_of_center(date)
     assert C == 1.4754839423594455
+
+
+# **************************************************************************************
 
 
 def test_get_true_anomaly():
@@ -49,15 +72,24 @@ def test_get_true_anomaly():
     assert ν == 130.1363853664752
 
 
+# **************************************************************************************
+
+
 def test_get_true_geometric_longitude():
     L = get_true_geometric_longitude(date)
     assert L == 53.441132823977554
+
+
+# **************************************************************************************
 
 
 def test_get_ecliptic_longitude():
     date = datetime(2015, 2, 5, 12, 0, 0, 0, tzinfo=timezone.utc)
     λ = get_ecliptic_longitude(date)
     assert λ == 316.10388080739784
+
+
+# **************************************************************************************
 
 
 def test_get_equatorial_coordinate():
@@ -85,13 +117,29 @@ def test_get_equatorial_coordinate():
     assert hz["az"] == 89.64913544932578
 
 
+# **************************************************************************************
+
+
 def test_get_angular_diameter():
     date = datetime(2015, 2, 15, 0, 0, 0, 0, tzinfo=timezone.utc)
     θ = get_angular_diameter(date)
     assert θ == 0.5398164296031396
 
 
+# **************************************************************************************
+
+
 def test_get_distance():
     date = datetime(2015, 2, 15, 0, 0, 0, 0, tzinfo=timezone.utc)
     d = get_distance(date)
     assert d == 147744945752.45538
+
+
+# **************************************************************************************
+
+
+def test_mass_of_the_sun():
+    assert MASS_OF_THE_SUN == 1.98840987e30
+
+
+# **************************************************************************************
