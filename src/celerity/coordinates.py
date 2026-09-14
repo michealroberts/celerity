@@ -40,6 +40,18 @@ def get_correction_to_equatorial(
     :param target: The equatorial coordinate of the observed object at epoch J2000.0.
     """
 
+    # The corrections are applied in the order mean place (J2000.0) -> mean place
+    # of date (precession) -> true place of date (nutation) -> apparent place
+    # (aberration), so that each correction is evaluated at the coordinate the
+    # underlying theory expects:
+
+    # Correction to the equatorial coordinate of our target for precession:
+    corr = get_correction_to_equatorial_for_precession_of_equinoxes(date, target)
+
+    # Apply the correction to the target's equatorial coordinate:
+    target["ra"] += corr["ra"]
+    target["dec"] += corr["dec"]
+
     # Correction to the equatorial coordinate of our target for nutation:
     corr = get_correction_to_equatorial_for_nutation(date, target)
 
@@ -49,13 +61,6 @@ def get_correction_to_equatorial(
 
     # Correction to the equatorial coordinate of our target for aberration:
     corr = get_correction_to_equatorial_for_aberration(date, target)
-
-    # Apply the correction to the target's equatorial coordinate:
-    target["ra"] += corr["ra"]
-    target["dec"] += corr["dec"]
-
-    # Correction to the equatorial coordinate of our target for precession:
-    corr = get_correction_to_equatorial_for_precession_of_equinoxes(date, target)
 
     # Apply the correction to the target's equatorial coordinate:
     target["ra"] += corr["ra"]
