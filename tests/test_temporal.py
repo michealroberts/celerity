@@ -239,6 +239,32 @@ def test_universal_time():
 # **************************************************************************************
 
 
+def test_universal_time_treats_naive_datetime_as_utc():
+    # A naive datetime must be interpreted as UTC rather than as host-local time, so
+    # that the Universal Time does not depend on the timezone of the machine running
+    # the code:
+    naive = datetime(2021, 5, 14, 0, 0, 0, 0)
+
+    aware = datetime(2021, 5, 14, 0, 0, 0, 0, tzinfo=timezone.utc)
+
+    assert get_universal_time(naive) == get_universal_time(aware)
+
+    assert get_universal_time(naive) == 0.000029055041041305996
+
+
+# **************************************************************************************
+
+
+def test_universal_time_normalises_aware_datetime_to_utc():
+    # 2021-05-14T10:00:00+10:00 is the same instant as 2021-05-14T00:00:00Z:
+    aware = datetime(2021, 5, 14, 10, 0, 0, 0, tzinfo=timezone(timedelta(hours=10)))
+
+    assert get_universal_time(aware) == 0.000029055041041305996
+
+
+# **************************************************************************************
+
+
 def test_convert_local_sidereal_time_to_greenwich_sidereal_time():
     LST = get_local_sidereal_time(date, longitude)
     GST = convert_local_sidereal_time_to_greenwich_sidereal_time(LST, observer)
@@ -258,6 +284,40 @@ def test_convert_greenwich_sidereal_time_to_universal_time():
     assert UTC.hour == d.hour
     assert UTC.minute == d.minute
     assert UTC.second == d.second
+
+
+# **************************************************************************************
+
+
+def test_convert_greenwich_sidereal_time_to_universal_time_treats_naive_datetime_as_utc():
+    # A naive datetime must be interpreted as UTC rather than as host-local time, so
+    # that the converted time does not depend on the timezone of the machine running
+    # the code:
+    naive = datetime(2021, 5, 14, 23, 30, 0, 0)
+
+    aware = datetime(2021, 5, 14, 23, 30, 0, 0, tzinfo=timezone.utc)
+
+    GST = get_greenwich_sidereal_time(aware)
+
+    assert convert_greenwich_sidereal_time_to_universal_coordinate_time(
+        naive, GST
+    ) == convert_greenwich_sidereal_time_to_universal_coordinate_time(aware, GST)
+
+
+# **************************************************************************************
+
+
+def test_convert_greenwich_sidereal_time_to_universal_time_normalises_aware_datetime_to_utc():
+    # 2021-05-15T09:30:00+10:00 is the same instant as 2021-05-14T23:30:00Z:
+    utc = datetime(2021, 5, 14, 23, 30, 0, 0, tzinfo=timezone.utc)
+
+    offset = datetime(2021, 5, 15, 9, 30, 0, 0, tzinfo=timezone(timedelta(hours=10)))
+
+    GST = get_greenwich_sidereal_time(utc)
+
+    assert convert_greenwich_sidereal_time_to_universal_coordinate_time(
+        offset, GST
+    ) == convert_greenwich_sidereal_time_to_universal_coordinate_time(utc, GST)
 
 
 # **************************************************************************************
