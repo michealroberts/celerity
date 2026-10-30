@@ -17,6 +17,7 @@ from .common import (
     HeliocentricSphericalCoordinate,
     HorizontalCoordinate,
 )
+from .deflection import get_correction_to_equatorial_for_light_deflection
 from .matrix import apply_matrix, multiply_matrices
 from .nutation import get_nutation_matrix
 from .precession import get_frame_bias_matrix, get_precession_matrix
@@ -43,9 +44,10 @@ def get_correction_to_equatorial(
         agrees with the mean equator and equinox of J2000.0 to within the frame bias.
     """
     # The corrections are applied in the order ICRS -> mean place (J2000.0) (frame bias)
-    # -> mean place of date (precession) -> true place of date (nutation) -> apparent
-    # place (aberration), so that each correction is evaluated at the coordinate the
-    # underlying theory expects. The three rotations are composed into a single matrix:
+    # -> mean place of date (precession) -> true place of date (nutation) -> deflected
+    # place (light deflection) -> apparent place (aberration), so that each correction
+    # is evaluated at the coordinate the underlying theory expects. The three rotations
+    # are composed into a single matrix:
     NPB = multiply_matrices(
         get_nutation_matrix(date),
         multiply_matrices(get_precession_matrix(date), get_frame_bias_matrix()),
@@ -56,12 +58,21 @@ def get_correction_to_equatorial(
         apply_matrix(NPB, convert_equatorial_to_vector(target))
     )
 
+    # Correction to the equatorial coordinate of our target for light deflection:
+    deflection = get_correction_to_equatorial_for_light_deflection(date, true)
+
+    # Get the deflected place of date of our target (in degrees):
+    deflected: EquatorialCoordinate = {
+        "ra": true["ra"] + deflection["ra"],
+        "dec": true["dec"] + deflection["dec"],
+    }
+
     # Correction to the equatorial coordinate of our target for aberration:
-    aberration = get_correction_to_equatorial_for_aberration(date, true)
+    aberration = get_correction_to_equatorial_for_aberration(date, deflected)
 
     # Apply the correction to the target's equatorial coordinate:
-    target["ra"] = true["ra"] + aberration["ra"]
-    target["dec"] = true["dec"] + aberration["dec"]
+    target["ra"] = deflected["ra"] + aberration["ra"]
+    target["dec"] = deflected["dec"] + aberration["dec"]
 
     return target
 
