@@ -12,6 +12,12 @@ from typing import Final, List, Tuple
 
 from .astrometry import get_obliquity_of_the_ecliptic
 from .common import EquatorialCoordinate
+from .matrix import (
+    Matrix,
+    get_rotation_matrix_about_x,
+    get_rotation_matrix_about_z,
+    multiply_matrices,
+)
 from .temporal import get_terrestrial_time_in_julian_centuries
 
 # **************************************************************************************
@@ -220,6 +226,43 @@ def get_nutation_in_obliquity(date: datetime) -> float:
 
     # Convert from 0.1 microarcseconds to degrees and add the planetary offset:
     return Δε / 36000000000 + IAU2000B_PLANETARY_NUTATION_IN_OBLIQUITY
+
+
+# **************************************************************************************
+
+
+def get_nutation_matrix(date: datetime) -> Matrix:
+    """
+    The matrix that rotates a direction from the mean equator and equinox of date to the
+    true equator and equinox of date.
+
+    The rotation is formed from the nutation in longitude and obliquity and the mean
+    obliquity of the ecliptic, as in the IAU 2000 precession-nutation model: the frame is
+    rotated from the mean equator to the ecliptic, turned about the ecliptic pole through
+    the nutation in longitude, and rotated back to the true equator.
+
+    :param date: The date to form the nutation matrix for.
+    :return: The nutation rotation matrix.
+    """
+    # Get the nutation in longitude (in degrees):
+    Δψ = get_nutation_in_longitude(date)
+
+    # Get the nutation in obliquity (in degrees):
+    Δε = get_nutation_in_obliquity(date)
+
+    # Get the mean obliquity of the ecliptic (in degrees):
+    ε = get_obliquity_of_the_ecliptic(date)
+
+    # Get the rotation about the x axis from the mean equator to the ecliptic (in degrees):
+    rε = get_rotation_matrix_about_x(ε)
+
+    # Get the rotation about the z axis, the ecliptic pole, through -Δψ (in degrees):
+    rψ = get_rotation_matrix_about_z(-Δψ)
+
+    # Get the rotation about the x axis from the ecliptic to the true equator (in degrees):
+    rtrue = get_rotation_matrix_about_x(-(ε + Δε))
+
+    return multiply_matrices(rtrue, multiply_matrices(rψ, rε))
 
 
 # **************************************************************************************
