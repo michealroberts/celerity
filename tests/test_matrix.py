@@ -11,6 +11,7 @@ from typing import get_args
 
 from src.celerity.matrix import (
     Matrix,
+    apply_matrix,
     get_rotation_matrix_about_x,
     get_rotation_matrix_about_y,
     get_rotation_matrix_about_z,
@@ -501,6 +502,112 @@ def test_multiply_matrices_returns_three_by_three_floats():
         assert isinstance(row, tuple)
         assert len(row) == 3
         assert all(isinstance(component, float) for component in row)
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_identity_leaves_a_vector_unchanged():
+    assert apply_matrix(identity, (0.3, -1.7, 2.9)) == (0.3, -1.7, 2.9)
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_literal_product():
+    m: Matrix = ((1.0, 2.0, 3.0), (4.0, 5.0, 6.0), (7.0, 8.0, 9.0))
+    assert apply_matrix(m, (1.0, 0.0, -1.0)) == (-2.0, -2.0, -2.0)
+    assert apply_matrix(m, (1.0, 1.0, 1.0)) == (6.0, 15.0, 24.0)
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_zero_vector():
+    r = get_rotation_matrix_about_z(41.0)
+    assert apply_matrix(r, (0.0, 0.0, 0.0)) == (0.0, 0.0, 0.0)
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_frame_rotation_about_z():
+    # A 90 degree frame rotation about z carries the frame's x axis onto the old y axis,
+    # so a vector along the old y axis lies along x in the rotated frame:
+    x, y, z = apply_matrix(get_rotation_matrix_about_z(90.0), (0.0, 1.0, 0.0))
+    assert x == 1.0
+    assert isclose(y, 0.0, abs_tol=1e-15)
+    assert z == 0.0
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_frame_rotation_about_x():
+    # A 90 degree frame rotation about x carries the frame's y axis onto the old z axis:
+    x, y, z = apply_matrix(get_rotation_matrix_about_x(90.0), (0.0, 0.0, 1.0))
+    assert x == 0.0
+    assert y == 1.0
+    assert isclose(z, 0.0, abs_tol=1e-15)
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_rotation_about_x_leaves_the_x_component_unchanged():
+    for angle in (-80.0, 15.0, 123.0):
+        x, _, _ = apply_matrix(get_rotation_matrix_about_x(angle), (0.4, 0.5, 0.6))
+        assert x == 0.4
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_rotation_preserves_length():
+    vector = (0.3, -0.4, 0.5)
+    for r in (
+        get_rotation_matrix_about_x(33.0),
+        get_rotation_matrix_about_y(-71.0),
+        get_rotation_matrix_about_z(190.0),
+    ):
+        x, y, z = apply_matrix(r, vector)
+        assert isclose(x**2 + y**2 + z**2, 0.5, rel_tol=1e-15)
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_rotation_then_inverse_round_trips():
+    vector = (0.3, -0.4, 0.5)
+    rotated = apply_matrix(get_rotation_matrix_about_y(52.0), vector)
+    x, y, z = apply_matrix(get_rotation_matrix_about_y(-52.0), rotated)
+    assert isclose(x, 0.3, rel_tol=1e-15)
+    assert isclose(y, -0.4, rel_tol=1e-15)
+    assert isclose(z, 0.5, rel_tol=1e-15)
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_of_a_product_applies_the_right_factor_first():
+    # Applying a·b to a vector is the same as applying b and then a:
+    a = get_rotation_matrix_about_x(30.0)
+    b = get_rotation_matrix_about_z(60.0)
+    vector = (0.3, -0.4, 0.5)
+    composed = apply_matrix(multiply_matrices(a, b), vector)
+    sequential = apply_matrix(a, apply_matrix(b, vector))
+    for i in range(3):
+        assert isclose(composed[i], sequential[i], abs_tol=1e-15)
+
+
+# **************************************************************************************
+
+
+def test_apply_matrix_returns_three_floats():
+    vector = apply_matrix(identity, (1.0, 2.0, 3.0))
+    assert isinstance(vector, tuple)
+    assert len(vector) == 3
+    assert all(isinstance(component, float) for component in vector)
 
 
 # **************************************************************************************

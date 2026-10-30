@@ -9,6 +9,8 @@
 from math import cos, radians, sin
 from typing import Tuple
 
+from .vector import Vector
+
 # **************************************************************************************
 
 # A three-by-three matrix, as three row tuples:
@@ -114,6 +116,26 @@ def multiply_matrices(a: Matrix, b: Matrix) -> Matrix:
             a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1],
             a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2],
         ),
+    )
+
+
+# **************************************************************************************
+
+
+def apply_matrix(matrix: Matrix, vector: Vector) -> Vector:
+    """
+    The product matrix·vector, giving the components of the vector in the rotated frame.
+
+    :param matrix: The matrix to apply.
+    :param vector: The vector to apply it to.
+    :return: The transformed vector.
+    """
+    x, y, z = vector
+
+    return (
+        matrix[0][0] * x + matrix[0][1] * y + matrix[0][2] * z,
+        matrix[1][0] * x + matrix[1][1] * y + matrix[1][2] * z,
+        matrix[2][0] * x + matrix[2][1] * y + matrix[2][2] * z,
     )
 
 
