@@ -7,6 +7,7 @@
 # **************************************************************************************
 
 from datetime import datetime, timezone
+from math import cos, radians
 from typing import TypedDict
 
 import pytest
@@ -40,6 +41,12 @@ from src.celerity.precession import (
 
 # **************************************************************************************
 
+# The tolerances below are on the sky. When applied to a right ascension they are
+# divided by the cosine of the declination, since a given separation on the sky spans
+# more right ascension close to the celestial poles.
+
+# **************************************************************************************
+
 # The tolerance on the nutation in longitude and obliquity, and on the nutation
 # correction to an equatorial coordinate:
 TOLERANCE_IN_NUTATION: float = 0.002 / 3600
@@ -63,7 +70,7 @@ TOLERANCE_IN_LIGHT_DEFLECTION: float = 0.0001 / 3600
 
 # The tolerance on the apparent place, i.e. the precession, nutation and aberration
 # corrections applied in turn:
-TOLERANCE_IN_APPARENT_PLACE: float = 0.025 / 3600
+TOLERANCE_IN_APPARENT_PLACE: float = 0.012 / 3600
 
 # **************************************************************************************
 
@@ -110,6 +117,11 @@ nutations: list[NutationScenario] = [
         "date": datetime(2026, 9, 14, 0, 0, 0, 0, tzinfo=timezone.utc),
         "Δψ": 0.0024661472297875784,
         "Δε": 0.002337817578678058,
+    },
+    {
+        "date": datetime(2040, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "Δψ": -0.004330045827874393,
+        "Δε": 0.0006657288862574993,
     },
 ]
 
@@ -182,6 +194,17 @@ scenarios: list[Scenario] = [
         "aberration": {"ra": 95.99613767251633, "dec": -52.69767027450793},
         "apparent": {"ra": 95.99614560795548, "dec": -52.697673307902555},
     },
+    # Polaris on 2000-01-01:
+    {
+        "date": datetime(2000, 1, 1, 12, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 37.954588, "dec": 89.2641094},
+        "nutation": {"ra": 37.97564162724737, "dec": 89.26190990211472},
+        "precession": {"ra": 37.95458856824958, "dec": 89.26410940892804},
+        "true_place": {"ra": 37.97564219410124, "dec": 89.26190991103962},
+        "deflection": {"ra": 37.975694766913804, "dec": 89.26190957474108},
+        "aberration": {"ra": 38.190449024238134, "dec": 89.26697760613199},
+        "apparent": {"ra": 38.19017577785115, "dec": 89.26697243951237},
+    },
     # Betelgeuse on 2010-06-15:
     {
         "date": datetime(2010, 6, 15, 3, 0, 0, 0, tzinfo=timezone.utc),
@@ -247,6 +270,17 @@ scenarios: list[Scenario] = [
         "deflection": {"ra": 96.04768859288745, "dec": -52.701568969716085},
         "aberration": {"ra": 96.03864470363699, "dec": -52.70263501597931},
         "apparent": {"ra": 96.0386566039513, "dec": -52.70263970673901},
+    },
+    # Polaris on 2010-06-15:
+    {
+        "date": datetime(2010, 6, 15, 3, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 37.954588, "dec": 89.2641094},
+        "nutation": {"ra": 38.020873942049946, "dec": 89.26582439610266},
+        "precession": {"ra": 41.06164186040743, "dec": 89.3090177461639},
+        "true_place": {"ra": 41.13959680046372, "dec": 89.31068699091685},
+        "deflection": {"ra": 41.139500927944546, "dec": 89.31068825128548},
+        "aberration": {"ra": 40.80112362133398, "dec": 89.30685189107007},
+        "apparent": {"ra": 40.800811523787296, "dec": 89.30684995706551},
     },
     # Betelgeuse on 2021-05-14:
     {
@@ -314,6 +348,17 @@ scenarios: list[Scenario] = [
         "aberration": {"ra": 96.09756718954092, "dec": -52.710961160311506},
         "apparent": {"ra": 96.09758248364211, "dec": -52.71096559211423},
     },
+    # Polaris on 2021-05-14:
+    {
+        "date": datetime(2021, 5, 14, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 37.954588, "dec": 89.2641094},
+        "nutation": {"ra": 37.81181600181118, "dec": 89.26304150486922},
+        "precession": {"ra": 44.74527154349368, "dec": 89.3535374020311},
+        "true_place": {"ra": 44.57329424630562, "dec": 89.35268672705091},
+        "deflection": {"ra": 44.5732784445011, "dec": 89.35268829389221},
+        "aberration": {"ra": 44.09810497394644, "dec": 89.35165441604757},
+        "apparent": {"ra": 44.09791226300754, "dec": 89.35165417869038},
+    },
     # Betelgeuse on 2026-09-14:
     {
         "date": datetime(2026, 9, 14, 0, 0, 0, 0, tzinfo=timezone.utc),
@@ -380,6 +425,94 @@ scenarios: list[Scenario] = [
         "aberration": {"ra": 96.13447762353236, "dec": -52.70382474997525},
         "apparent": {"ra": 96.13448251348838, "dec": -52.70382587533667},
     },
+    # Polaris on 2026-09-14:
+    {
+        "date": datetime(2026, 9, 14, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 37.954588, "dec": 89.2641094},
+        "nutation": {"ra": 37.86001660008947, "dec": 89.26631964700023},
+        "precession": {"ra": 46.72977875760054, "dec": 89.3742717661809},
+        "true_place": {"ra": 46.650407760039656, "dec": 89.37664572221193},
+        "deflection": {"ra": 46.650318709096304, "dec": 89.37664503596963},
+        "aberration": {"ra": 46.921233324979006, "dec": 89.37238989072334},
+        "apparent": {"ra": 46.92087438331386, "dec": 89.37238272669086},
+    },
+    # Betelgeuse on 2040-01-01:
+    {
+        "date": datetime(2040, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 88.7929583, "dec": 7.4070639},
+        "nutation": {"ra": 88.78875975596036, "dec": 7.407693141977986},
+        "precession": {"ra": 89.33441537814454, "dec": 7.410699611663397},
+        "true_place": {"ra": 89.33021750539476, "dec": 7.41134522822122},
+        "deflection": {"ra": 89.33021761697647, "dec": 7.411345389152925},
+        "aberration": {"ra": 89.33594820830722, "dec": 7.411070450488347},
+        "apparent": {"ra": 89.33595133337457, "dec": 7.411069348034825},
+    },
+    # Vega on 2040-01-01:
+    {
+        "date": datetime(2040, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 279.2347348, "dec": 38.7836889},
+        "nutation": {"ra": 279.2320418878248, "dec": 38.78275548230243},
+        "precession": {"ra": 279.57061184986486, "dec": 38.82006824209901},
+        "true_place": {"ra": 279.56791617823893, "dec": 38.819125502570124},
+        "deflection": {"ra": 279.56791611154523, "dec": 38.81912742079873},
+        "aberration": {"ra": 279.56050867748235, "dec": 38.81881876411773},
+        "apparent": {"ra": 279.56051770316, "dec": 38.81882421728263},
+    },
+    # Sirius on 2040-01-01:
+    {
+        "date": datetime(2040, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 101.2871553, "dec": -16.7161159},
+        "nutation": {"ra": 101.28365044265645, "dec": -16.71512604352434},
+        "precession": {"ra": 101.73404564040234, "dec": -16.760550439905966},
+        "true_place": {"ra": 101.73053976147338, "dec": -16.759548458008314},
+        "deflection": {"ra": 101.73053975410389, "dec": -16.759548041550183},
+        "aberration": {"ra": 101.73656217182581, "dec": -16.759871089358693},
+        "apparent": {"ra": 101.73656666840577, "dec": -16.75986991777819},
+    },
+    # Arcturus on 2040-01-01:
+    {
+        "date": datetime(2040, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 213.9153003, "dec": 19.1824103},
+        "nutation": {"ra": 213.91185388901258, "dec": 19.183467961007704},
+        "precession": {"ra": 214.38454780761546, "dec": 18.998144254178918},
+        "true_place": {"ra": 214.38109891155486, "dec": 18.999189486242344},
+        "deflection": {"ra": 214.3810975985727, "dec": 18.999190204326727},
+        "aberration": {"ra": 214.37851987850914, "dec": 18.997100705997802},
+        "apparent": {"ra": 214.37852099802825, "dec": 18.997107937842106},
+    },
+    # Dubhe on 2040-01-01:
+    {
+        "date": datetime(2040, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 165.9319647, "dec": 61.7510331},
+        "nutation": {"ra": 165.9284145371366, "dec": 61.75286533485002},
+        "precession": {"ra": 166.54261090701067, "dec": 61.53476452894888},
+        "true_place": {"ra": 166.539092938958, "dec": 61.536594239131496},
+        "deflection": {"ra": 166.53909161488733, "dec": 61.536594126744816},
+        "aberration": {"ra": 166.54379393385946, "dec": 61.53172399906447},
+        "apparent": {"ra": 166.54378573736417, "dec": 61.53172829484439},
+    },
+    # Canopus on 2040-01-01:
+    {
+        "date": datetime(2040, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 95.9879496, "dec": -52.6956994},
+        "nutation": {"ra": 95.98613338492508, "dec": -52.69485768593339},
+        "precession": {"ra": 96.20974787150101, "dec": -52.71935865153635},
+        "true_place": {"ra": 96.20792920825247, "dec": -52.71851058272656},
+        "deflection": {"ra": 96.20792932695598, "dec": -52.71850968881974},
+        "aberration": {"ra": 96.21744270064512, "dec": -52.719012008243084},
+        "apparent": {"ra": 96.21745192842363, "dec": -52.71900991699314},
+    },
+    # Polaris on 2040-01-01:
+    {
+        "date": datetime(2040, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc),
+        "target": {"ra": 37.954588, "dec": 89.2641094},
+        "nutation": {"ra": 37.827450440859835, "dec": 89.26315925271453},
+        "precession": {"ra": 52.26167757899489, "dec": 89.42240043034538},
+        "true_place": {"ra": 52.08236611489837, "dec": 89.42187013561202},
+        "deflection": {"ra": 52.08242274225688, "dec": 89.42186964172167},
+        "aberration": {"ra": 52.47309955053321, "dec": 89.4260942346596},
+        "apparent": {"ra": 52.47303359400899, "dec": 89.42608708628741},
+    },
 ]
 
 # **************************************************************************************
@@ -412,7 +545,8 @@ def test_get_correction_to_equatorial_for_nutation(scenario: Scenario) -> None:
     correction = get_correction_to_equatorial_for_nutation(scenario["date"], target)
 
     assert target["ra"] + correction["ra"] == pytest.approx(
-        scenario["nutation"]["ra"], abs=TOLERANCE_IN_NUTATION
+        scenario["nutation"]["ra"],
+        abs=TOLERANCE_IN_NUTATION / cos(radians(scenario["nutation"]["dec"])),
     )
     assert target["dec"] + correction["dec"] == pytest.approx(
         scenario["nutation"]["dec"], abs=TOLERANCE_IN_NUTATION
@@ -433,7 +567,8 @@ def test_get_correction_to_equatorial_for_precession_of_equinoxes(
     )
 
     assert target["ra"] + correction["ra"] == pytest.approx(
-        scenario["precession"]["ra"], abs=TOLERANCE_IN_PRECESSION
+        scenario["precession"]["ra"],
+        abs=TOLERANCE_IN_PRECESSION / cos(radians(scenario["precession"]["dec"])),
     )
     assert target["dec"] + correction["dec"] == pytest.approx(
         scenario["precession"]["dec"], abs=TOLERANCE_IN_PRECESSION
@@ -451,7 +586,8 @@ def test_get_correction_to_equatorial_for_aberration(scenario: Scenario) -> None
     correction = get_correction_to_equatorial_for_aberration(scenario["date"], target)
 
     assert target["ra"] + correction["ra"] == pytest.approx(
-        scenario["aberration"]["ra"], abs=TOLERANCE_IN_ABERRATION
+        scenario["aberration"]["ra"],
+        abs=TOLERANCE_IN_ABERRATION / cos(radians(scenario["aberration"]["dec"])),
     )
     assert target["dec"] + correction["dec"] == pytest.approx(
         scenario["aberration"]["dec"], abs=TOLERANCE_IN_ABERRATION
@@ -472,7 +608,8 @@ def test_get_correction_to_equatorial_for_light_deflection(scenario: Scenario) -
     )
 
     assert target["ra"] + correction["ra"] == pytest.approx(
-        scenario["deflection"]["ra"], abs=TOLERANCE_IN_LIGHT_DEFLECTION
+        scenario["deflection"]["ra"],
+        abs=TOLERANCE_IN_LIGHT_DEFLECTION / cos(radians(scenario["deflection"]["dec"])),
     )
     assert target["dec"] + correction["dec"] == pytest.approx(
         scenario["deflection"]["dec"], abs=TOLERANCE_IN_LIGHT_DEFLECTION
@@ -487,7 +624,8 @@ def test_get_correction_to_equatorial(scenario: Scenario) -> None:
     apparent = get_correction_to_equatorial(scenario["date"], {**scenario["target"]})
 
     assert apparent["ra"] == pytest.approx(
-        scenario["apparent"]["ra"], abs=TOLERANCE_IN_APPARENT_PLACE
+        scenario["apparent"]["ra"],
+        abs=TOLERANCE_IN_APPARENT_PLACE / cos(radians(scenario["apparent"]["dec"])),
     )
     assert apparent["dec"] == pytest.approx(
         scenario["apparent"]["dec"], abs=TOLERANCE_IN_APPARENT_PLACE
