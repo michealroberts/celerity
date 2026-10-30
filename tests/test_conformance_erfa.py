@@ -63,7 +63,7 @@ TOLERANCE_IN_LIGHT_DEFLECTION: float = 0.0001 / 3600
 
 # The tolerance on the apparent place, i.e. the precession, nutation and aberration
 # corrections applied in turn:
-TOLERANCE_IN_APPARENT_PLACE: float = 0.035 / 3600
+TOLERANCE_IN_APPARENT_PLACE: float = 0.025 / 3600
 
 # **************************************************************************************
 
