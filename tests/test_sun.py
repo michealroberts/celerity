@@ -96,26 +96,26 @@ def test_get_ecliptic_longitude():
 def test_get_equatorial_coordinate():
     date = datetime(2015, 2, 5, 12, 0, 0, 0, tzinfo=timezone.utc)
     eq = get_equatorial_coordinate(date)
-    assert eq["ra"] == 318.5617376411268
-    assert eq["dec"] == -16.008394691469505
+    assert eq["ra"] == 318.5617350161581
+    assert eq["dec"] == -16.008386614413684
 
     hz = convert_equatorial_to_horizontal(date, observer, eq)
 
-    assert hz["alt"] == -69.40209879395105
-    assert hz["az"] == 82.77542830157664
+    assert hz["alt"] == -69.40209441112938
+    assert hz["az"] == 82.77540772635103
 
     # Add one hour to the date:
     date = datetime(2015, 2, 5, 13, 0, 0, 0, tzinfo=timezone.utc)
 
     eq = get_equatorial_coordinate(date)
 
-    assert eq["ra"] == 318.60368091333004
-    assert eq["dec"] == -15.995795336804742
+    assert eq["ra"] == 318.603678288845
+    assert eq["dec"] == -15.995787266450614
 
     hz = convert_equatorial_to_horizontal(date, observer, eq)
 
-    assert hz["alt"] == -55.32225076978145
-    assert hz["az"] == 89.64913544932578
+    assert hz["alt"] == -55.322246641395274
+    assert hz["az"] == 89.64912247978275
 
 
 # **************************************************************************************

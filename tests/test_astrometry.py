@@ -1,4 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+
+from math import isclose
 
 from src.celerity.astrometry import (
     get_angular_separation,
@@ -39,10 +41,53 @@ def test_get_hour_angle():
 
 def test_get_obliquity_of_the_ecliptic():
     ε = get_obliquity_of_the_ecliptic(date)
-    assert ε == 23.436511890585354
+    assert ε == 23.436499838724593
 
 
 def test_get_parallactic_angle():
     target = betelgeuse
     q = get_parallactic_angle(date, observer, target)
     assert q == -42.628126462207035
+
+
+# **************************************************************************************
+
+
+def test_get_obliquity_of_the_ecliptic_matches_erfa():
+    # The reference value is ERFA obl06 (pyerfa 2.0.1.5) for 2021-05-14 00:00:00 UTC:
+    assert isclose(
+        get_obliquity_of_the_ecliptic(date), 23.436499838724593, abs_tol=1e-12
+    )
+
+
+# **************************************************************************************
+
+
+def test_get_obliquity_of_the_ecliptic_at_j2000():
+    # At J2000.0 the mean obliquity is 84381.406 arcseconds:
+    ε = get_obliquity_of_the_ecliptic(datetime(2000, 1, 1, 11, 58, 55, 816000))
+    assert isclose(ε, 84381.406 / 3600, abs_tol=1e-9)
+
+
+# **************************************************************************************
+
+
+def test_get_obliquity_of_the_ecliptic_decreases_with_time():
+    # The mean obliquity falls by about 46.8 arcseconds per century at present:
+    earlier = get_obliquity_of_the_ecliptic(datetime(1950, 1, 1, 0, 0, 0, 0))
+    later = get_obliquity_of_the_ecliptic(datetime(2050, 1, 1, 0, 0, 0, 0))
+    assert 46.0 < (earlier - later) * 3600 < 47.5
+
+
+# **************************************************************************************
+
+
+def test_get_obliquity_of_the_ecliptic_treats_naive_datetime_as_utc():
+    assert get_obliquity_of_the_ecliptic(
+        datetime(2021, 5, 14, 0, 0, 0, 0)
+    ) == get_obliquity_of_the_ecliptic(
+        datetime(2021, 5, 14, 2, 0, 0, 0, tzinfo=timezone(timedelta(hours=2)))
+    )
+
+
+# **************************************************************************************

@@ -103,8 +103,8 @@ def test_get_ecliptic_latitude():
 def test_get_equatorial_coordinate():
     date = datetime(2015, 1, 2, 3, 0, 0, 0, tzinfo=timezone.utc)
     eq = get_equatorial_coordinate(date)
-    assert eq["ra"] == 63.854089783072595
-    assert eq["dec"] == 17.246094608898062
+    assert eq["ra"] == 63.85409145288943
+    assert eq["dec"] == 17.246083651254967
 
 
 def test_get_elongation():

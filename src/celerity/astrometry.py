@@ -7,7 +7,7 @@
 # **************************************************************************************
 
 from datetime import datetime
-from math import acos, atan2, cos, degrees, inf, pow, radians, sin, tan
+from math import acos, atan2, cos, degrees, inf, radians, sin, tan
 from typing import Union, overload
 
 from .common import (
@@ -17,7 +17,7 @@ from .common import (
     is_equatorial_coordinate,
     is_horizontal_coordinate,
 )
-from .temporal import get_julian_date, get_local_sidereal_time
+from .temporal import get_local_sidereal_time, get_terrestrial_time_in_julian_centuries
 
 # **************************************************************************************
 
@@ -122,14 +122,22 @@ def get_obliquity_of_the_ecliptic(date: datetime) -> float:
     :param date: The datetime object to convert.
     :return The obliquity of the ecliptic in degrees.
     """
-    # Get the Julian date:
-    JD = get_julian_date(date)
+    # Get the Julian centuries of TT since J2000.0:
+    T = get_terrestrial_time_in_julian_centuries(date)
 
-    # Calculate the number of centuries since J2000.0:
-    T = (JD - 2451545.0) / 36525
+    # Calculate the mean obliquity of the ecliptic (in arcseconds), following the IAU
+    # 2006 precession model (Capitaine, Wallace & Chapront 2003, A&A 412, 567, eq. 39):
+    ε = (
+        84381.406
+        - 46.836769 * T
+        - 0.0001831 * T**2
+        + 0.00200340 * T**3
+        - 0.000000576 * T**4
+        - 0.0000000434 * T**5
+    )
 
     # Calculate the obliquity of the ecliptic:
-    return 23.439292 - (46.845 * T + 0.00059 * pow(T, 2) + 0.001813 * pow(T, 3)) / 3600
+    return ε / 3600
 
 
 # **************************************************************************************

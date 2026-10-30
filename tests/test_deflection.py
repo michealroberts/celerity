@@ -55,8 +55,8 @@ def test_light_deflection_limit():
 
 def test_get_correction_to_equatorial_for_light_deflection_betelgeuse():
     correction = get_correction_to_equatorial_for_light_deflection(date, betelgeuse)
-    assert correction["ra"] == 3.0342083618961624e-06
-    assert correction["dec"] == -1.1422183350262571e-06
+    assert correction["ra"] == 3.0342090155954793e-06
+    assert correction["dec"] == -1.1422177408348944e-06
 
 
 # **************************************************************************************
