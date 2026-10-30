@@ -75,6 +75,65 @@ def get_frame_bias_matrix() -> Matrix:
 # **************************************************************************************
 
 
+def get_precession_matrix(date: datetime) -> Matrix:
+    """
+    The matrix that rotates a direction from the mean equator and equinox of J2000.0 to
+    the mean equator and equinox of date.
+
+    The rotation follows the IAU 2006 precession model (Capitaine, Wallace & Chapront
+    2003, A&A 412, 567, eq. 40, the P03 solution adopted by IAU 2006 Resolution B1),
+    with the equatorial precession angles ζ, z and θ evaluated in Terrestrial Time (TT).
+
+    :param date: The date to form the precession matrix for.
+    :return: The precession rotation matrix.
+    """
+    # Get the Julian centuries of TT since J2000.0:
+    T = get_terrestrial_time_in_julian_centuries(date)
+
+    # The IAU 2006 equatorial precession angle ζ (in arcseconds):
+    ζ = (
+        2.650545
+        + 2306.083227 * T
+        + 0.2988499 * T**2
+        + 0.01801828 * T**3
+        - 0.000005971 * T**4
+        - 0.0000003173 * T**5
+    )
+
+    # The IAU 2006 equatorial precession angle z (in arcseconds):
+    z = (
+        -2.650545
+        + 2306.077181 * T
+        + 1.0927348 * T**2
+        + 0.01826837 * T**3
+        - 0.000028596 * T**4
+        - 0.0000002904 * T**5
+    )
+
+    # The IAU 2006 equatorial precession angle θ (in arcseconds):
+    θ = (
+        2004.191903 * T
+        - 0.4294934 * T**2
+        - 0.04182264 * T**3
+        - 0.000007089 * T**4
+        - 0.0000001274 * T**5
+    )
+
+    # Get the rotation about the z axis through -ζ (in degrees):
+    rζ = get_rotation_matrix_about_z(-ζ / 3600)
+
+    # Get the rotation about the y axis through θ (in degrees):
+    rθ = get_rotation_matrix_about_y(θ / 3600)
+
+    # Get the rotation about the z axis through -z (in degrees):
+    rz = get_rotation_matrix_about_z(-z / 3600)
+
+    return multiply_matrices(rz, multiply_matrices(rθ, rζ))
+
+
+# **************************************************************************************
+
+
 def get_correction_to_equatorial_for_precession_of_equinoxes(
     date: datetime,
     target: EquatorialCoordinate,
