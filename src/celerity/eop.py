@@ -6,9 +6,27 @@
 
 # **************************************************************************************
 
-from __future__ import annotations
+from datetime import datetime, timezone
+from json import loads
+from math import inf
+from typing import List, Literal, TypedDict
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
-from typing import TypedDict
+from .temporal import get_modified_julian_date_as_parts
+from .utilities import convert_arcseconds_to_degrees
+
+# **************************************************************************************
+
+EOP_TIMEOUT_SECONDS = 10
+
+# **************************************************************************************
+
+EOP_MAX_LOD_LOOKBACK_DAYS = 365
+
+# **************************************************************************************
+
+IERS_EOP_BASE_URL = "https://datacenter.iers.org/webservice/REST/eop/RestController.php"
 
 # **************************************************************************************
 
@@ -59,5 +77,199 @@ class EarthOrbitalParameters(TypedDict):
     # fully describes the residual between the observed and modeled pole position:
     pole_offset_in_ecliptic_obliquity: float
 
+
+# **************************************************************************************
+
+
+class EOPRequestParams(TypedDict):
+    param: Literal["UT1-UTC", "x_pole", "y_pole", "LOD", "dX", "dY"]
+    mjd: int
+    series: Literal["Finals All IAU2000"]
+
+
+# **************************************************************************************
+
+
+def parse_eop_value(value: object) -> float | None:
+    if value is None:
+        return None
+
+    if isinstance(value, int | float):
+        return float(value)
+
+    raw = str(value).strip()
+
+    if raw in {"", "-"}:
+        return None
+
+    return float(raw)
+
+
+# **************************************************************************************
+
+
+def fetch_eop_parameter(
+    param: Literal["UT1-UTC", "x_pole", "y_pole", "LOD", "dX", "dY"], MJD: int
+) -> float | None:
+    query: EOPRequestParams = EOPRequestParams(
+        {
+            "param": param,
+            "mjd": MJD,
+            "series": "Finals All IAU2000",
+        }
+    )
+
+    url: str = f"{IERS_EOP_BASE_URL}?{urlencode(query)}"
+
+    # Ensure we always expect to accept JSON responses, whilst also letting the server
+    # know that we are a client (e.g., celerity) to avoid any potential issues with
+    # server-side rate limiting or blocking:
+    request = Request(
+        url,
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "celerity",
+        },
+    )
+
+    with urlopen(request, timeout=EOP_TIMEOUT_SECONDS) as response:
+        # Assume UTF-8 or ASCII text in the response:
+        raw = response.read().decode("utf-8", errors="ignore")
+
+    # Load the JSON data from the response:
+    data = loads(raw)
+
+    if int(data["MJD"]) != MJD:
+        raise ValueError(
+            f"Received MJD {data['MJD']} does not match requested MJD {MJD}"
+        )
+
+    if data["Param"] != param:
+        raise ValueError(
+            f"Received parameter {data['Param']} does not match requested parameter {param}"
+        )
+
+    return parse_eop_value(data["Value"])
+
+
+# **************************************************************************************
+
+
+def fetch_earth_orientation_parameters(MJD: int) -> EarthOrbitalParameters:
+    # Setup the query parameters for the IERS Rapid Service data:
+    queries: List[EOPRequestParams] = [
+        EOPRequestParams(
+            {
+                "param": "UT1-UTC",
+                "mjd": MJD,
+                "series": "Finals All IAU2000",
+            }
+        ),
+        EOPRequestParams(
+            {
+                "param": "x_pole",
+                "mjd": MJD,
+                "series": "Finals All IAU2000",
+            }
+        ),
+        EOPRequestParams(
+            {
+                "param": "y_pole",
+                "mjd": MJD,
+                "series": "Finals All IAU2000",
+            }
+        ),
+        EOPRequestParams(
+            {
+                "param": "LOD",
+                "mjd": MJD,
+                "series": "Finals All IAU2000",
+            }
+        ),
+        EOPRequestParams(
+            {
+                "param": "dX",
+                "mjd": MJD,
+                "series": "Finals All IAU2000",
+            }
+        ),
+        EOPRequestParams(
+            {
+                "param": "dY",
+                "mjd": MJD,
+                "series": "Finals All IAU2000",
+            }
+        ),
+    ]
+
+    entry: EarthOrbitalParameters = EarthOrbitalParameters(
+        {
+            "mjd": float(MJD),
+            "dut1": -inf,
+            "x_polar_motion": -inf,
+            "y_polar_motion": -inf,
+            "lod": -inf,
+            "pole_offset_in_ecliptic_longitude": -inf,
+            "pole_offset_in_ecliptic_obliquity": -inf,
+        }
+    )
+
+    for q in queries:
+        value = fetch_eop_parameter(q["param"], MJD)
+
+        if value is None:
+            continue
+
+        if q["param"] == "UT1-UTC":
+            # Convert our DUT1 value from milliseconds to seconds:
+            entry["dut1"] = value * 0.001
+
+        if q["param"] == "x_pole":
+            entry["x_polar_motion"] = convert_arcseconds_to_degrees(value / 1000.0)
+
+        if q["param"] == "y_pole":
+            entry["y_polar_motion"] = convert_arcseconds_to_degrees(value / 1000.0)
+
+        if q["param"] == "LOD":
+            # Convert LOD from milliseconds to seconds.
+            entry["lod"] = value * 0.001
+
+        if q["param"] == "dX":
+            entry["pole_offset_in_ecliptic_longitude"] = convert_arcseconds_to_degrees(
+                value / 1000.0
+            )
+
+        if q["param"] == "dY":
+            entry["pole_offset_in_ecliptic_obliquity"] = convert_arcseconds_to_degrees(
+                value / 1000.0
+            )
+
+    # IAU2000 predictions do not publish LOD, so backfill from the nearest prior MJD:
+    if entry["lod"] == -inf:
+        for fallback_mjd in range(MJD - 1, MJD - EOP_MAX_LOD_LOOKBACK_DAYS - 1, -1):
+            value = fetch_eop_parameter("LOD", fallback_mjd)
+
+            if value is None:
+                continue
+
+            entry["lod"] = value * 0.001
+            break
+
+    return entry
+
+
+# **************************************************************************************
+
+if __name__ == "__main__":
+    # Get the current date and time:
+    now = datetime.now(timezone.utc)
+
+    # Convert to Modified Julian Date (MJD):
+    MJD, _ = get_modified_julian_date_as_parts(when=now)
+
+    # Fetch the Earth Orientation Parameters for the current MJD:
+    eop = fetch_earth_orientation_parameters(MJD)
+
+    print(f"EOP at MJD {MJD}: {eop}")
 
 # **************************************************************************************
