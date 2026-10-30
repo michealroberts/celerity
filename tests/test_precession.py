@@ -37,7 +37,7 @@ def test_get_correction_to_equatorial_for_precession_of_equinoxes():
     ra = t["ra"] + betelgeuse["ra"]
     dec = t["dec"] + betelgeuse["dec"]
     assert ra == 89.08215441916796
-    assert dec == 7.4092677155992055
+    assert dec == 7.409267715599204
 
 
 # **************************************************************************************
@@ -240,6 +240,41 @@ def test_get_precession_matrix_returns_three_by_three_floats():
         assert isinstance(row, tuple)
         assert len(row) == 3
         assert all(isinstance(component, float) for component in row)
+
+
+# **************************************************************************************
+
+
+def test_get_correction_to_equatorial_for_precession_of_equinoxes_wraps_right_ascension():
+    # A target just below 360 degrees precesses through 0 degrees, and the correction
+    # must be the small positive step rather than a full turn backwards:
+    correction = get_correction_to_equatorial_for_precession_of_equinoxes(
+        date, {"ra": 359.9, "dec": 0.0}
+    )
+    assert 0.0 < correction["ra"] < 1.0
+
+
+# **************************************************************************************
+
+
+def test_get_correction_to_equatorial_for_precession_of_equinoxes_near_the_pole():
+    # Close to the celestial pole the correction stays finite and the precessed
+    # declination stays within range:
+    target: EquatorialCoordinate = {"ra": 37.9, "dec": 89.99}
+    correction = get_correction_to_equatorial_for_precession_of_equinoxes(date, target)
+    assert -180.0 <= correction["ra"] < 180.0
+    assert -90.0 <= target["dec"] + correction["dec"] <= 90.0
+
+
+# **************************************************************************************
+
+
+def test_get_correction_to_equatorial_for_precession_of_equinoxes_is_zero_at_j2000():
+    correction = get_correction_to_equatorial_for_precession_of_equinoxes(
+        datetime(2000, 1, 1, 11, 58, 55, 816000), betelgeuse
+    )
+    assert isclose(correction["ra"], 0.0, abs_tol=1e-10)
+    assert isclose(correction["dec"], 0.0, abs_tol=1e-10)
 
 
 # **************************************************************************************
