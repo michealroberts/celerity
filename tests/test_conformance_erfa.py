@@ -14,6 +14,7 @@ import pytest
 from src.celerity.aberration import get_correction_to_equatorial_for_aberration
 from src.celerity.common import EquatorialCoordinate
 from src.celerity.coordinates import get_correction_to_equatorial
+from src.celerity.deflection import get_correction_to_equatorial_for_light_deflection
 from src.celerity.nutation import (
     get_correction_to_equatorial_for_nutation,
     get_nutation_in_longitude,
@@ -31,7 +32,9 @@ from src.celerity.precession import (
 # precession correction from the rp matrix of bp06, the true place from num06a and rp
 # applied in turn, the aberration correction from ab applied to that true place with the
 # Earth's heliocentric velocity and distance from epv00 rotated into the same frame, so
-# that it isolates annual aberration, and the apparent place from atci13, which includes
+# that it isolates annual aberration, the light deflection from ldsun applied to that
+# true place with the Earth's heliocentric direction and distance from epv00 rotated
+# into the same frame, and the apparent place from atci13, which includes
 # the Sun's barycentric motion, with the equation of the origins subtracted to give the
 # equinox-based right ascension.
 
@@ -50,6 +53,11 @@ TOLERANCE_IN_PRECESSION: float = 0.001 / 3600
 
 # The tolerance on the aberration correction to an equatorial coordinate:
 TOLERANCE_IN_ABERRATION: float = 0.0005 / 3600
+
+# **************************************************************************************
+
+# The tolerance on the light deflection correction to an equatorial coordinate:
+TOLERANCE_IN_LIGHT_DEFLECTION: float = 0.0001 / 3600
 
 # **************************************************************************************
 
@@ -75,6 +83,7 @@ class Scenario(TypedDict):
     nutation: EquatorialCoordinate
     precession: EquatorialCoordinate
     true_place: EquatorialCoordinate
+    deflection: EquatorialCoordinate
     aberration: EquatorialCoordinate
     apparent: EquatorialCoordinate
 
@@ -114,6 +123,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 88.78921196601357, "dec": 7.405429164798},
         "precession": {"ra": 88.79295832752871, "dec": 7.407063900238369},
         "true_place": {"ra": 88.78921199354218, "dec": 7.405429165037095},
+        "deflection": {"ra": 88.78921211250773, "dec": 7.405429326297917},
         "aberration": {"ra": 88.79493251107225, "dec": 7.405156041710694},
         "apparent": {"ra": 88.79493424918059, "dec": 7.405153500675567},
     },
@@ -124,6 +134,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 279.23261171404425, "dec": 38.78502374271821},
         "precession": {"ra": 279.2347348170764, "dec": 38.78368890181726},
         "true_place": {"ra": 279.23261173112104, "dec": 38.78502374453494},
+        "deflection": {"ra": 279.23261163905437, "dec": 38.78502566336775},
         "aberration": {"ra": 279.22520401967074, "dec": 38.78467903580393},
         "apparent": {"ra": 279.22521368176695, "dec": 38.78467974005863},
     },
@@ -134,6 +145,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 101.28415219481592, "dec": -16.71738627503702},
         "precession": {"ra": 101.28715532272228, "dec": -16.716115902216348},
         "true_place": {"ra": 101.28415221753842, "dec": -16.717386277252643},
+        "deflection": {"ra": 101.28415221754393, "dec": -16.717385861436068},
         "aberration": {"ra": 101.29017873358715, "dec": -16.717734180738205},
         "apparent": {"ra": 101.2901828949624, "dec": -16.717736410590707},
     },
@@ -144,6 +156,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 213.9115857149967, "dec": 19.184581938028963},
         "precession": {"ra": 213.91530032385904, "dec": 19.182410290603585},
         "true_place": {"ra": 213.91158573885616, "dec": 19.18458192863275},
+        "deflection": {"ra": 213.9115844361731, "dec": 19.184582632356665},
         "aberration": {"ra": 213.90906462741398, "dec": 19.182460779176964},
         "apparent": {"ra": 213.90907074576978, "dec": 19.182465497835448},
     },
@@ -154,6 +167,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 165.92482412740236, "dec": 61.752136604477876},
         "precession": {"ra": 165.93196473117928, "dec": 61.751033089016616},
         "true_place": {"ra": 165.92482415858439, "dec": 61.75213659349555},
+        "deflection": {"ra": 165.92482283863018, "dec": 61.752136471761844},
         "aberration": {"ra": 165.92971420457596, "dec": 61.74727975209001},
         "apparent": {"ra": 165.92971510248498, "dec": 61.74728517212735},
     },
@@ -164,6 +178,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 95.98662772876203, "dec": -52.69713270672398},
         "precession": {"ra": 95.98794961127693, "dec": -52.69569940118136},
         "true_place": {"ra": 95.98662774003944, "dec": -52.69713270790499},
+        "deflection": {"ra": 95.98662786967928, "dec": -52.69713181476643},
         "aberration": {"ra": 95.99613767251633, "dec": -52.69767027450793},
         "apparent": {"ra": 95.99614560795548, "dec": -52.697673307902555},
     },
@@ -174,6 +189,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 88.79744428153295, "dec": 7.407530798507679},
         "precession": {"ra": 88.93443372339166, "dec": 7.408217067914066},
         "true_place": {"ra": 88.9389198915273, "dec": 7.408679441084388},
+        "deflection": {"ra": 88.93892223578833, "dec": 7.408672247275327},
         "aberration": {"ra": 88.93329234284407, "dec": 7.408494665505916},
         "apparent": {"ra": 88.93329858012545, "dec": 7.4084849340507155},
     },
@@ -184,6 +200,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 279.23746677066043, "dec": 38.78356175291039},
         "precession": {"ra": 279.3224939660921, "dec": 38.79307153583077},
         "true_place": {"ra": 279.325225273466, "dec": 38.792947278259895},
+        "deflection": {"ra": 279.3252250235286, "dec": 38.792946612238666},
         "aberration": {"ra": 279.33215966601296, "dec": 38.79183639647064},
         "apparent": {"ra": 279.33216640263987, "dec": 38.79183515610252},
     },
@@ -194,6 +211,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 101.29083556182613, "dec": -16.716056409531614},
         "precession": {"ra": 101.4039274437955, "dec": -16.72756360999897},
         "true_place": {"ra": 101.40760725864199, "dec": -16.727507971063808},
+        "deflection": {"ra": 101.40760844902763, "dec": -16.727510501293256},
         "aberration": {"ra": 101.40202277651129, "dec": -16.728222530191484},
         "apparent": {"ra": 101.40203035029172, "dec": -16.72822727149572},
     },
@@ -204,6 +222,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 213.9193142597776, "dec": 19.180643134021267},
         "precession": {"ra": 214.03791430424695, "dec": 19.134157766247363},
         "true_place": {"ra": 214.04192758694006, "dec": 19.132392042772366},
+        "deflection": {"ra": 214.04192815913615, "dec": 19.13239160081225},
         "aberration": {"ra": 214.04572891691558, "dec": 19.133567001621795},
         "apparent": {"ra": 214.04573523622858, "dec": 19.133570238693768},
     },
@@ -214,6 +233,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 165.93781857502174, "dec": 61.749350848365474},
         "precession": {"ra": 166.09202163893252, "dec": 61.69457083710985},
         "true_place": {"ra": 166.09786299344603, "dec": 61.692886181404745},
+        "deflection": {"ra": 166.09786658037604, "dec": 61.69288602308627},
         "aberration": {"ra": 166.09620754180858, "dec": 61.697650879720634},
         "apparent": {"ra": 166.09621370571048, "dec": 61.697654358710324},
     },
@@ -224,6 +244,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 95.98973495512033, "dec": -52.695465601589525},
         "precession": {"ra": 96.04590361199902, "dec": -52.70179949558628},
         "true_place": {"ra": 96.04768811393255, "dec": -52.70156759500961},
+        "deflection": {"ra": 96.04768859288745, "dec": -52.701568969716085},
         "aberration": {"ra": 96.03864470363699, "dec": -52.70263501597931},
         "apparent": {"ra": 96.0386566039513, "dec": -52.70263970673901},
     },
@@ -234,6 +255,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 88.7882422896919, "dec": 7.407770307191752},
         "precession": {"ra": 89.0821544191646, "dec": 7.409267715625173},
         "true_place": {"ra": 89.07743879933936, "dec": 7.409983955534076},
+        "deflection": {"ra": 89.07744181312415, "dec": 7.409982826527021},
         "aberration": {"ra": 89.07286845405618, "dec": 7.409031800372237},
         "apparent": {"ra": 89.07287680897146, "dec": 7.409028101989159},
     },
@@ -244,6 +266,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 279.23171023673484, "dec": 38.782640780194775},
         "precession": {"ra": 279.4141278380687, "dec": 38.802961078161346},
         "true_place": {"ra": 279.41110161971534, "dec": 38.80190736053199},
+        "deflection": {"ra": 279.411100831592, "dec": 38.801906802459484},
         "aberration": {"ra": 279.4161181445298, "dec": 38.79845344427226},
         "apparent": {"ra": 279.41612245746995, "dec": 38.798452235773844},
     },
@@ -254,6 +277,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 101.28321858607794, "dec": -16.715004376824268},
         "precession": {"ra": 101.5258499602996, "dec": -16.73963933443159},
         "true_place": {"ra": 101.52191263275374, "dec": -16.738520526889268},
+        "deflection": {"ra": 101.52191429309474, "dec": -16.73852157023231},
         "aberration": {"ra": 101.51797955738164, "dec": -16.740962788672032},
         "apparent": {"ra": 101.5179891361851, "dec": -16.740966112978835},
     },
@@ -264,6 +288,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 213.9114290853619, "dec": 19.183598711079355},
         "precession": {"ra": 214.16593623802666, "dec": 19.083855346393335},
         "true_place": {"ra": 214.1620635408431, "dec": 19.08503631139481},
+        "deflection": {"ra": 214.16206372685122, "dec": 19.08503592924557},
         "aberration": {"ra": 214.16746936486803, "dec": 19.084390431455915},
         "apparent": {"ra": 214.16747468800256, "dec": 19.08439322352507},
     },
@@ -274,6 +299,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 165.92797622503213, "dec": 61.7530912748933},
         "precession": {"ra": 166.25876265809313, "dec": 61.635581251157504},
         "true_place": {"ra": 166.25479363789188, "dec": 61.63763793987638},
+        "deflection": {"ra": 166.25479585609864, "dec": 61.63763731688821},
         "aberration": {"ra": 166.25895690201443, "dec": 61.64147895979464},
         "apparent": {"ra": 166.258963006501, "dec": 61.64148076730824},
     },
@@ -284,6 +310,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 95.98590989767034, "dec": -52.694754299546005},
         "precession": {"ra": 96.1064150953546, "dec": -52.70823059471847},
         "true_place": {"ra": 96.10437392137004, "dec": -52.70728167948718},
+        "deflection": {"ra": 96.10437538135893, "dec": -52.70728263712903},
         "aberration": {"ra": 96.09756718954092, "dec": -52.710961160311506},
         "apparent": {"ra": 96.09758248364211, "dec": -52.71096559211423},
     },
@@ -294,6 +321,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 88.79534209862399, "dec": 7.409421842086958},
         "precession": {"ra": 89.15439012776993, "dec": 7.4097244309518375},
         "true_place": {"ra": 89.15677590262463, "dec": 7.412076450269756},
+        "deflection": {"ra": 89.15677460877598, "dec": 7.41207639322137},
         "aberration": {"ra": 89.15606956480866, "dec": 7.413622936936283},
         "apparent": {"ra": 89.1560697011673, "dec": 7.413621056513292},
     },
@@ -304,6 +332,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 279.23591806196885, "dec": 38.78153880849428},
         "precession": {"ra": 279.4589372623369, "dec": 38.8078315592837},
         "true_place": {"ra": 279.46011283453913, "dec": 38.80568674082442},
+        "deflection": {"ra": 279.4601139824787, "dec": 38.8056865192853},
         "aberration": {"ra": 279.46218052524716, "dec": 38.81052457424408},
         "apparent": {"ra": 279.46219234825406, "dec": 38.81052597738137},
     },
@@ -314,6 +343,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 101.28899170225554, "dec": -16.714015307026486},
         "precession": {"ra": 101.58546871130743, "dec": -16.745589989638383},
         "true_place": {"ra": 101.58730103260294, "dec": -16.74349681585499},
+        "deflection": {"ra": 101.58729944697265, "dec": -16.74349706603443},
         "aberration": {"ra": 101.58542807631414, "dec": -16.739954507756604},
         "apparent": {"ra": 101.5854297909043, "dec": -16.73995536264618},
     },
@@ -324,6 +354,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 213.91804747257032, "dec": 19.18029184123591},
         "precession": {"ra": 214.2285375741675, "dec": 19.059287226843605},
         "true_place": {"ra": 214.23127738596972, "dec": 19.05716118585187},
+        "deflection": {"ra": 214.23128021579035, "dec": 19.057161917098128},
         "aberration": {"ra": 214.22723972671082, "dec": 19.06042353424424},
         "apparent": {"ra": 214.22724749380075, "dec": 19.060430107624352},
     },
@@ -334,6 +365,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 165.93889163936203, "dec": 61.75064974432048},
         "precession": {"ra": 166.340158254035, "dec": 61.60672241701942},
         "true_place": {"ra": 166.3470519764673, "dec": 61.606321217642396},
+        "deflection": {"ra": 166.34705149211814, "dec": 61.60632322117012},
         "aberration": {"ra": 166.33615495923084, "dec": 61.606976747915475},
         "apparent": {"ra": 166.33615049738535, "dec": 61.606984471981114},
     },
@@ -344,6 +376,7 @@ scenarios: list[Scenario] = [
         "nutation": {"ra": 95.98861187366724, "dec": -52.69347667022211},
         "precession": {"ra": 96.13600501453601, "dec": -52.71139836664715},
         "true_place": {"ra": 96.13665884128419, "dec": -52.70917879525964},
+        "deflection": {"ra": 96.13665684601828, "dec": -52.70917908466293},
         "aberration": {"ra": 96.13447762353236, "dec": -52.70382474997525},
         "apparent": {"ra": 96.13448251348838, "dec": -52.70382587533667},
     },
@@ -422,6 +455,27 @@ def test_get_correction_to_equatorial_for_aberration(scenario: Scenario) -> None
     )
     assert target["dec"] + correction["dec"] == pytest.approx(
         scenario["aberration"]["dec"], abs=TOLERANCE_IN_ABERRATION
+    )
+
+
+# **************************************************************************************
+
+
+@pytest.mark.parametrize("scenario", scenarios)
+def test_get_correction_to_equatorial_for_light_deflection(scenario: Scenario) -> None:
+    # Light deflection is applied to the true place of date, as in the apparent place
+    # chain:
+    target = scenario["true_place"]
+
+    correction = get_correction_to_equatorial_for_light_deflection(
+        scenario["date"], target
+    )
+
+    assert target["ra"] + correction["ra"] == pytest.approx(
+        scenario["deflection"]["ra"], abs=TOLERANCE_IN_LIGHT_DEFLECTION
+    )
+    assert target["dec"] + correction["dec"] == pytest.approx(
+        scenario["deflection"]["dec"], abs=TOLERANCE_IN_LIGHT_DEFLECTION
     )
 
 
