@@ -88,3 +88,33 @@ def get_rotation_matrix_about_z(angle: float) -> Matrix:
 
 
 # **************************************************************************************
+
+
+def multiply_matrices(a: Matrix, b: Matrix) -> Matrix:
+    """
+    The product a·b of two matrices, which as rotations applies b first and then a.
+
+    :param a: The matrix applied second.
+    :param b: The matrix applied first.
+    :return: The product matrix.
+    """
+    return (
+        (
+            a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0],
+            a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1],
+            a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2],
+        ),
+        (
+            a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0],
+            a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1],
+            a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2],
+        ),
+        (
+            a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0],
+            a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1],
+            a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2],
+        ),
+    )
+
+
+# **************************************************************************************
