@@ -1,4 +1,13 @@
+# **************************************************************************************
+
+# @author         Michael Roberts <michael@observerly.com>
+# @package        @observerly/celerity
+# @license        Copyright © 2021-2026 observerly
+
+# **************************************************************************************
+
 from datetime import datetime, timezone
+from math import isclose
 
 from src.celerity.common import EquatorialCoordinate, GeographicCoordinate
 from src.celerity.transit import (
@@ -11,23 +20,39 @@ from src.celerity.transit import (
     is_object_never_visible,
 )
 
+# **************************************************************************************
+
 # For testing we need to specify a date because most calculations are
 # differential w.r.t a time component. We set it to the author's birthday:
 date = datetime(2021, 5, 14, 0, 0, 0, 0)
 
+# **************************************************************************************
+
 # For testing, we will fix the latitude to be Manua Kea, Hawaii, US
 latitude: float = 19.820611
+
+# **************************************************************************************
 
 # For testing, we will fix the longitude to be Manua Kea, Hawaii, US
 longitude: float = -155.468094
 
+# **************************************************************************************
+
 betelgeuse: EquatorialCoordinate = {"ra": 88.7929583, "dec": 7.4070639}
+
+# **************************************************************************************
 
 polaris: EquatorialCoordinate = {"ra": 37.952659, "dec": 89.264108}
 
+# **************************************************************************************
+
 LMC: EquatorialCoordinate = {"ra": 80.8941667, "dec": -69.7561111}
 
+# **************************************************************************************
+
 observer: GeographicCoordinate = {"latitude": latitude, "longitude": longitude}
+
+# **************************************************************************************
 
 
 def test_get_does_object_rise_or_set():
@@ -37,10 +62,13 @@ def test_get_does_object_rise_or_set():
 
     d = get_does_object_rise_or_set({"latitude": 80, "longitude": 0}, betelgeuse)
     assert d["Ar"] == 0.7424083500051002
-    assert d["H1"] == 0.7372819131688116
+    assert isclose(d["H1"], 0.7372819131688116, rel_tol=1e-15)
 
     d = get_does_object_rise_or_set({"latitude": -85, "longitude": 0}, betelgeuse)
     assert d == False
+
+
+# **************************************************************************************
 
 
 def test_is_object_never_visible():
@@ -60,6 +88,9 @@ def test_is_object_never_visible():
     assert d == True
 
 
+# **************************************************************************************
+
+
 def test_is_object_circumpolar():
     p = is_object_circumpolar(observer, polaris, 0)
     assert p == True
@@ -68,6 +99,9 @@ def test_is_object_circumpolar():
         {"latitude": -85, "longitude": 0}, {"ra": 317.398, "dec": -88.956}, 0
     )
     assert so == True
+
+
+# **************************************************************************************
 
 
 def test_is_object_below_horizon():
@@ -82,12 +116,18 @@ def test_is_object_below_horizon():
     assert b == True
 
 
+# **************************************************************************************
+
+
 def test_get_transit():
     T = get_transit(observer, betelgeuse)
     assert T["LSTr"] == 23.740485646638913
     assert T["LSTs"] == 12.098575460027751
-    assert T["R"] == 82.12362992591511
+    assert isclose(T["R"], 82.12362992591511, rel_tol=1e-15)
     assert T["S"] == 277.8763700740849
+
+
+# **************************************************************************************
 
 
 def test_get_next_rise():
@@ -97,7 +137,7 @@ def test_get_next_rise():
     r = get_next_rise(date, observer, betelgeuse, 0)
     assert r["LST"] == 23.740485646638913
     assert r["GST"] == 10.105025246638917
-    assert r["az"] == 82.12362992591511
+    assert isclose(r["az"], 82.12362992591511, rel_tol=1e-15)
     assert r["date"] == datetime(2021, 5, 15, 18, 31, 28, 716561, tzinfo=timezone.utc)
 
     # Test where we know the object is circumpolar for the observer:
@@ -113,6 +153,9 @@ def test_get_next_rise():
     assert r["LST"] == 5.375729797576824
     assert r["GST"] == 15.740269397576824
     assert r["az"] == 179.91065185064514
+
+
+# **************************************************************************************
 
 
 def test_get_next_set():
@@ -137,3 +180,6 @@ def test_get_next_set():
     assert s["LST"] == 5.410159095756511
     assert s["GST"] == 15.774698695756513
     assert s["az"] == 180.08934814935486
+
+
+# **************************************************************************************
