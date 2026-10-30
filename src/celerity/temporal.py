@@ -379,18 +379,26 @@ def get_universal_time(date: datetime) -> float:
     :param date: The datetime object to convert.
     :return The Universal Time (UT) of the given date normalised to UTC.
     """
+    # Treat a naive datetime as UTC, and bring an aware datetime to UTC. Calling
+    # astimezone() directly on a naive datetime would interpret it as host-local time,
+    # making the Universal Time depend on the timezone of the machine running the code:
+    date = (
+        date.replace(tzinfo=timezone.utc)
+        if date.tzinfo is None
+        else date.astimezone(tz=timezone.utc)
+    )
 
-    year = date.astimezone(tz=timezone.utc).year
+    year = date.year
 
-    GST = get_greenwich_sidereal_time(date.astimezone(tz=timezone.utc))
+    GST = get_greenwich_sidereal_time(date)
 
     # Get the Julian Date at 0h:
     JD = get_julian_date(
-        datetime(year, date.month, date.day, 0, 0, 0, 0).astimezone(tz=timezone.utc)
+        datetime(year, date.month, date.day, 0, 0, 0, 0, tzinfo=timezone.utc)
     )
 
     # Get the Julian Date at 0h on 1st January for the current year:
-    JD_0 = get_julian_date(datetime(year, 1, 1, 0, 0, 0, 0).astimezone(tz=timezone.utc))
+    JD_0 = get_julian_date(datetime(year, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc))
 
     # Get the number of days since 1st January for the current year:
     days = JD - JD_0
@@ -448,18 +456,23 @@ def convert_greenwich_sidereal_time_to_universal_coordinate_time(
     :param GST: The Greenwich Sidereal Time (GST) to convert.
     :return: The Universal Coordinated Time (UTC) of the given date normalised to UTC.
     """
-    # Adjust the date to UTC:
-    date = date.astimezone(tz=timezone.utc)
+    # Treat a naive datetime as UTC, and bring an aware datetime to UTC. Calling
+    # astimezone() directly on a naive datetime would interpret it as host-local time,
+    # making the converted time depend on the timezone of the machine running the code:
+    date = (
+        date.replace(tzinfo=timezone.utc)
+        if date.tzinfo is None
+        else date.astimezone(tz=timezone.utc)
+    )
 
     # Get the Julian Date at 0h:
-    JD = get_julian_date(datetime(date.year, date.month, date.day, 0, 0, 0, 0))
+    JD = get_julian_date(
+        datetime(date.year, date.month, date.day, 0, 0, 0, 0, tzinfo=timezone.utc)
+    )
 
     # Get the Julian Date at 0h on 1st January for the current year:
     JD_0 = (
-        get_julian_date(
-            datetime(date.year, 1, 1, 0, 0, 0, 0).astimezone(tz=timezone.utc)
-        )
-        - 1
+        get_julian_date(datetime(date.year, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc)) - 1
     )
 
     # Get the number of Julian days since 1st January for the current year:
