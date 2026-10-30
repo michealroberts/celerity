@@ -57,6 +57,30 @@ def test_get_julian_date():
 # **************************************************************************************
 
 
+def test_get_julian_date_treats_naive_datetime_as_utc():
+    # A naive datetime must be interpreted as UTC rather than as host-local time, so
+    # that the Julian date does not depend on the timezone of the machine running the
+    # code:
+    naive = datetime(2021, 5, 14, 0, 0, 0, 0)
+
+    aware = datetime(2021, 5, 14, 0, 0, 0, 0, tzinfo=timezone.utc)
+
+    assert get_julian_date(naive) == get_julian_date(aware) == 2459348.5
+
+
+# **************************************************************************************
+
+
+def test_get_julian_date_normalises_aware_datetime_to_utc():
+    # 2021-05-14T10:00:00+10:00 is the same instant as 2021-05-14T00:00:00Z:
+    aware = datetime(2021, 5, 14, 10, 0, 0, 0, tzinfo=timezone(timedelta(hours=10)))
+
+    assert get_julian_date(aware) == 2459348.5
+
+
+# **************************************************************************************
+
+
 def test_get_julian_centuries():
     T = get_julian_centuries(date)
     assert T == (2459348.5 - J2000) / 36525.0

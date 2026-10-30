@@ -28,14 +28,17 @@ def get_julian_date(date: datetime) -> float:
     :param date: The datetime object to convert.
     :return: The Julian Date (JD) of the given date normalised to UTC.
     """
+    # Treat a naive datetime as UTC, and bring an aware datetime to UTC. Calling
+    # astimezone() directly on a naive datetime would interpret it as host-local time,
+    # making the Julian date depend on the timezone of the machine running the code:
+    date = (
+        date.replace(tzinfo=timezone.utc)
+        if date.tzinfo is None
+        else date.astimezone(tz=timezone.utc)
+    )
+
     return (
-        int(
-            (
-                date.astimezone(tz=timezone.utc)
-                - datetime(1970, 1, 1, tzinfo=timezone.utc)
-            ).total_seconds()
-            * 1000
-        )
+        int((date - datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds() * 1000)
         / 86400000.0
     ) + 2440587.5
 
