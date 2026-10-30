@@ -49,7 +49,7 @@ TOLERANCE_IN_PRECESSION: float = 0.001 / 3600
 # **************************************************************************************
 
 # The tolerance on the aberration correction to an equatorial coordinate:
-TOLERANCE_IN_ABERRATION: float = 0.005 / 3600
+TOLERANCE_IN_ABERRATION: float = 0.0005 / 3600
 
 # **************************************************************************************
 

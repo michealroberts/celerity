@@ -12,6 +12,8 @@ from math import atan2, cos, degrees, hypot, radians, sin, sqrt
 from .common import EquatorialCoordinate
 from .constants import AU, c
 from .earth import get_heliocentric_velocity
+from .matrix import apply_matrix
+from .nutation import get_nutation_matrix
 from .planet import Planet
 from .planets import get_planetary_heliocentric_coordinate
 from .sun import SCHWARZSCHILD_RADIUS_OF_THE_SUN
@@ -47,8 +49,15 @@ def get_correction_to_equatorial_for_aberration(
     # Get the heliocentric velocity of the Earth (in metres per second):
     velocity = get_heliocentric_velocity(date)
 
+    # Get the velocity of the Earth referred to the true equator and equinox of date, the
+    # frame of the target, by rotating it through the nutation matrix from the mean
+    # equator and equinox of date in which it is returned (in metres per second):
+    vx, vy, vz = apply_matrix(
+        get_nutation_matrix(date), (velocity["x"], velocity["y"], velocity["z"])
+    )
+
     # Get the velocity of the Earth in units of the speed of light (dimensionless):
-    vx, vy, vz = velocity["x"] / c, velocity["y"] / c, velocity["z"] / c
+    vx, vy, vz = vx / c, vy / c, vz / c
 
     # Get the heliocentric distance of the Earth (in metres):
     s = get_planetary_heliocentric_coordinate(date, Planet.EARTH)["r"] * AU
