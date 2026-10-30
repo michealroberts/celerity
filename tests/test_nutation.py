@@ -69,8 +69,8 @@ def test_get_correction_to_equatorial_for_nutation():
     t = get_correction_to_equatorial_for_nutation(date, betelgeuse)
     ra = t["ra"] + betelgeuse["ra"]
     dec = t["dec"] + betelgeuse["dec"]
-    assert ra == 88.78824215116342
-    assert dec == 7.407770407405704
+    assert ra == 88.78824212632388
+    assert dec == 7.407770327767078
 
 
 # **************************************************************************************
@@ -142,15 +142,15 @@ def test_get_nutation_matrix_has_unit_determinant():
 
 def test_get_nutation_matrix_agrees_with_the_correction():
     # Rotating the direction cosines of Betelgeuse through the matrix gives the same
-    # nutated place as the existing first-order correction to within a milliarcsecond:
+    # nutated place as the correction to floating point precision:
     nutated = convert_vector_to_equatorial(
         apply_matrix(
             get_nutation_matrix(date), convert_equatorial_to_vector(betelgeuse)
         )
     )
     correction = get_correction_to_equatorial_for_nutation(date, betelgeuse)
-    assert isclose(nutated["ra"], betelgeuse["ra"] + correction["ra"], abs_tol=1e-6)
-    assert isclose(nutated["dec"], betelgeuse["dec"] + correction["dec"], abs_tol=1e-6)
+    assert isclose(nutated["ra"], betelgeuse["ra"] + correction["ra"], abs_tol=1e-12)
+    assert isclose(nutated["dec"], betelgeuse["dec"] + correction["dec"], abs_tol=1e-12)
 
 
 # **************************************************************************************
@@ -175,6 +175,42 @@ def test_get_nutation_matrix_returns_three_by_three_floats():
         assert isinstance(row, tuple)
         assert len(row) == 3
         assert all(isinstance(component, float) for component in row)
+
+
+# **************************************************************************************
+
+
+def test_get_correction_to_equatorial_for_nutation_wraps_right_ascension():
+    # A target just below 360 degrees may nutate through 0 degrees, and the correction
+    # must be the small step rather than a full turn:
+    correction = get_correction_to_equatorial_for_nutation(
+        date, {"ra": 359.999, "dec": 0.0}
+    )
+    assert -1.0 < correction["ra"] < 1.0
+
+
+# **************************************************************************************
+
+
+def test_get_correction_to_equatorial_for_nutation_near_the_pole():
+    # Close to the celestial pole the correction stays finite and the nutated
+    # declination stays within range:
+    target: EquatorialCoordinate = {"ra": 37.9, "dec": 89.99}
+    correction = get_correction_to_equatorial_for_nutation(date, target)
+    assert -180.0 <= correction["ra"] < 180.0
+    assert -90.0 <= target["dec"] + correction["dec"] <= 90.0
+
+
+# **************************************************************************************
+
+
+def test_get_correction_to_equatorial_for_nutation_shift_is_about_17_arcseconds():
+    # On this date the nutation in longitude is about -17.5 arcseconds, so the shift of
+    # a target on the ecliptic is of that size:
+    target: EquatorialCoordinate = {"ra": 0.0, "dec": 0.0}
+    correction = get_correction_to_equatorial_for_nutation(date, target)
+    shift = (correction["ra"] ** 2 + correction["dec"] ** 2) ** 0.5 * 3600
+    assert 15.0 < shift < 19.0
 
 
 # **************************************************************************************

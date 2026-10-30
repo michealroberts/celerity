@@ -7,18 +7,20 @@
 # **************************************************************************************
 
 from datetime import datetime
-from math import cos, radians, sin, tan
+from math import cos, radians, sin
 from typing import Final, List, Tuple
 
 from .astrometry import get_obliquity_of_the_ecliptic
 from .common import EquatorialCoordinate
 from .matrix import (
     Matrix,
+    apply_matrix,
     get_rotation_matrix_about_x,
     get_rotation_matrix_about_z,
     multiply_matrices,
 )
 from .temporal import get_terrestrial_time_in_julian_centuries
+from .vector import convert_equatorial_to_vector, convert_vector_to_equatorial
 
 # **************************************************************************************
 
@@ -279,25 +281,19 @@ def get_correction_to_equatorial_for_nutation(
     :param longitude: The longitude of the observer in degrees.
     :param target: The equatorial coordinates of the target.
     """
-    ra, dec = radians(target["ra"]), radians(target["dec"])
+    # Get the nutation matrix from the mean to the true equator and equinox of date:
+    N = get_nutation_matrix(date)
 
-    # Get the nutation in longitude (in degrees)
-    Δψ = get_nutation_in_longitude(date)
-
-    # Get the nutation in obliquity (in degrees)
-    Δε = get_nutation_in_obliquity(date)
-
-    # Get the true obliquity of the ecliptic (in degrees):
-    ε = radians(get_obliquity_of_the_ecliptic(date) + Δε)
-
-    # The trigonometric factors are dimensionless, and Δψ and Δε are already in
-    # degrees, so no further unit conversion is applied here.
+    # Get the nutated equatorial coordinate (in degrees):
+    nutated = convert_vector_to_equatorial(
+        apply_matrix(N, convert_equatorial_to_vector(target))
+    )
 
     # Calculate the nutation correction in right ascension (in degrees)
-    Δra = (cos(ε) + sin(ε) * sin(ra) * tan(dec)) * Δψ - cos(ra) * tan(dec) * Δε
+    Δra = (nutated["ra"] - target["ra"] + 180) % 360 - 180
 
     # Calculate the nutation correction in declination (in degrees)
-    Δdec = sin(ε) * cos(ra) * Δψ + sin(ra) * Δε
+    Δdec = nutated["dec"] - target["dec"]
 
     return {"ra": Δra, "dec": Δdec}
 
