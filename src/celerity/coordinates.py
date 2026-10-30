@@ -17,9 +17,11 @@ from .common import (
     HeliocentricSphericalCoordinate,
     HorizontalCoordinate,
 )
-from .nutation import get_correction_to_equatorial_for_nutation
-from .precession import get_correction_to_equatorial_for_precession_of_equinoxes
+from .matrix import apply_matrix, multiply_matrices
+from .nutation import get_nutation_matrix
+from .precession import get_frame_bias_matrix, get_precession_matrix
 from .temporal import get_local_sidereal_time
+from .vector import convert_equatorial_to_vector, convert_vector_to_equatorial
 
 # **************************************************************************************
 
@@ -37,34 +39,29 @@ def get_correction_to_equatorial(
     particular datetime.
 
     :param date: The datetime object to convert.
-    :param target: The equatorial coordinate of the observed object at epoch J2000.0.
+    :param target: The equatorial coordinate of the observed object in the ICRS, which
+        agrees with the mean equator and equinox of J2000.0 to within the frame bias.
     """
+    # The corrections are applied in the order ICRS -> mean place (J2000.0) (frame bias)
+    # -> mean place of date (precession) -> true place of date (nutation) -> apparent
+    # place (aberration), so that each correction is evaluated at the coordinate the
+    # underlying theory expects. The three rotations are composed into a single matrix:
+    NPB = multiply_matrices(
+        get_nutation_matrix(date),
+        multiply_matrices(get_precession_matrix(date), get_frame_bias_matrix()),
+    )
 
-    # The corrections are applied in the order mean place (J2000.0) -> mean place
-    # of date (precession) -> true place of date (nutation) -> apparent place
-    # (aberration), so that each correction is evaluated at the coordinate the
-    # underlying theory expects:
-
-    # Correction to the equatorial coordinate of our target for precession:
-    corr = get_correction_to_equatorial_for_precession_of_equinoxes(date, target)
-
-    # Apply the correction to the target's equatorial coordinate:
-    target["ra"] += corr["ra"]
-    target["dec"] += corr["dec"]
-
-    # Correction to the equatorial coordinate of our target for nutation:
-    corr = get_correction_to_equatorial_for_nutation(date, target)
-
-    # Apply the correction to the target's equatorial coordinate:
-    target["ra"] += corr["ra"]
-    target["dec"] += corr["dec"]
+    # Get the true place of date of our target (in degrees):
+    true = convert_vector_to_equatorial(
+        apply_matrix(NPB, convert_equatorial_to_vector(target))
+    )
 
     # Correction to the equatorial coordinate of our target for aberration:
-    corr = get_correction_to_equatorial_for_aberration(date, target)
+    aberration = get_correction_to_equatorial_for_aberration(date, true)
 
     # Apply the correction to the target's equatorial coordinate:
-    target["ra"] += corr["ra"]
-    target["dec"] += corr["dec"]
+    target["ra"] = true["ra"] + aberration["ra"]
+    target["dec"] = true["dec"] + aberration["dec"]
 
     return target
 

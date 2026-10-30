@@ -7,7 +7,7 @@
 # **************************************************************************************
 
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from math import isclose
 
 from src.celerity.common import (
@@ -81,8 +81,8 @@ def test_get_correction_to_equatorial():
     target = get_correction_to_equatorial(
         date, EquatorialCoordinate(ra=betelgeuse["ra"], dec=betelgeuse["dec"])
     )
-    assert target["ra"] == 89.07286830342763
-    assert target["dec"] == 7.409031822016217
+    assert target["ra"] == 89.07287176031689
+    assert target["dec"] == 7.409029823842211
 
 
 # **************************************************************************************
@@ -92,13 +92,40 @@ def test_get_apparent_equatorial_coordinate():
     j2000 = EquatorialCoordinate(ra=betelgeuse["ra"], dec=betelgeuse["dec"])
 
     apparent = get_apparent_equatorial_coordinate(date, j2000)
-    assert apparent["ra"] == 89.07286830342763
-    assert apparent["dec"] == 7.409031822016217
+    assert apparent["ra"] == 89.07287176031689
+    assert apparent["dec"] == 7.409029823842211
 
     # The alias must not mutate the coordinate it was given:
     assert j2000["ra"] == betelgeuse["ra"]
     assert j2000["dec"] == betelgeuse["dec"]
     assert apparent is not j2000
+
+
+def test_get_correction_to_equatorial_treats_naive_datetime_as_utc():
+    naive = get_correction_to_equatorial(
+        datetime(2021, 5, 14, 0, 0, 0, 0),
+        EquatorialCoordinate(ra=betelgeuse["ra"], dec=betelgeuse["dec"]),
+    )
+    aware = get_correction_to_equatorial(
+        datetime(2021, 5, 14, 2, 0, 0, 0, tzinfo=timezone(timedelta(hours=2))),
+        EquatorialCoordinate(ra=betelgeuse["ra"], dec=betelgeuse["dec"]),
+    )
+    assert naive == aware
+
+
+# **************************************************************************************
+
+
+def test_get_correction_to_equatorial_near_the_pole():
+    # Close to the celestial pole the apparent place stays finite and within range:
+    apparent = get_correction_to_equatorial(
+        date, EquatorialCoordinate(ra=37.9, dec=89.99)
+    )
+    assert 0.0 <= apparent["ra"] < 360.0
+    assert -90.0 <= apparent["dec"] <= 90.0
+
+
+# **************************************************************************************
 
 
 # **************************************************************************************

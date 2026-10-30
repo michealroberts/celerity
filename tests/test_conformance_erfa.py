@@ -55,7 +55,7 @@ TOLERANCE_IN_ABERRATION: float = 0.0005 / 3600
 
 # The tolerance on the apparent place, i.e. the precession, nutation and aberration
 # corrections applied in turn:
-TOLERANCE_IN_APPARENT_PLACE: float = 0.07 / 3600
+TOLERANCE_IN_APPARENT_PLACE: float = 0.035 / 3600
 
 # **************************************************************************************
 
