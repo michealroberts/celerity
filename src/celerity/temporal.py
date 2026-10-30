@@ -226,13 +226,14 @@ def get_terrestrial_time_in_julian_centuries(date: datetime) -> float:
         else date.astimezone(tz=timezone.utc)
     )
 
-    # From 1972 the TAI-UTC offset is an integer number of leap seconds and TT-UTC follows
-    # exactly from the leap second table. Before 1972 UTC ran on variable length seconds,
-    # or did not yet exist, so we fall back to ΔT (TT-UT) from the Espenak & Meeus
-    # polynomial fits, treating the given time as Universal Time:
+    # From the introduction of UTC on 1960-01-01 the TAI-UTC offset is known exactly,
+    # from the drift expressions until 1972 and from the leap second table thereafter,
+    # so TT-UTC follows from it. Before 1960 UTC did not exist, so we fall back to ΔT
+    # (TT-UT) from the Espenak & Meeus polynomial fits, treating the given time as
+    # Universal Time:
     offset = (
         get_tt_utc_offset(date)
-        if date >= datetime(1972, 1, 1, tzinfo=timezone.utc)
+        if date >= datetime(1960, 1, 1, tzinfo=timezone.utc)
         else get_delta_t(date)
     )
 

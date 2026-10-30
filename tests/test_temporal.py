@@ -10,6 +10,8 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
+from math import isclose
+
 from src.celerity.common import GeographicCoordinate
 from src.celerity.constants import J2000
 from src.celerity.temporal import (
@@ -142,12 +144,27 @@ def test_get_terrestrial_time_in_julian_centuries():
         datetime(2021, 5, 14, 0, 0, 0, 0, tzinfo=timezone.utc)
     )
 
-    # Before 1972 the TAI-UTC offset is not an integer number of leap seconds, so the
-    # conversion falls back to ΔT (TT-UT) rather than a zero offset:
+    # Between 1960 and 1972 the TAI-UTC offset follows the drift expressions, so on
+    # 1970-01-01 TT-UTC is 8.000082 + 32.184 = 40.184082 seconds:
     T = get_terrestrial_time_in_julian_centuries(datetime(1970, 1, 1, 0, 0, 0, 0))
-    assert (
-        T == (2440587.5 + get_delta_t(datetime(1970, 1, 1)) / 86400.0 - J2000) / 36525.0
+    assert isclose(
+        T, (2440587.5 + 40.184082 / 86400.0 - J2000) / 36525.0, rel_tol=1e-15
     )
+
+    # Before 1960 UTC did not exist, so the conversion falls back to ΔT (TT-UT):
+    T = get_terrestrial_time_in_julian_centuries(datetime(1950, 1, 1, 0, 0, 0, 0))
+    assert (
+        T == (2433282.5 + get_delta_t(datetime(1950, 1, 1)) / 86400.0 - J2000) / 36525.0
+    )
+
+    # At the introduction of UTC the drift expression takes over from ΔT, and the two
+    # agree to within a few seconds, so the TT Julian centuries are continuous to
+    # within a few parts in 10^9 across the boundary:
+    before = get_terrestrial_time_in_julian_centuries(
+        datetime(1959, 12, 31, 23, 59, 59)
+    )
+    after = get_terrestrial_time_in_julian_centuries(datetime(1960, 1, 1, 0, 0, 0))
+    assert abs(after - before) * 36525.0 * 86400.0 < 5.0
 
     # The first instant of 1972 is accepted, with TAI-UTC at its initial 10 seconds:
     T = get_terrestrial_time_in_julian_centuries(datetime(1972, 1, 1, 0, 0, 0, 0))
