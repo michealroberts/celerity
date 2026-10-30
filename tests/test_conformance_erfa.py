@@ -49,22 +49,22 @@ from src.celerity.precession import (
 
 # The tolerance on the nutation in longitude and obliquity, and on the nutation
 # correction to an equatorial coordinate:
-TOLERANCE_IN_NUTATION: float = 0.002 / 3600
+TOLERANCE_IN_NUTATION: float = 0.001 / 3600
 
 # **************************************************************************************
 
 # The tolerance on the precession correction to an equatorial coordinate:
-TOLERANCE_IN_PRECESSION: float = 0.001 / 3600
+TOLERANCE_IN_PRECESSION: float = 0.00001 / 3600
 
 # **************************************************************************************
 
 # The tolerance on the aberration correction to an equatorial coordinate:
-TOLERANCE_IN_ABERRATION: float = 0.0005 / 3600
+TOLERANCE_IN_ABERRATION: float = 0.0002 / 3600
 
 # **************************************************************************************
 
 # The tolerance on the light deflection correction to an equatorial coordinate:
-TOLERANCE_IN_LIGHT_DEFLECTION: float = 0.0001 / 3600
+TOLERANCE_IN_LIGHT_DEFLECTION: float = 0.00001 / 3600
 
 # **************************************************************************************
 

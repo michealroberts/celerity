@@ -101,10 +101,10 @@ The current worst-case differences from ERFA over that grid, in milliarcseconds,
 
 | Quantity                              | Difference | Tolerance |
 | ------------------------------------- | ---------: | --------: |
-| Precession                            |     0.0002 |         1 |
-| Nutation                              |        0.7 |         2 |
-| Light deflection                      |     0.0001 |       0.1 |
-| Annual aberration                     |       0.07 |       0.5 |
+| Precession                            |     0.0002 |      0.01 |
+| Nutation                              |        0.7 |         1 |
+| Light deflection                      |     0.0001 |      0.01 |
+| Annual aberration                     |       0.07 |       0.2 |
 | Apparent place                        |       10.4 |        12 |
 
 **N.B.** _The nutation difference is the truncation of the IAU 2000B series relative to IAU 2000A._

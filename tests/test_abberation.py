@@ -23,8 +23,8 @@ def test_get_correction_to_equatorial_for_aberration():
     t = get_correction_to_equatorial_for_aberration(date, betelgeuse)
     ra = t["ra"] + betelgeuse["ra"]
     dec = t["dec"] + betelgeuse["dec"]
-    assert ra == 88.78837273584286
-    assert dec == 7.4061086762102715
+    assert ra == 88.78837273583677
+    assert dec == 7.406108676900432
 
 
 # **************************************************************************************

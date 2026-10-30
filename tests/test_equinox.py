@@ -46,7 +46,7 @@ def test_get_autumn_equinox():
 def test_get_equation_of_the_equinoxes():
     date = datetime(2021, 5, 14, 0, 0, 0, 0)
     E = get_equation_of_the_equinoxes(date)
-    assert E == -0.004475059246864763
+    assert E == -0.00447505965499523
 
 
 # **************************************************************************************

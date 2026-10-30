@@ -21,7 +21,7 @@ date = datetime(2021, 5, 14, 0, 0, 0, 0)
 
 def test_get_true_obliquity_of_the_ecliptic():
     ε = get_true_obliquity_of_the_ecliptic(date)
-    assert ε == 23.437270315275185
+    assert ε == 23.437258263414424
 
 
 # **************************************************************************************
