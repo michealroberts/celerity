@@ -10,7 +10,67 @@ from datetime import datetime
 from math import atan2, cos, degrees, hypot, radians, sin
 
 from .common import EquatorialCoordinate
+from .matrix import (
+    Matrix,
+    get_rotation_matrix_about_x,
+    get_rotation_matrix_about_y,
+    get_rotation_matrix_about_z,
+    multiply_matrices,
+)
 from .temporal import get_terrestrial_time_in_julian_centuries
+
+# **************************************************************************************
+
+# The frame bias in longitude between the ICRS and the mean equator and equinox of
+# J2000.0 (in arcseconds), from the IAU 2000 precession-nutation model:
+FRAME_BIAS_IN_LONGITUDE: float = -0.041775
+
+# **************************************************************************************
+
+# The frame bias in obliquity between the ICRS and the mean equator and equinox of
+# J2000.0 (in arcseconds), from the IAU 2000 precession-nutation model:
+FRAME_BIAS_IN_OBLIQUITY: float = -0.0068192
+
+# **************************************************************************************
+
+# The ICRS right ascension of the J2000.0 mean equinox (in arcseconds), from the IAU
+# 2000 precession-nutation model:
+FRAME_BIAS_IN_RIGHT_ASCENSION: float = -0.0146
+
+# **************************************************************************************
+
+# The mean obliquity of the ecliptic at J2000.0 (in arcseconds) of the IAU 1976 system,
+# in which the frame bias offsets are expressed:
+OBLIQUITY_AT_J2000: float = 84381.448
+
+# **************************************************************************************
+
+
+def get_frame_bias_matrix() -> Matrix:
+    """
+    The matrix that rotates a direction from the International Celestial Reference
+    System (ICRS) to the mean equator and equinox of J2000.0.
+
+    The bias is a fixed rotation of about 23 milliarcseconds (IERS Conventions 2003,
+    chapter 5), formed from the ICRS right ascension of the J2000.0 mean equinox and the
+    offsets of the J2000.0 mean pole in longitude and obliquity.
+
+    :return: The frame bias rotation matrix.
+    """
+    # Get the rotation about the z axis through the right ascension offset (in degrees):
+    rz = get_rotation_matrix_about_z(FRAME_BIAS_IN_RIGHT_ASCENSION / 3600)
+
+    # Get the rotation about the y axis through the pole offset in longitude projected
+    # onto the equator by the obliquity (in degrees):
+    ry = get_rotation_matrix_about_y(
+        FRAME_BIAS_IN_LONGITUDE * sin(radians(OBLIQUITY_AT_J2000 / 3600)) / 3600
+    )
+
+    # Get the rotation about the x axis through the pole offset in obliquity (in degrees):
+    rx = get_rotation_matrix_about_x(-FRAME_BIAS_IN_OBLIQUITY / 3600)
+
+    return multiply_matrices(rx, multiply_matrices(ry, rz))
+
 
 # **************************************************************************************
 
