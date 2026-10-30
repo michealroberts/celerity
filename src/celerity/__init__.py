@@ -47,6 +47,7 @@ from . import (
     temporal,
     transit,
     utilities,
+    vector,
 )
 from .temporal import Time
 
@@ -82,6 +83,7 @@ __all__: list[str] = [
     "temporal",
     "transit",
     "utilities",
+    "vector",
     "Time",
 ]
 
