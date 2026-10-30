@@ -14,7 +14,12 @@ from src.celerity.matrix import (
     get_rotation_matrix_about_x,
     get_rotation_matrix_about_y,
     get_rotation_matrix_about_z,
+    multiply_matrices,
 )
+
+# **************************************************************************************
+
+identity: Matrix = ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
 
 # **************************************************************************************
 
@@ -377,6 +382,119 @@ def test_get_rotation_matrix_about_z_has_unit_determinant():
 
 def test_get_rotation_matrix_about_z_returns_three_by_three_floats():
     r = get_rotation_matrix_about_z(12.0)
+    assert isinstance(r, tuple)
+    assert len(r) == 3
+    for row in r:
+        assert isinstance(row, tuple)
+        assert len(row) == 3
+        assert all(isinstance(component, float) for component in row)
+
+
+# **************************************************************************************
+
+
+def test_multiply_matrices_literal_product():
+    a: Matrix = ((1.0, 2.0, 3.0), (4.0, 5.0, 6.0), (7.0, 8.0, 9.0))
+    b: Matrix = ((9.0, 8.0, 7.0), (6.0, 5.0, 4.0), (3.0, 2.0, 1.0))
+    assert multiply_matrices(a, b) == (
+        (30.0, 24.0, 18.0),
+        (84.0, 69.0, 54.0),
+        (138.0, 114.0, 90.0),
+    )
+
+
+# **************************************************************************************
+
+
+def test_multiply_matrices_identity_on_the_left():
+    r = get_rotation_matrix_about_x(23.0)
+    assert multiply_matrices(identity, r) == r
+
+
+# **************************************************************************************
+
+
+def test_multiply_matrices_identity_on_the_right():
+    r = get_rotation_matrix_about_y(23.0)
+    assert multiply_matrices(r, identity) == r
+
+
+# **************************************************************************************
+
+
+def test_multiply_matrices_rotation_by_its_inverse_is_identity():
+    product = multiply_matrices(
+        get_rotation_matrix_about_z(-37.5), get_rotation_matrix_about_z(37.5)
+    )
+    for i in range(3):
+        for j in range(3):
+            assert isclose(product[i][j], identity[i][j], abs_tol=1e-15)
+
+
+# **************************************************************************************
+
+
+def test_multiply_matrices_composes_rotations_about_the_same_axis():
+    # Two rotations about one axis compose to a single rotation through the sum of the
+    # angles:
+    product = multiply_matrices(
+        get_rotation_matrix_about_z(20.0), get_rotation_matrix_about_z(25.0)
+    )
+    expected = get_rotation_matrix_about_z(45.0)
+    for i in range(3):
+        for j in range(3):
+            assert isclose(product[i][j], expected[i][j], abs_tol=1e-15)
+
+
+# **************************************************************************************
+
+
+def test_multiply_matrices_is_not_commutative():
+    # Rotations about different axes do not commute:
+    rx = get_rotation_matrix_about_x(30.0)
+    rz = get_rotation_matrix_about_z(60.0)
+    assert multiply_matrices(rx, rz) != multiply_matrices(rz, rx)
+
+
+# **************************************************************************************
+
+
+def test_multiply_matrices_is_associative():
+    rx = get_rotation_matrix_about_x(30.0)
+    ry = get_rotation_matrix_about_y(45.0)
+    rz = get_rotation_matrix_about_z(60.0)
+    left = multiply_matrices(multiply_matrices(rx, ry), rz)
+    right = multiply_matrices(rx, multiply_matrices(ry, rz))
+    for i in range(3):
+        for j in range(3):
+            assert isclose(left[i][j], right[i][j], abs_tol=1e-15)
+
+
+# **************************************************************************************
+
+
+def test_multiply_matrices_product_of_rotations_is_a_rotation():
+    # The product of two rotations is orthonormal with unit determinant:
+    r = multiply_matrices(
+        get_rotation_matrix_about_x(-18.0), get_rotation_matrix_about_y(71.0)
+    )
+    for i in range(3):
+        for j in range(3):
+            dot = sum(r[i][k] * r[j][k] for k in range(3))
+            assert isclose(dot, 1.0 if i == j else 0.0, abs_tol=1e-15)
+    determinant = (
+        r[0][0] * (r[1][1] * r[2][2] - r[1][2] * r[2][1])
+        - r[0][1] * (r[1][0] * r[2][2] - r[1][2] * r[2][0])
+        + r[0][2] * (r[1][0] * r[2][1] - r[1][1] * r[2][0])
+    )
+    assert isclose(determinant, 1.0, rel_tol=1e-15)
+
+
+# **************************************************************************************
+
+
+def test_multiply_matrices_returns_three_by_three_floats():
+    r = multiply_matrices(identity, identity)
     assert isinstance(r, tuple)
     assert len(r) == 3
     for row in r:
