@@ -25,6 +25,114 @@ class IERSTAIUTCOffsetEntry(TypedDict):
 
 # **************************************************************************************
 
+
+class IERSTAIUTCDriftEntry(TypedDict):
+    # The datetime from which the drift expression applies:
+    at: datetime
+    # The TAI-UTC offset (in seconds) at the reference epoch of the expression:
+    offset: float
+    # The reference epoch of the expression, as a Modified Julian Date (in days):
+    epoch: float
+    # The rate of change of the TAI-UTC offset (in seconds per day):
+    rate: float
+
+
+# **************************************************************************************
+
+# The TAI-UTC offset expressions in force between the introduction of UTC on 1960-01-01
+# and the introduction of leap seconds on 1972-01-01, during which UTC was kept close to
+# UT by frequency offsets and small steps, so that TAI-UTC varied linearly within each
+# interval as offset + (MJD - epoch) * rate. The expressions are those tabulated in the
+# IERS Conventions and SOFA dat:
+IERS_TAI_UTC_DRIFT: Final[List[IERSTAIUTCDriftEntry]] = [
+    {
+        "at": datetime(1960, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 1.417818,
+        "epoch": 37300.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1961, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 1.422818,
+        "epoch": 37300.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1961, 8, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 1.372818,
+        "epoch": 37300.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1962, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 1.845858,
+        "epoch": 37665.0,
+        "rate": 0.0011232,
+    },
+    {
+        "at": datetime(1963, 11, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 1.945858,
+        "epoch": 37665.0,
+        "rate": 0.0011232,
+    },
+    {
+        "at": datetime(1964, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 3.24013,
+        "epoch": 38761.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1964, 4, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 3.34013,
+        "epoch": 38761.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1964, 9, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 3.44013,
+        "epoch": 38761.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1965, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 3.54013,
+        "epoch": 38761.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1965, 3, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 3.64013,
+        "epoch": 38761.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1965, 7, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 3.74013,
+        "epoch": 38761.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1965, 9, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 3.84013,
+        "epoch": 38761.0,
+        "rate": 0.001296,
+    },
+    {
+        "at": datetime(1966, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 4.31317,
+        "epoch": 39126.0,
+        "rate": 0.002592,
+    },
+    {
+        "at": datetime(1968, 2, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "offset": 4.21317,
+        "epoch": 39126.0,
+        "rate": 0.002592,
+    },
+]
+
+# **************************************************************************************
+
 # The IERS leap seconds data, representing the TAI-UTC offset (in seconds) in force
 # from each date, as announced in IERS Bulletin C. The first entry is the initial offset
 # of 10 seconds at the introduction of the current UTC system on 1972-01-01, and each of
@@ -164,9 +272,29 @@ def get_tai_utc_offset(date: datetime) -> float:
         else date.astimezone(tz=timezone.utc)
     )
 
-    # If the datetime is before TAI was introduced, return 0.0:
-    if date < datetime(1972, 1, 1, tzinfo=timezone.utc):
+    # If the datetime is before UTC was introduced on 1960-01-01, return 0.0:
+    if date < datetime(1960, 1, 1, tzinfo=timezone.utc):
         return 0.0
+
+    # If the datetime is before leap seconds were introduced on 1972-01-01, evaluate the
+    # drift expression in force at the datetime:
+    if date < datetime(1972, 1, 1, tzinfo=timezone.utc):
+        # Get the Modified Julian Date of the datetime (in days):
+        MJD = (
+            date - datetime(1858, 11, 17, tzinfo=timezone.utc)
+        ).total_seconds() / 86400
+
+        # Get the last drift expression that came into force on or before the datetime:
+        drift = IERS_TAI_UTC_DRIFT[0]
+
+        for expression in IERS_TAI_UTC_DRIFT:
+            if expression["at"] <= date:
+                drift = expression
+            else:
+                break
+
+        # Return the TAI-UTC offset for the date (in seconds):
+        return drift["offset"] + (MJD - drift["epoch"]) * drift["rate"]
 
     # If the datetime is greater than or equal to 1972-01-01, then we know we have a
     # minimum offset of 10 seconds:
