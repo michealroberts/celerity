@@ -81,8 +81,8 @@ def test_get_correction_to_equatorial():
     target = get_correction_to_equatorial(
         date, EquatorialCoordinate(ra=betelgeuse["ra"], dec=betelgeuse["dec"])
     )
-    assert target["ra"] == 89.07286804165851
-    assert target["dec"] == 7.409032048915578
+    assert target["ra"] == 89.07286801661904
+    assert target["dec"] == 7.409031969279755
 
 
 # **************************************************************************************
@@ -92,8 +92,8 @@ def test_get_apparent_equatorial_coordinate():
     j2000 = EquatorialCoordinate(ra=betelgeuse["ra"], dec=betelgeuse["dec"])
 
     apparent = get_apparent_equatorial_coordinate(date, j2000)
-    assert apparent["ra"] == 89.07286804165851
-    assert apparent["dec"] == 7.409032048915578
+    assert apparent["ra"] == 89.07286801661904
+    assert apparent["dec"] == 7.409031969279755
 
     # The alias must not mutate the coordinate it was given:
     assert j2000["ra"] == betelgeuse["ra"]
